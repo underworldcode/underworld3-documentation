@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.550">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="keywords" content="underworld3, sympy, PETSc">
+
+<title>Underworld3 Documentation - 4&nbsp; Underworld 3: Anisotropic Constitutive Models</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./ConstitutiveModels_Introduction.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    <img src="./media/MansoursNightmare.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Underworld3 Documentation</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <a class="flex-grow-1 no-decor" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Underworld 3: Anisotropic Constitutive Models</span></h1>
+        </a>     
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Introduction</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Underworld 3</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Underworld 3</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Constitutive Models</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ConstitutiveModels_Introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Underworld 3: Constitutive Models</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ConstitutiveModels_Anisotropy.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Underworld 3: Anisotropic Constitutive Models</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#canonical-forms" id="toc-canonical-forms" class="nav-link active" data-scroll-target="#canonical-forms"><span class="header-section-number">4.1</span> Canonical forms</a></li>
+  <li><a href="#incompressible-materials" id="toc-incompressible-materials" class="nav-link" data-scroll-target="#incompressible-materials"><span class="header-section-number">4.2</span> Incompressible materials</a>
+  <ul class="collapse">
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"><span class="header-section-number">4.2.1</span> Example</a></li>
+  </ul></li>
+  <li><a href="#validation" id="toc-validation" class="nav-link" data-scroll-target="#validation"><span class="header-section-number">4.3</span> Validation</a></li>
+  <li><a href="#muhlhaus-moresi-transversely-isotropic-tensor" id="toc-muhlhaus-moresi-transversely-isotropic-tensor" class="nav-link" data-scroll-target="#muhlhaus-moresi-transversely-isotropic-tensor"><span class="header-section-number">4.4</span> Muhlhaus / Moresi transversely isotropic tensor</a></li>
+  <li><a href="#han-wahr-1997-full-transverse-isotropic-tensor" id="toc-han-wahr-1997-full-transverse-isotropic-tensor" class="nav-link" data-scroll-target="#han-wahr-1997-full-transverse-isotropic-tensor"><span class="header-section-number">4.5</span> Han &amp; Wahr, 1997 (full transverse isotropic tensor)</a></li>
+  <li><a href="#orthotropic-medium" id="toc-orthotropic-medium" class="nav-link" data-scroll-target="#orthotropic-medium"><span class="header-section-number">4.6</span> Orthotropic medium</a></li>
+  </ul>
+<div class="quarto-other-links"><h2>Other Links</h2><ul><li><a href="https://github.com/ANU-RSES-Education/EMSC-QuartoBook"><i class="bi bi-github"></i>Github Repository</a></li></ul></div><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://mybinder.org/v2/gh/ANU-RSES-Education/EMSC-QuartoBook/HEAD?labpath=WebBook/Notebooks%2FBinderLandingPage.qmd"><i class="bi bi-rocket-takeoff"></i>Open in Binder</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Underworld 3: Anisotropic Constitutive Models</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Underworld Team </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+<div>
+  <div class="keywords">
+    <div class="block-title">Keywords</div>
+    <p>underworld3, sympy, PETSc</p>
+  </div>
+</div>
+
+</header>
+
+
+<section id="canonical-forms" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="canonical-forms"><span class="header-section-number">4.1</span> Canonical forms</h2>
+<p>The expressions for our anisotropic tensors are provided in a canonical reference frame which exploits the symmetry of the material to present the most compact form of the constitutive tensors.</p>
+<div id="fig-material-symm" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-material-symm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://d32ogoqmya1dw8.cloudfront.net/images/NAGTWorkshops/mineralogy/mineral_physics/table_9.v13.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-material-symm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.1: Symmetries in constitutive models <a href="https://serc.carleton.edu/NAGTWorkshops/mineralogy/mineral_physics/tensors.html">(LINK)</a> from Pamela Burnley, University of Nevada Las Vegas and based on <span class="citation" data-cites="nyePhysicalPropertiesCrystals1984">Nye (<a href="#ref-nyePhysicalPropertiesCrystals1984" role="doc-biblioref">1984</a>)</span>.
+</figcaption>
+</figure>
+</div>
+<p>This <a href="https://en.wikipedia.org/wiki/Elasticity_tensor">wikipedia article</a> should also be helpful.</p>
+<p>In a general orientation, a rotation tensor <span class="math inline">\({\cal R}\)</span> is required to transform to / from this canonical frame. For isotropic materials, <span class="math inline">\({\cal R}\)</span> is the identity matrix. For cubic materials, a single angle describes the offset of the two frames, and for transversely isotropic materials, we need to define a rotation matrix that aligns the normal to the symmetry plane with the vertical axis in the canonical frame. These examples have fewer degrees of freedom than a full rotation matrix and this fact can be used to simplify the general (rotated) form of the constitutive tensors.</p>
+<p>Define <span class="math inline">\({\cal R}_{ij}\)</span> as the rotation matrix that maps the coordinates <span class="math inline">\(x\)</span> onto the <span class="math inline">\(x'\)</span> coordiate system, i.e.&nbsp;</p>
+<p><span class="math display">\[a_i' = {\cal R}_{ij} \, a_j \]</span></p>
+<p><span class="math inline">\({\cal R}_{ij}\)</span> also has this property:</p>
+<p><span class="math display">\[ {\cal R}_{ki}\,{\cal R}_{kj} = \delta_{ij} \]</span></p>
+<p>Second order tensors transform as follows:</p>
+<p><span class="math display">\[a_{ij}' = {\cal R}_{ik}\,{\cal R}_{jl}\,a_{kl},\]</span></p>
+<p>and for higher rank tensors, we just continue …</p>
+<p><span class="math display">\[a_{ijk}' = {\cal R}_{il}\,{\cal R}_{jm}\,{\cal R}_{kn}\,a_{lmn}.\]</span></p>
+<p>In <code>underworld</code> tensor rotation is provided for rank 2 and rank 4 tensors by <code>uw.maths.tensor.tensor_rotation(R, tensor_expression)</code></p>
+</section>
+<section id="incompressible-materials" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="incompressible-materials"><span class="header-section-number">4.2</span> Incompressible materials</h2>
+<p>If we apply constraints to the deformation, we expect to reduce the number of independent material constants. Incompressibility should reduce the number of <em>independent</em> material constants. In an isotropic medium (or a medium with cubic symmetry), incompressibility eliminates the one volumetric material modulus (e.g.&nbsp;the bulk modulus). In general anisotropic media, it is not the case that changes in pressure result in uniform expansion or contraction, and an incompressibility constraint reduces the number of <em>independent</em> material constants. In the transversely isotropic case, there are five independent materia constants in general, reducing to four when the material is incompressible.</p>
+<p>It is not a given that the stiffness matrix is trivial to construct / meaningful for incompressible anisotropy and there is some discussion here: https://rastgaragah.wordpress.com/2013/03/12/incompressibility-of-linearly-elastic-material/ (identifies the issue) and this is explained in more detail by {cite}<code>destradeIncompressibleLimitLinear2002</code></p>
+<section id="example" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="example"><span class="header-section-number">4.2.1</span> Example</h3>
+<p>First we define the rotation for the transversely isotropic case which depends on the normal vector to the symmetry plane.</p>
+<p>A rotation matrix for a transversely isotropic medium is defined by specifying the normal of the symmetry plane ($ = { n_0, n_1, n_2} $). The other orientations are arbitrary, so we simply derive them from <span class="math inline">\(\hat{\mathbf{n}}\)</span> - one vector specified to be perpendicular in the horizontal plane and the third vector is then found from their cross product (<span class="math inline">\(\hat{\mathbf{s}}\)</span> and <span class="math inline">\(\hat{\mathbf{t}}\)</span> respectively)</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Underworld python script">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Underworld python script
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> underworld3 <span class="im">as</span> uw</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sympy</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> sympy.Matrix(sympy.symarray(<span class="st">"n"</span>,(<span class="dv">3</span>,)))</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Or give a specific value (just specify a vector, then normalise)</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># n = sympy.Matrix([1,1,1]) </span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># n /= sympy.sqrt(n.dot(n))</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> n[<span class="dv">0</span>] <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> sympy.Matrix([<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>])</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    t <span class="op">=</span> sympy.Matrix([<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>])</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    R <span class="op">=</span> sympy.eye(<span class="dv">3</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> sympy.Matrix((n[<span class="dv">1</span>] , <span class="op">-</span>n[<span class="dv">0</span>], <span class="dv">0</span> ))</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    s <span class="op">/=</span> sympy.sqrt(s.dot(s))</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    t <span class="op">=</span> <span class="op">-</span>n.cross(s) <span class="co"># complete the coordinate triad</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    R <span class="op">=</span> sympy.BlockMatrix((s,t,n)).as_explicit()</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>display(R)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+<p><span class="math display">\[\cal{R} = \left[\begin{matrix}\frac{n_{1}}{\sqrt{n_{0}^{2} + n_{1}^{2}}} &amp; - \frac{n_{0} n_{2}}{\sqrt{n_{0}^{2} + n_{1}^{2}}} &amp; n_{0}\\- \frac{n_{0}}{\sqrt{n_{0}^{2} + n_{1}^{2}}} &amp; - \frac{n_{1} n_{2}}{\sqrt{n_{0}^{2} + n_{1}^{2}}} &amp; n_{1}\\0 &amp; \frac{n_{0}^{2}}{\sqrt{n_{0}^{2} + n_{1}^{2}}} + \frac{n_{1}^{2}}{\sqrt{n_{0}^{2} + n_{1}^{2}}} &amp; n_{2}\end{matrix}\right]\]</span></p>
+</section>
+</section>
+<section id="validation" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="validation"><span class="header-section-number">4.3</span> Validation</h2>
+<p>A simple check on this is to rotate the isotropic constitutive tensor and validate that it is invariant under rotation.</p>
+<p><span class="math display">\[C_{IJ} = \left[\begin{matrix}2 \eta_{0} &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 2 \eta_{0} &amp; 0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 2 \eta_{0} &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 2 \eta_{0} &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0 &amp; 2 \eta_{0} &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 2 \eta_{0}\end{matrix}\right]\]</span></p>
+<p>Noting that the rotation of the Mandel or Voigt constitutive matrices is complicated by the <span class="math inline">\(\mathbf{P}\)</span> scaling matrices, we compute rotations on the rank 4 tensor, <span class="math inline">\(c_{ijkl}\)</span> and transform to the matrix forms as required. We denote the rotation from <span class="math inline">\(\{IJ\}\)</span> coordinates to <span class="math inline">\(\{I'J'\}\)</span> as</p>
+<p><span class="math display">\[C_{I'J'} = {\cal R}[C_{IJ}]\]</span></p>
+<p>The rotated constitutive model has the following form:</p>
+<p><span class="math display">\[C_{I'J'} = \left[\begin{matrix}\frac{2 \eta_{0} \left(n_{0}^{2} n_{2}^{2} + n_{0}^{2} \left(n_{0}^{2} + n_{1}^{2}\right) + n_{1}^{2}\right)^{2}}{\left(n_{0}^{2} + n_{1}^{2}\right)^{2}} &amp; \frac{2 \eta_{0} n_{0}^{2} n_{1}^{2} \left(n_{0}^{2} + n_{1}^{2} + n_{2}^{2} - 1\right)^{2}}{\left(n_{0}^{2} + n_{1}^{2}\right)^{2}} &amp; 0 &amp; 0 &amp; 0 &amp; \frac{2 \sqrt{2} \eta_{0} n_{0} n_{1} \left(n_{0}^{6} + 2 n_{0}^{4} n_{1}^{2} + 2 n_{0}^{4} n_{2}^{2} - n_{0}^{4} + n_{0}^{2} n_{1}^{4} + 2 n_{0}^{2} n_{1}^{2} n_{2}^{2} + n_{0}^{2} n_{2}^{4} - n_{0}^{2} n_{2}^{2} + n_{1}^{4} + n_{1}^{2} n_{2}^{2} - n_{1}^{2}\right)}{n_{0}^{4} + 2 n_{0}^{2} n_{1}^{2} + n_{1}^{4}}\\\frac{2 \eta_{0} n_{0}^{2} n_{1}^{2} \left(n_{0}^{2} + n_{1}^{2} + n_{2}^{2} - 1\right)^{2}}{\left(n_{0}^{2} + n_{1}^{2}\right)^{2}} &amp; \frac{2 \eta_{0} \left(n_{0}^{2} + n_{1}^{2} n_{2}^{2} + n_{1}^{2} \left(n_{0}^{2} + n_{1}^{2}\right)\right)^{2}}{\left(n_{0}^{2} + n_{1}^{2}\right)^{2}} &amp; 0 &amp; 0 &amp; 0 &amp; \frac{2 \sqrt{2} \eta_{0} n_{0} n_{1} \left(n_{0}^{4} n_{1}^{2} + n_{0}^{4} + 2 n_{0}^{2} n_{1}^{4} + 2 n_{0}^{2} n_{1}^{2} n_{2}^{2} + n_{0}^{2} n_{2}^{2} - n_{0}^{2} + n_{1}^{6} + 2 n_{1}^{4} n_{2}^{2} - n_{1}^{4} + n_{1}^{2} n_{2}^{4} - n_{1}^{2} n_{2}^{2}\right)}{n_{0}^{4} + 2 n_{0}^{2} n_{1}^{2} + n_{1}^{4}}\\0 &amp; 0 &amp; 2 \eta_{0} \left(n_{0}^{2} + n_{1}^{2} + n_{2}^{2}\right)^{2} &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; \frac{2 \eta_{0} \left(n_{0}^{2} + n_{1}^{2} + n_{2}^{2}\right) \left(n_{0}^{2} + n_{1}^{2} n_{2}^{2} + n_{1}^{2} \left(n_{0}^{2} + n_{1}^{2}\right)\right)}{n_{0}^{2} + n_{1}^{2}} &amp; \frac{2 \eta_{0} n_{0} n_{1} \left(n_{0}^{2} + n_{1}^{2} + n_{2}^{2}\right) \left(n_{0}^{2} + n_{1}^{2} + n_{2}^{2} - 1\right)}{n_{0}^{2} + n_{1}^{2}} &amp; 0\\0 &amp; 0 &amp; 0 &amp; \frac{2 \eta_{0} n_{0} n_{1} \left(n_{0}^{2} + n_{1}^{2} + n_{2}^{2}\right) \left(n_{0}^{2} + n_{1}^{2} + n_{2}^{2} - 1\right)}{n_{0}^{2} + n_{1}^{2}} &amp; \frac{2 \eta_{0} \left(n_{0}^{2} + n_{1}^{2} + n_{2}^{2}\right) \left(n_{0}^{2} n_{2}^{2} + n_{0}^{2} \left(n_{0}^{2} + n_{1}^{2}\right) + n_{1}^{2}\right)}{n_{0}^{2} + n_{1}^{2}} &amp; 0\\\frac{2 \sqrt{2} \eta_{0} n_{0} n_{1} \left(n_{0}^{2} n_{2}^{2} + n_{0}^{2} \left(n_{0}^{2} + n_{1}^{2}\right) + n_{1}^{2}\right) \left(n_{0}^{2} + n_{1}^{2} + n_{2}^{2} - 1\right)}{\left(n_{0}^{2} + n_{1}^{2}\right)^{2}} &amp; \frac{2 \sqrt{2} \eta_{0} n_{0} n_{1} \left(n_{0}^{2} + n_{1}^{2} n_{2}^{2} + n_{1}^{2} \left(n_{0}^{2} + n_{1}^{2}\right)\right) \left(n_{0}^{2} + n_{1}^{2} + n_{2}^{2} - 1\right)}{\left(n_{0}^{2} + n_{1}^{2}\right)^{2}} &amp; 0 &amp; 0 &amp; 0 &amp; \frac{2 \eta_{0} \left(n_{0}^{2} n_{2}^{2} \left(n_{0}^{2} + 2 n_{1}^{2} n_{2}^{2} + 2 n_{1}^{2} \left(n_{0}^{2} + n_{1}^{2}\right) - n_{1}^{2}\right) + n_{0}^{2} \left(n_{0}^{2} + n_{1}^{2}\right) \left(n_{0}^{2} + 2 n_{1}^{2} n_{2}^{2} + 2 n_{1}^{2} \left(n_{0}^{2} + n_{1}^{2}\right) - n_{1}^{2}\right) + n_{1}^{2} \cdot \left(2 n_{0}^{2} + n_{2}^{2} \left(- n_{0}^{2} + n_{1}^{2}\right) - \left(n_{0}^{2} - n_{1}^{2}\right) \left(n_{0}^{2} + n_{1}^{2}\right)\right)\right)}{\left(n_{0}^{2} + n_{1}^{2}\right)^{2}}\end{matrix}\right]\]</span></p>
+<p>However, <span class="math inline">\(\{n_0, n_1, n_2\}\)</span> are not independent because <span class="math inline">\(\hat{\mathbf{n}}\)</span> is a unit vector. If we add this information and simplify, we recover the isotropic form of <span class="math inline">\(C\)</span></p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Underworld python script">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Underworld python script
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># construct a symbolic, isotropic matrix (Mandel form)</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>eta0 <span class="op">=</span> sympy.symbols(<span class="st">"\eta_0"</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>C_IJm <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> sympy.Matrix.diag([eta0]<span class="op">*</span><span class="dv">6</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>display(C_IJm)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">## Rotate the matrix </span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>c_ijkl <span class="op">=</span> uw.maths.tensor.mandel_to_rank4(C_IJm, <span class="dv">3</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>C_IJv <span class="op">=</span> uw.maths.tensor.rank4_to_voigt(c_ijkl, <span class="dv">3</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>c_ijkl_R <span class="op">=</span> sympy.simplify(uw.maths.tensor.tensor_rotation(R, c_ijkl))</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>C_IJm_R <span class="op">=</span> sympy.simplify(uw.maths.tensor.rank4_to_mandel(c_ijkl_R, <span class="dv">3</span>))</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>display(C_IJm_R)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co">## Is this really invariant under rotation ?? </span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co">## Have to do some manipulation to identify the </span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">## unit-vector component relationships</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>C_IJm_R_s1 <span class="op">=</span> C_IJm_R.subs(n[<span class="dv">0</span>]<span class="op">**</span><span class="dv">2</span><span class="op">+</span>n[<span class="dv">1</span>]<span class="op">**</span><span class="dv">2</span><span class="op">+</span>n[<span class="dv">2</span>]<span class="op">**</span><span class="dv">2</span>,<span class="dv">1</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>C_IJm_R_s2 <span class="op">=</span> C_IJm_R_s1.subs(n[<span class="dv">0</span>]<span class="op">**</span><span class="dv">2</span><span class="op">+</span>n[<span class="dv">1</span>]<span class="op">**</span><span class="dv">2</span>, <span class="dv">1</span><span class="op">-</span>n[<span class="dv">2</span>]<span class="op">**</span><span class="dv">2</span>).applyfunc(sympy.factor)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>display(C_IJm_R_s2.subs(n[<span class="dv">0</span>]<span class="op">**</span><span class="dv">2</span><span class="op">+</span>n[<span class="dv">1</span>]<span class="op">**</span><span class="dv">2</span>, <span class="dv">1</span><span class="op">-</span>n[<span class="dv">2</span>]<span class="op">**</span><span class="dv">2</span>).simplify())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="muhlhaus-moresi-transversely-isotropic-tensor" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="muhlhaus-moresi-transversely-isotropic-tensor"><span class="header-section-number">4.4</span> Muhlhaus / Moresi transversely isotropic tensor</h2>
+<p>The Muhlhaus / Moresi transversely isotropic consitituve model is designed to model materials that have a single (usually) weak plane (e.g.&nbsp;an embedded fault).</p>
+<p>The constitutive model is</p>
+<p><span class="math display">\[\left[\begin{matrix}2 \eta_{0} &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 2 \eta_{0} &amp; 0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 2 \eta_{0} &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; - 2 \Delta\eta + 2 \eta_{0} &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0 &amp; - 2 \Delta\eta + 2 \eta_{0} &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 2 \eta_{0}\end{matrix}\right]\]</span></p>
+<p>where <span class="math inline">\(\Delta\eta\)</span> represents the change (usually reduction) in viscosity.</p>
+<p>Rotation using <span class="math inline">\(\cal R\)</span> as defined from the normal to the weak plane (above) gives (Mandel form):</p>
+<p><span class="math display">\[\left[\begin{matrix}- \frac{4 \Delta\eta n_{0}^{2} \left(n_{0}^{2} n_{2}^{2} + n_{1}^{2}\right)}{n_{0}^{2} + n_{1}^{2}} + 2 \eta_{0} &amp; \frac{4 \Delta\eta n_{0}^{2} n_{1}^{2} \cdot \left(1 - n_{2}^{2}\right)}{n_{0}^{2} + n_{1}^{2}} &amp; 4 \Delta\eta n_{0}^{2} n_{2}^{2} &amp; \frac{2 \sqrt{2} \Delta\eta n_{0}^{2} n_{1} n_{2} \left(n_{0}^{2} + n_{1}^{2} - n_{2}^{2} + 1\right)}{n_{0}^{2} + n_{1}^{2}} &amp; \frac{2 \sqrt{2} \Delta\eta n_{0} n_{2} \left(n_{0}^{2} \left(n_{0}^{2} + n_{1}^{2} - n_{2}^{2}\right) - n_{1}^{2}\right)}{n_{0}^{2} + n_{1}^{2}} &amp; \frac{2 \sqrt{2} \Delta\eta n_{0} n_{1} \left(- 2 n_{0}^{2} n_{2}^{2} + n_{0}^{2} - n_{1}^{2}\right)}{n_{0}^{2} + n_{1}^{2}}\\\frac{4 \Delta\eta n_{0}^{2} n_{1}^{2} \cdot \left(1 - n_{2}^{2}\right)}{n_{0}^{2} + n_{1}^{2}} &amp; - \frac{4 \Delta\eta n_{1}^{2} \left(n_{0}^{2} + n_{1}^{2} n_{2}^{2}\right)}{n_{0}^{2} + n_{1}^{2}} + 2 \eta_{0} &amp; 4 \Delta\eta n_{1}^{2} n_{2}^{2} &amp; - \frac{2 \sqrt{2} \Delta\eta n_{1} n_{2} \left(n_{0}^{2} - n_{1}^{2} \left(n_{0}^{2} + n_{1}^{2} - n_{2}^{2}\right)\right)}{n_{0}^{2} + n_{1}^{2}} &amp; \frac{2 \sqrt{2} \Delta\eta n_{0} n_{1}^{2} n_{2} \left(n_{0}^{2} + n_{1}^{2} - n_{2}^{2} + 1\right)}{n_{0}^{2} + n_{1}^{2}} &amp; \frac{2 \sqrt{2} \Delta\eta n_{0} n_{1} \left(- n_{0}^{2} - 2 n_{1}^{2} n_{2}^{2} + n_{1}^{2}\right)}{n_{0}^{2} + n_{1}^{2}}\\4 \Delta\eta n_{0}^{2} n_{2}^{2} &amp; 4 \Delta\eta n_{1}^{2} n_{2}^{2} &amp; - 4 \Delta\eta n_{2}^{2} \left(n_{0}^{2} + n_{1}^{2}\right) + 2 \eta_{0} &amp; 2 \sqrt{2} \Delta\eta n_{1} n_{2} \left(- n_{0}^{2} - n_{1}^{2} + n_{2}^{2}\right) &amp; 2 \sqrt{2} \Delta\eta n_{0} n_{2} \left(- n_{0}^{2} - n_{1}^{2} + n_{2}^{2}\right) &amp; 4 \sqrt{2} \Delta\eta n_{0} n_{1} n_{2}^{2}\\\frac{2 \sqrt{2} \Delta\eta n_{0}^{2} n_{1} n_{2} \left(n_{0}^{2} + n_{1}^{2} - n_{2}^{2} + 1\right)}{n_{0}^{2} + n_{1}^{2}} &amp; \frac{2 \sqrt{2} \Delta\eta n_{1} n_{2} \left(n_{0}^{2} n_{1}^{2} - n_{0}^{2} + n_{1}^{4} - n_{1}^{2} n_{2}^{2}\right)}{n_{0}^{2} + n_{1}^{2}} &amp; 2 \sqrt{2} \Delta\eta n_{1} n_{2} \left(- n_{0}^{2} - n_{1}^{2} + n_{2}^{2}\right) &amp; - \frac{2 \Delta\eta \left(n_{0}^{2} n_{2}^{2} - n_{1}^{2} n_{2}^{2} \left(n_{0}^{2} + n_{1}^{2} - n_{2}^{2}\right) + n_{1}^{2} \left(n_{0}^{2} + n_{1}^{2}\right) \left(n_{0}^{2} + n_{1}^{2} - n_{2}^{2}\right)\right)}{n_{0}^{2} + n_{1}^{2}} + 2 \eta_{0} &amp; \frac{2 \Delta\eta n_{0} n_{1} \left(n_{2}^{2} \left(n_{0}^{2} + n_{1}^{2} - n_{2}^{2}\right) + n_{2}^{2} - \left(n_{0}^{2} + n_{1}^{2}\right) \left(n_{0}^{2} + n_{1}^{2} - n_{2}^{2}\right)\right)}{n_{0}^{2} + n_{1}^{2}} &amp; \frac{2 \Delta\eta n_{0} n_{2} \cdot \left(2 n_{0}^{2} n_{1}^{2} - n_{0}^{2} + 2 n_{1}^{4} - 2 n_{1}^{2} n_{2}^{2} + n_{1}^{2}\right)}{n_{0}^{2} + n_{1}^{2}}\\\frac{2 \sqrt{2} \Delta\eta n_{0} n_{2} \left(n_{0}^{4} + n_{0}^{2} n_{1}^{2} - n_{0}^{2} n_{2}^{2} - n_{1}^{2}\right)}{n_{0}^{2} + n_{1}^{2}} &amp; \frac{2 \sqrt{2} \Delta\eta n_{0} n_{1}^{2} n_{2} \left(n_{0}^{2} + n_{1}^{2} - n_{2}^{2} + 1\right)}{n_{0}^{2} + n_{1}^{2}} &amp; 2 \sqrt{2} \Delta\eta n_{0} n_{2} \left(- n_{0}^{2} - n_{1}^{2} + n_{2}^{2}\right) &amp; \frac{2 \Delta\eta n_{0} n_{1} \left(n_{2}^{2} \left(n_{0}^{2} + n_{1}^{2} - n_{2}^{2}\right) + n_{2}^{2} - \left(n_{0}^{2} + n_{1}^{2}\right) \left(n_{0}^{2} + n_{1}^{2} - n_{2}^{2}\right)\right)}{n_{0}^{2} + n_{1}^{2}} &amp; - \frac{2 \Delta\eta \left(- n_{0}^{2} n_{2}^{2} \left(n_{0}^{2} + n_{1}^{2} - n_{2}^{2}\right) + n_{0}^{2} \left(n_{0}^{2} + n_{1}^{2}\right) \left(n_{0}^{2} + n_{1}^{2} - n_{2}^{2}\right) + n_{1}^{2} n_{2}^{2}\right)}{n_{0}^{2} + n_{1}^{2}} + 2 \eta_{0} &amp; \frac{2 \Delta\eta n_{1} n_{2} \cdot \left(2 n_{0}^{4} + 2 n_{0}^{2} n_{1}^{2} - 2 n_{0}^{2} n_{2}^{2} + n_{0}^{2} - n_{1}^{2}\right)}{n_{0}^{2} + n_{1}^{2}}\\\frac{2 \sqrt{2} \Delta\eta n_{0} n_{1} \left(- 2 n_{0}^{2} n_{2}^{2} + n_{0}^{2} - n_{1}^{2}\right)}{n_{0}^{2} + n_{1}^{2}} &amp; \frac{2 \sqrt{2} \Delta\eta n_{0} n_{1} \left(- n_{0}^{2} - 2 n_{1}^{2} n_{2}^{2} + n_{1}^{2}\right)}{n_{0}^{2} + n_{1}^{2}} &amp; 4 \sqrt{2} \Delta\eta n_{0} n_{1} n_{2}^{2} &amp; \frac{2 \Delta\eta n_{0} n_{2} \left(- n_{0}^{2} + 2 n_{1}^{2} \left(n_{0}^{2} + n_{1}^{2} - n_{2}^{2}\right) + n_{1}^{2}\right)}{n_{0}^{2} + n_{1}^{2}} &amp; \frac{2 \Delta\eta n_{1} n_{2} \cdot \left(2 n_{0}^{4} + 2 n_{0}^{2} n_{1}^{2} - 2 n_{0}^{2} n_{2}^{2} + n_{0}^{2} - n_{1}^{2}\right)}{n_{0}^{2} + n_{1}^{2}} &amp; \frac{2 \Delta\eta \left(- n_{0}^{4} - 4 n_{0}^{2} n_{1}^{2} n_{2}^{2} + 2 n_{0}^{2} n_{1}^{2} - n_{1}^{4}\right)}{n_{0}^{2} + n_{1}^{2}} + 2 \eta_{0}\end{matrix}\right]\]</span></p>
+<p>and we can easily demonstrate that this collapses back to the isotropic form if <span class="math inline">\(\Delta\eta \leftarrow 0\)</span>. We can also show this is equivalent to the alternate expression for the tensor provided in the original papers (an exercise for the reader !!).</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Underworld python script">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Underworld python script
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Muhlhaus definition of C_IJ (mandel form)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>eta1 <span class="op">=</span> sympy.symbols(<span class="st">"\eta_1"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>delta_eta <span class="op">=</span> sympy.symbols(<span class="st">"\Delta\eta"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>C_ijkl_MM <span class="op">=</span> uw.maths.tensor.rank4_identity(<span class="dv">3</span>) <span class="op">*</span> <span class="dv">0</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>C_IJm_MM <span class="op">=</span> uw.maths.tensor.rank4_to_mandel(C_ijkl_MM, <span class="dv">3</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>C_IJm_MM[<span class="dv">0</span>,<span class="dv">0</span>] <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>eta0</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>C_IJm_MM[<span class="dv">1</span>,<span class="dv">1</span>] <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>eta0</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>C_IJm_MM[<span class="dv">2</span>,<span class="dv">2</span>] <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>eta0</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>C_IJm_MM[<span class="dv">3</span>,<span class="dv">3</span>] <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>(eta0<span class="op">-</span>delta_eta)  <span class="co"># yz</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>C_IJm_MM[<span class="dv">4</span>,<span class="dv">4</span>] <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>(eta0<span class="op">-</span>delta_eta)  <span class="co"># xz</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>C_IJm_MM[<span class="dv">5</span>,<span class="dv">5</span>] <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>eta0  <span class="co"># xy</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>display(C_IJm_MM)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">## We know that the isotropic part is invariant under rotation, so we only need to </span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">## examine the non-isotropic part.</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>C_ijkl_MM <span class="op">=</span> uw.maths.tensor.mandel_to_rank4(C_IJm_MM <span class="op">-</span> C_IJm , <span class="dv">3</span>)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>C_ijkl_MM_R <span class="op">=</span> sympy.simplify(uw.maths.tensor.tensor_rotation(R, C_ijkl_MM))</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>C_IJm_MM_R <span class="op">=</span> sympy.simplify(uw.maths.tensor.rank4_to_mandel(C_ijkl_MM_R, <span class="dv">3</span>)) <span class="op">+</span> C_IJm</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>C_IJv_MM_R <span class="op">=</span> sympy.simplify(uw.maths.tensor.rank4_to_voigt(C_ijkl_MM_R, <span class="dv">3</span>)) <span class="op">+</span> C_IJv</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>display(C_IJm_MM_R)</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Check what happens if we set delta eta to zero</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>C_IJm_MM_iso <span class="op">=</span> C_IJm_MM_R.subs(delta_eta,<span class="dv">0</span>).applyfunc(sympy.factor).subs(n[<span class="dv">0</span>]<span class="op">**</span><span class="dv">2</span><span class="op">+</span>n[<span class="dv">1</span>]<span class="op">**</span><span class="dv">2</span>, <span class="dv">1</span><span class="op">-</span>n[<span class="dv">2</span>]<span class="op">**</span><span class="dv">2</span>).simplify()</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>display(C_IJm_MM_iso)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="han-wahr-1997-full-transverse-isotropic-tensor" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="han-wahr-1997-full-transverse-isotropic-tensor"><span class="header-section-number">4.5</span> Han &amp; Wahr, 1997 (full transverse isotropic tensor)</h2>
+<p>In the {cite}<code>hanAnalysisAnisotropicMantle1997</code> paper, the expression for incompressible transverse-isotropy is as follows</p>
+<p><span class="math display">\[\left[\begin{matrix}2 \eta_{0} + \mu_{0} &amp; \mu_{0} &amp; 0 &amp; 0 &amp; 0 &amp; 0\\\mu_{0} &amp; 2 \eta_{0} + \mu_{0} &amp; 0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; - 2 \Delta\eta + 2 \eta_{0} + \mu_{1} &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; - 2 \Delta\eta + 2 \eta_{0} &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0 &amp; - 2 \Delta\eta + 2 \eta_{0} &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 2 \eta_{0}\end{matrix}\right]\]</span></p>
+<p>Note that the notation differs from their paper. I have replaced their <span class="math inline">\(\nu1, \nu2\)</span> with <span class="math inline">\(\eta0, \eta1\)</span> to be consistent with the forms defined above. I have replaced their <span class="math inline">\(\eta\)</span> with <span class="math inline">\(\mu\)</span> to avoid the confusion that results from the first change.</p>
+<p>Applying the rotation, <span class="math inline">\(\cal R\)</span> and attempting to coerce <code>sympy</code> to simplify the constitutive matrix:</p>
+<p><span class="math display">\[\left[\begin{matrix}\frac{2 \Delta\eta n_{0}^{4} n_{2}^{4} - 2 \Delta\eta n_{0}^{4} + 4 \Delta\eta n_{0}^{2} n_{1}^{2} n_{2}^{2} - 4 \Delta\eta n_{0}^{2} n_{1}^{2} + 2 \eta_{0} n_{2}^{4} - 4 \eta_{0} n_{2}^{2} + 2 \eta_{0} + \mu_{0} n_{0}^{4} n_{2}^{4} + 2 \mu_{0} n_{0}^{2} n_{1}^{2} n_{2}^{2} + \mu_{0} n_{1}^{4} + \mu_{1} n_{0}^{4} n_{2}^{4} - 2 \mu_{1} n_{0}^{4} n_{2}^{2} + \mu_{1} n_{0}^{4}}{\left(n_{2} - 1\right)^{2} \left(n_{2} + 1\right)^{2}} &amp; \frac{2 \Delta\eta n_{0}^{2} n_{1}^{2} n_{2}^{4} - 4 \Delta\eta n_{0}^{2} n_{1}^{2} n_{2}^{2} + 2 \Delta\eta n_{0}^{2} n_{1}^{2} + \mu_{0} n_{0}^{4} n_{2}^{2} + \mu_{0} n_{0}^{2} n_{1}^{2} n_{2}^{4} + \mu_{0} n_{0}^{2} n_{1}^{2} + \mu_{0} n_{1}^{4} n_{2}^{2} + \mu_{1} n_{0}^{2} n_{1}^{2} n_{2}^{4} - 2 \mu_{1} n_{0}^{2} n_{1}^{2} n_{2}^{2} + \mu_{1} n_{0}^{2} n_{1}^{2}}{\left(n_{2} - 1\right)^{2} \left(n_{2} + 1\right)^{2}} &amp; 2 \Delta\eta n_{0}^{2} n_{2}^{2} + \mu_{0} n_{0}^{2} n_{2}^{2} + \mu_{0} n_{1}^{2} + \mu_{1} n_{0}^{2} n_{2}^{2} &amp; \frac{\sqrt{2} n_{1} n_{2} \cdot \left(2 \Delta\eta n_{0}^{2} n_{2}^{2} - 2 \Delta\eta n_{0}^{2} + \mu_{0} n_{0}^{2} n_{2}^{2} + \mu_{0} n_{1}^{2} - \mu_{1} n_{0}^{4} - \mu_{1} n_{0}^{2} n_{1}^{2}\right)}{\left(n_{2} - 1\right) \left(n_{2} + 1\right)} &amp; \frac{\sqrt{2} n_{0} n_{2} \cdot \left(2 \Delta\eta n_{0}^{2} n_{2}^{2} + 2 \Delta\eta n_{1}^{2} + \mu_{0} n_{0}^{2} n_{2}^{2} + \mu_{0} n_{1}^{2} - \mu_{1} n_{0}^{4} - \mu_{1} n_{0}^{2} n_{1}^{2}\right)}{\left(n_{2} - 1\right) \left(n_{2} + 1\right)} &amp; \frac{\sqrt{2} n_{0} n_{1} \cdot \left(2 \Delta\eta n_{0}^{2} n_{2}^{2} + 2 \Delta\eta n_{1}^{2} + \mu_{0} n_{0}^{2} n_{2}^{2} + \mu_{0} n_{1}^{2} + \mu_{1} n_{0}^{2} n_{2}^{2} - \mu_{1} n_{0}^{2}\right)}{\left(n_{2} - 1\right) \left(n_{2} + 1\right)}\\\frac{2 \Delta\eta n_{0}^{2} n_{1}^{2} n_{2}^{4} - 4 \Delta\eta n_{0}^{2} n_{1}^{2} n_{2}^{2} + 2 \Delta\eta n_{0}^{2} n_{1}^{2} + \mu_{0} n_{0}^{4} n_{2}^{2} + \mu_{0} n_{0}^{2} n_{1}^{2} n_{2}^{4} + \mu_{0} n_{0}^{2} n_{1}^{2} + \mu_{0} n_{1}^{4} n_{2}^{2} + \mu_{1} n_{0}^{2} n_{1}^{2} n_{2}^{4} - 2 \mu_{1} n_{0}^{2} n_{1}^{2} n_{2}^{2} + \mu_{1} n_{0}^{2} n_{1}^{2}}{\left(n_{2} - 1\right)^{2} \left(n_{2} + 1\right)^{2}} &amp; \frac{4 \Delta\eta n_{0}^{2} n_{1}^{2} n_{2}^{2} - 4 \Delta\eta n_{0}^{2} n_{1}^{2} + 2 \Delta\eta n_{1}^{4} n_{2}^{4} - 2 \Delta\eta n_{1}^{4} + 2 \eta_{0} n_{2}^{4} - 4 \eta_{0} n_{2}^{2} + 2 \eta_{0} + \mu_{0} n_{0}^{4} + 2 \mu_{0} n_{0}^{2} n_{1}^{2} n_{2}^{2} + \mu_{0} n_{1}^{4} n_{2}^{4} + \mu_{1} n_{1}^{4} n_{2}^{4} - 2 \mu_{1} n_{1}^{4} n_{2}^{2} + \mu_{1} n_{1}^{4}}{\left(n_{2} - 1\right)^{2} \left(n_{2} + 1\right)^{2}} &amp; 2 \Delta\eta n_{1}^{2} n_{2}^{2} + \mu_{0} n_{0}^{2} + \mu_{0} n_{1}^{2} n_{2}^{2} + \mu_{1} n_{1}^{2} n_{2}^{2} &amp; \frac{\sqrt{2} n_{1} n_{2} \cdot \left(2 \Delta\eta n_{0}^{2} + 2 \Delta\eta n_{1}^{2} n_{2}^{2} + \mu_{0} n_{0}^{2} + \mu_{0} n_{1}^{2} n_{2}^{2} - \mu_{1} n_{0}^{2} n_{1}^{2} - \mu_{1} n_{1}^{4}\right)}{\left(n_{2} - 1\right) \left(n_{2} + 1\right)} &amp; \frac{\sqrt{2} n_{0} n_{2} \cdot \left(2 \Delta\eta n_{1}^{2} n_{2}^{2} - 2 \Delta\eta n_{1}^{2} + \mu_{0} n_{0}^{2} + \mu_{0} n_{1}^{2} n_{2}^{2} - \mu_{1} n_{0}^{2} n_{1}^{2} - \mu_{1} n_{1}^{4}\right)}{\left(n_{2} - 1\right) \left(n_{2} + 1\right)} &amp; \frac{\sqrt{2} n_{0} n_{1} \cdot \left(2 \Delta\eta n_{0}^{2} + 2 \Delta\eta n_{1}^{2} n_{2}^{2} + \mu_{0} n_{0}^{2} + \mu_{0} n_{1}^{2} n_{2}^{2} + \mu_{1} n_{1}^{2} n_{2}^{2} - \mu_{1} n_{1}^{2}\right)}{\left(n_{2} - 1\right) \left(n_{2} + 1\right)}\\2 \Delta\eta n_{0}^{2} n_{2}^{2} + \mu_{0} n_{0}^{2} n_{2}^{2} + \mu_{0} n_{1}^{2} + \mu_{1} n_{0}^{2} n_{2}^{2} &amp; 2 \Delta\eta n_{1}^{2} n_{2}^{2} + \mu_{0} n_{0}^{2} + \mu_{0} n_{1}^{2} n_{2}^{2} + \mu_{1} n_{1}^{2} n_{2}^{2} &amp; 2 \Delta\eta n_{2}^{4} - 4 \Delta\eta n_{2}^{2} + 2 \eta_{0} + \mu_{0} n_{2}^{4} - 2 \mu_{0} n_{2}^{2} + \mu_{0} + \mu_{1} n_{2}^{4} &amp; - \sqrt{2} n_{1} n_{2} \cdot \left(2 \Delta\eta n_{0}^{2} + 2 \Delta\eta n_{1}^{2} + \mu_{0} n_{0}^{2} + \mu_{0} n_{1}^{2} - \mu_{1} n_{2}^{2}\right) &amp; - \sqrt{2} n_{0} n_{2} \cdot \left(2 \Delta\eta n_{0}^{2} + 2 \Delta\eta n_{1}^{2} + \mu_{0} n_{0}^{2} + \mu_{0} n_{1}^{2} - \mu_{1} n_{2}^{2}\right) &amp; \sqrt{2} n_{0} n_{1} \cdot \left(2 \Delta\eta n_{2}^{2} + \mu_{0} n_{2}^{2} - \mu_{0} + \mu_{1} n_{2}^{2}\right)\\\frac{\sqrt{2} n_{1} n_{2} \cdot \left(2 \Delta\eta n_{0}^{2} n_{2}^{2} - 2 \Delta\eta n_{0}^{2} + \mu_{0} n_{0}^{2} n_{2}^{2} + \mu_{0} n_{1}^{2} + \mu_{1} n_{0}^{2} n_{2}^{2} - \mu_{1} n_{0}^{2}\right)}{\left(n_{2} - 1\right) \left(n_{2} + 1\right)} &amp; \frac{\sqrt{2} n_{1} n_{2} \cdot \left(2 \Delta\eta n_{0}^{2} + 2 \Delta\eta n_{1}^{2} n_{2}^{2} + \mu_{0} n_{0}^{2} + \mu_{0} n_{1}^{2} n_{2}^{2} + \mu_{1} n_{1}^{2} n_{2}^{2} - \mu_{1} n_{1}^{2}\right)}{\left(n_{2} - 1\right) \left(n_{2} + 1\right)} &amp; - \sqrt{2} n_{1} n_{2} \cdot \left(2 \Delta\eta n_{0}^{2} + 2 \Delta\eta n_{1}^{2} + \mu_{0} n_{0}^{2} + \mu_{0} n_{1}^{2} - \mu_{1} n_{2}^{2}\right) &amp; \frac{2 \left(\Delta\eta n_{0}^{2} n_{2}^{2} + 2 \Delta\eta n_{1}^{2} n_{2}^{4} - 2 \Delta\eta n_{1}^{2} n_{2}^{2} + \Delta\eta n_{1}^{2} + \eta_{0} n_{2}^{2} - \eta_{0} + \mu_{0} n_{1}^{2} n_{2}^{4} - \mu_{0} n_{1}^{2} n_{2}^{2} + \mu_{1} n_{1}^{2} n_{2}^{4} - \mu_{1} n_{1}^{2} n_{2}^{2}\right)}{\left(n_{2} - 1\right) \left(n_{2} + 1\right)} &amp; 2 n_{0} n_{1} \cdot \left(2 \Delta\eta n_{2}^{2} - \Delta\eta + \mu_{0} n_{2}^{2} + \mu_{1} n_{2}^{2}\right) &amp; \frac{2 n_{0} n_{2} \left(\Delta\eta n_{0}^{2} + 2 \Delta\eta n_{1}^{2} n_{2}^{2} - \Delta\eta n_{1}^{2} + \mu_{0} n_{1}^{2} n_{2}^{2} - \mu_{0} n_{1}^{2} + \mu_{1} n_{1}^{2} n_{2}^{2} - \mu_{1} n_{1}^{2}\right)}{\left(n_{2} - 1\right) \left(n_{2} + 1\right)}\\\frac{\sqrt{2} n_{0} n_{2} \cdot \left(2 \Delta\eta n_{0}^{2} n_{2}^{2} + 2 \Delta\eta n_{1}^{2} + \mu_{0} n_{0}^{2} n_{2}^{2} + \mu_{0} n_{1}^{2} + \mu_{1} n_{0}^{2} n_{2}^{2} - \mu_{1} n_{0}^{2}\right)}{\left(n_{2} - 1\right) \left(n_{2} + 1\right)} &amp; \frac{\sqrt{2} n_{0} n_{2} \cdot \left(2 \Delta\eta n_{1}^{2} n_{2}^{2} - 2 \Delta\eta n_{1}^{2} + \mu_{0} n_{0}^{2} + \mu_{0} n_{1}^{2} n_{2}^{2} + \mu_{1} n_{1}^{2} n_{2}^{2} - \mu_{1} n_{1}^{2}\right)}{\left(n_{2} - 1\right) \left(n_{2} + 1\right)} &amp; - \sqrt{2} n_{0} n_{2} \cdot \left(2 \Delta\eta n_{0}^{2} + 2 \Delta\eta n_{1}^{2} + \mu_{0} n_{0}^{2} + \mu_{0} n_{1}^{2} - \mu_{1} n_{2}^{2}\right) &amp; 2 n_{0} n_{1} \cdot \left(2 \Delta\eta n_{2}^{2} - \Delta\eta + \mu_{0} n_{2}^{2} + \mu_{1} n_{2}^{2}\right) &amp; \frac{2 \cdot \left(2 \Delta\eta n_{0}^{2} n_{2}^{4} - 2 \Delta\eta n_{0}^{2} n_{2}^{2} + \Delta\eta n_{0}^{2} + \Delta\eta n_{1}^{2} n_{2}^{2} + \eta_{0} n_{2}^{2} - \eta_{0} + \mu_{0} n_{0}^{2} n_{2}^{4} - \mu_{0} n_{0}^{2} n_{2}^{2} + \mu_{1} n_{0}^{2} n_{2}^{4} - \mu_{1} n_{0}^{2} n_{2}^{2}\right)}{\left(n_{2} - 1\right) \left(n_{2} + 1\right)} &amp; \frac{2 n_{1} n_{2} \cdot \left(2 \Delta\eta n_{0}^{2} n_{2}^{2} - \Delta\eta n_{0}^{2} + \Delta\eta n_{1}^{2} + \mu_{0} n_{0}^{2} n_{2}^{2} - \mu_{0} n_{0}^{2} + \mu_{1} n_{0}^{2} n_{2}^{2} - \mu_{1} n_{0}^{2}\right)}{\left(n_{2} - 1\right) \left(n_{2} + 1\right)}\\\frac{\sqrt{2} n_{0} n_{1} \cdot \left(2 \Delta\eta n_{0}^{2} n_{2}^{2} + 2 \Delta\eta n_{1}^{2} + \mu_{0} n_{0}^{2} n_{2}^{2} + \mu_{0} n_{1}^{2} + \mu_{1} n_{0}^{2} n_{2}^{2} - \mu_{1} n_{0}^{2}\right)}{\left(n_{2} - 1\right) \left(n_{2} + 1\right)} &amp; \frac{\sqrt{2} n_{0} n_{1} \cdot \left(2 \Delta\eta n_{0}^{2} + 2 \Delta\eta n_{1}^{2} n_{2}^{2} + \mu_{0} n_{0}^{2} + \mu_{0} n_{1}^{2} n_{2}^{2} + \mu_{1} n_{1}^{2} n_{2}^{2} - \mu_{1} n_{1}^{2}\right)}{\left(n_{2} - 1\right) \left(n_{2} + 1\right)} &amp; \sqrt{2} n_{0} n_{1} \cdot \left(2 \Delta\eta n_{2}^{2} + \mu_{0} n_{2}^{2} - \mu_{0} + \mu_{1} n_{2}^{2}\right) &amp; \frac{2 n_{0} n_{2} \left(\Delta\eta n_{0}^{2} + 2 \Delta\eta n_{1}^{2} n_{2}^{2} - \Delta\eta n_{1}^{2} + \mu_{0} n_{1}^{2} n_{2}^{2} - \mu_{0} n_{1}^{2} - \mu_{1} n_{0}^{2} n_{1}^{2} - \mu_{1} n_{1}^{4}\right)}{\left(n_{2} - 1\right) \left(n_{2} + 1\right)} &amp; \frac{2 n_{1} n_{2} \cdot \left(2 \Delta\eta n_{0}^{2} n_{2}^{2} - \Delta\eta n_{0}^{2} + \Delta\eta n_{1}^{2} + \mu_{0} n_{0}^{2} n_{2}^{2} - \mu_{0} n_{0}^{2} - \mu_{1} n_{0}^{4} - \mu_{1} n_{0}^{2} n_{1}^{2}\right)}{\left(n_{2} - 1\right) \left(n_{2} + 1\right)} &amp; \frac{2 \left(\Delta\eta n_{0}^{4} + 2 \Delta\eta n_{0}^{2} n_{1}^{2} n_{2}^{2} + \Delta\eta n_{1}^{4} + \eta_{0} n_{2}^{2} - \eta_{0} + \mu_{0} n_{0}^{2} n_{1}^{2} n_{2}^{2} - \mu_{0} n_{0}^{2} n_{1}^{2} + \mu_{1} n_{0}^{2} n_{1}^{2} n_{2}^{2} - \mu_{1} n_{0}^{2} n_{1}^{2}\right)}{\left(n_{2} - 1\right) \left(n_{2} + 1\right)}\end{matrix}\right]\]</span></p>
+<p>The <code>underworld</code> / <code>sympy</code> implementation follows:</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Underworld python script">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Underworld python script
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">## The full incompressible, trans-iso model (4 independent unknowns) </span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">## from Han and Wahr (1997)</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Extra viscosity terms</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>mu0 <span class="op">=</span> sympy.symbols(<span class="vs">r"\mu_0"</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>mu1 <span class="op">=</span> sympy.symbols(<span class="vs">r"\mu_1"</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>I <span class="op">=</span> uw.maths.tensor.rank4_identity(<span class="dv">3</span>) <span class="op">*</span> <span class="dv">0</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>C_IJm_HW <span class="op">=</span> uw.maths.tensor.rank4_to_mandel(I, <span class="dv">3</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>C_IJm_HW[<span class="dv">0</span>,<span class="dv">0</span>] <span class="op">=</span> mu0 <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> eta0 </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>C_IJm_HW[<span class="dv">0</span>,<span class="dv">1</span>] <span class="op">=</span> mu0  </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>C_IJm_HW[<span class="dv">1</span>,<span class="dv">0</span>] <span class="op">=</span> mu0  </span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>C_IJm_HW[<span class="dv">1</span>,<span class="dv">1</span>] <span class="op">=</span> mu0 <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> eta0</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>C_IJm_HW[<span class="dv">2</span>,<span class="dv">2</span>] <span class="op">=</span> mu1 <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> (eta0 <span class="op">-</span> delta_eta)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>C_IJm_HW[<span class="dv">3</span>,<span class="dv">3</span>] <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> (eta0 <span class="op">-</span> delta_eta) <span class="co"># yz</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>C_IJm_HW[<span class="dv">4</span>,<span class="dv">4</span>] <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> (eta0 <span class="op">-</span> delta_eta)  <span class="co"># xz</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>C_IJm_HW[<span class="dv">5</span>,<span class="dv">5</span>] <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> eta0  <span class="co"># xy</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>display(C_IJm_HW)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>C_ijkl_HW <span class="op">=</span> uw.maths.tensor.mandel_to_rank4(C_IJm_HW <span class="op">-</span> C_IJm, <span class="dv">3</span>)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>display(uw.maths.tensor.rank4_to_mandel(C_ijkl_HW, <span class="dv">3</span>)) </span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>C_ijkl_HW_R <span class="op">=</span> sympy.simplify(uw.maths.tensor.tensor_rotation(R, C_ijkl_HW))</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>sympy.simplify(uw.maths.tensor.rank4_to_mandel(C_ijkl_HW_R, <span class="dv">3</span>)) <span class="op">+</span> C_IJm</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>display(C_IJm_HW_R)</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="co">## Maybe this can be simplified if we use the unit vector relationships among n0,n1,n2</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>C_IJm_HW_R_s1 <span class="op">=</span> C_IJm_HW_R.subs(n[<span class="dv">0</span>]<span class="op">**</span><span class="dv">2</span><span class="op">+</span>n[<span class="dv">1</span>]<span class="op">**</span><span class="dv">2</span><span class="op">+</span>n[<span class="dv">2</span>]<span class="op">**</span><span class="dv">2</span>,<span class="dv">1</span>)</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>C_IJm_HW_R_s2 <span class="op">=</span> C_IJm_HW_R_s1.subs(n[<span class="dv">0</span>]<span class="op">**</span><span class="dv">2</span><span class="op">+</span>n[<span class="dv">1</span>]<span class="op">**</span><span class="dv">2</span>, <span class="dv">1</span><span class="op">-</span>n[<span class="dv">2</span>]<span class="op">**</span><span class="dv">2</span>).applyfunc(sympy.factor)</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>display(C_IJm_HW_R_s2)</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="co">## Perhaps that's not so helpful</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="orthotropic-medium" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="orthotropic-medium"><span class="header-section-number">4.6</span> Orthotropic medium</h2>
+<p><strong>Note</strong> all the caveats above regarding incompressibility. The {cite}<code>browaeysDecompositionElasticTensor2004</code> elastic tensors have a bulk modulus term, so it is not completely obvious how to square the assumptions in the first two implementations with this set.</p>
+<p>The full formulation should look like this:</p>
+<p><span class="math display">\[\left[\begin{matrix}2 \eta_{00} &amp; 2 \eta_{01} &amp; 2 \eta_{02} &amp; 0 &amp; 0 &amp; 0\\2 \eta_{01} &amp; 2 \eta_{11} &amp; 2 \eta_{12} &amp; 0 &amp; 0 &amp; 0\\2 \eta_{02} &amp; 2 \eta_{12} &amp; 2 \eta_{22} &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 2 \eta_{33} &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0 &amp; 2 \eta_{44} &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 2 \eta_{55}\end{matrix}\right]\]</span></p>
+<p>Rotation in this case should be general as it is no longer enough to specify the symmetry plane.</p>
+<p><span class="math display">\[\left[\begin{matrix}s_{0} &amp; t_{0} &amp; n_{0}\\s_{1} &amp; t_{1} &amp; n_{1}\\s_{2} &amp; t_{2} &amp; n_{2}\end{matrix}\right]\]</span></p>
+<p><span class="math inline">\(\hat{\mathbf{n}}\)</span>, <span class="math inline">\(\hat{\mathbf{s}}\)</span> and <span class="math inline">\(\hat{\mathbf{t}}\)</span> are an arbitrary orthogonal triad of unit vectors (we keep the notation from the Mühlhaus formulation). It is probably not useful to code up this form.</p>
+<p><span class="math display">\[\left[\begin{matrix}2 \eta_{00} s_{0}^{4} + 4 \eta_{01} s_{0}^{2} t_{0}^{2} + 4 \eta_{02} n_{0}^{2} s_{0}^{2} + 2 \eta_{11} t_{0}^{4} + 4 \eta_{12} n_{0}^{2} t_{0}^{2} + 2 \eta_{22} n_{0}^{4} + 4 \eta_{33} n_{0}^{2} t_{0}^{2} + 4 \eta_{44} n_{0}^{2} s_{0}^{2} + 4 \eta_{55} s_{0}^{2} t_{0}^{2} &amp; 2 n_{0} \left(\eta_{33} n_{1} t_{0} t_{1} + \eta_{44} n_{1} s_{0} s_{1} + n_{0} \left(\eta_{02} s_{1}^{2} + \eta_{12} t_{1}^{2} + \eta_{22} n_{1}^{2}\right)\right) + 2 s_{0} \left(\eta_{44} n_{0} n_{1} s_{1} + \eta_{55} s_{1} t_{0} t_{1} + s_{0} \left(\eta_{00} s_{1}^{2} + \eta_{01} t_{1}^{2} + \eta_{02} n_{1}^{2}\right)\right) + 2 t_{0} \left(\eta_{33} n_{0} n_{1} t_{1} + \eta_{55} s_{0} s_{1} t_{1} + t_{0} \left(\eta_{01} s_{1}^{2} + \eta_{11} t_{1}^{2} + \eta_{12} n_{1}^{2}\right)\right) &amp; 2 n_{0} \left(\eta_{33} n_{2} t_{0} t_{2} + \eta_{44} n_{2} s_{0} s_{2} + n_{0} \left(\eta_{02} s_{2}^{2} + \eta_{12} t_{2}^{2} + \eta_{22} n_{2}^{2}\right)\right) + 2 s_{0} \left(\eta_{44} n_{0} n_{2} s_{2} + \eta_{55} s_{2} t_{0} t_{2} + s_{0} \left(\eta_{00} s_{2}^{2} + \eta_{01} t_{2}^{2} + \eta_{02} n_{2}^{2}\right)\right) + 2 t_{0} \left(\eta_{33} n_{0} n_{2} t_{2} + \eta_{55} s_{0} s_{2} t_{2} + t_{0} \left(\eta_{01} s_{2}^{2} + \eta_{11} t_{2}^{2} + \eta_{12} n_{2}^{2}\right)\right) &amp; \sqrt{2} \left(n_{0} \left(\eta_{33} t_{0} \left(n_{1} t_{2} + n_{2} t_{1}\right) + \eta_{44} s_{0} \left(n_{1} s_{2} + n_{2} s_{1}\right) + 2 n_{0} \left(\eta_{02} s_{1} s_{2} + \eta_{12} t_{1} t_{2} + \eta_{22} n_{1} n_{2}\right)\right) + s_{0} \left(\eta_{44} n_{0} \left(n_{1} s_{2} + n_{2} s_{1}\right) + \eta_{55} t_{0} \left(s_{1} t_{2} + s_{2} t_{1}\right) + 2 s_{0} \left(\eta_{00} s_{1} s_{2} + \eta_{01} t_{1} t_{2} + \eta_{02} n_{1} n_{2}\right)\right) + t_{0} \left(\eta_{33} n_{0} \left(n_{1} t_{2} + n_{2} t_{1}\right) + \eta_{55} s_{0} \left(s_{1} t_{2} + s_{2} t_{1}\right) + 2 t_{0} \left(\eta_{01} s_{1} s_{2} + \eta_{11} t_{1} t_{2} + \eta_{12} n_{1} n_{2}\right)\right)\right) &amp; \sqrt{2} \left(n_{0} \left(\eta_{33} t_{0} \left(n_{0} t_{2} + n_{2} t_{0}\right) + \eta_{44} s_{0} \left(n_{0} s_{2} + n_{2} s_{0}\right) + 2 n_{0} \left(\eta_{02} s_{0} s_{2} + \eta_{12} t_{0} t_{2} + \eta_{22} n_{0} n_{2}\right)\right) + s_{0} \left(\eta_{44} n_{0} \left(n_{0} s_{2} + n_{2} s_{0}\right) + \eta_{55} t_{0} \left(s_{0} t_{2} + s_{2} t_{0}\right) + 2 s_{0} \left(\eta_{00} s_{0} s_{2} + \eta_{01} t_{0} t_{2} + \eta_{02} n_{0} n_{2}\right)\right) + t_{0} \left(\eta_{33} n_{0} \left(n_{0} t_{2} + n_{2} t_{0}\right) + \eta_{55} s_{0} \left(s_{0} t_{2} + s_{2} t_{0}\right) + 2 t_{0} \left(\eta_{01} s_{0} s_{2} + \eta_{11} t_{0} t_{2} + \eta_{12} n_{0} n_{2}\right)\right)\right) &amp; \sqrt{2} \left(n_{0} \left(\eta_{33} t_{0} \left(n_{0} t_{1} + n_{1} t_{0}\right) + \eta_{44} s_{0} \left(n_{0} s_{1} + n_{1} s_{0}\right) + 2 n_{0} \left(\eta_{02} s_{0} s_{1} + \eta_{12} t_{0} t_{1} + \eta_{22} n_{0} n_{1}\right)\right) + s_{0} \left(\eta_{44} n_{0} \left(n_{0} s_{1} + n_{1} s_{0}\right) + \eta_{55} t_{0} \left(s_{0} t_{1} + s_{1} t_{0}\right) + 2 s_{0} \left(\eta_{00} s_{0} s_{1} + \eta_{01} t_{0} t_{1} + \eta_{02} n_{0} n_{1}\right)\right) + t_{0} \left(\eta_{33} n_{0} \left(n_{0} t_{1} + n_{1} t_{0}\right) + \eta_{55} s_{0} \left(s_{0} t_{1} + s_{1} t_{0}\right) + 2 t_{0} \left(\eta_{01} s_{0} s_{1} + \eta_{11} t_{0} t_{1} + \eta_{12} n_{0} n_{1}\right)\right)\right)\\2 n_{1} \left(\eta_{33} n_{0} t_{0} t_{1} + \eta_{44} n_{0} s_{0} s_{1} + n_{1} \left(\eta_{02} s_{0}^{2} + \eta_{12} t_{0}^{2} + \eta_{22} n_{0}^{2}\right)\right) + 2 s_{1} \left(\eta_{44} n_{0} n_{1} s_{0} + \eta_{55} s_{0} t_{0} t_{1} + s_{1} \left(\eta_{00} s_{0}^{2} + \eta_{01} t_{0}^{2} + \eta_{02} n_{0}^{2}\right)\right) + 2 t_{1} \left(\eta_{33} n_{0} n_{1} t_{0} + \eta_{55} s_{0} s_{1} t_{0} + t_{1} \left(\eta_{01} s_{0}^{2} + \eta_{11} t_{0}^{2} + \eta_{12} n_{0}^{2}\right)\right) &amp; 2 \eta_{00} s_{1}^{4} + 4 \eta_{01} s_{1}^{2} t_{1}^{2} + 4 \eta_{02} n_{1}^{2} s_{1}^{2} + 2 \eta_{11} t_{1}^{4} + 4 \eta_{12} n_{1}^{2} t_{1}^{2} + 2 \eta_{22} n_{1}^{4} + 4 \eta_{33} n_{1}^{2} t_{1}^{2} + 4 \eta_{44} n_{1}^{2} s_{1}^{2} + 4 \eta_{55} s_{1}^{2} t_{1}^{2} &amp; 2 n_{1} \left(\eta_{33} n_{2} t_{1} t_{2} + \eta_{44} n_{2} s_{1} s_{2} + n_{1} \left(\eta_{02} s_{2}^{2} + \eta_{12} t_{2}^{2} + \eta_{22} n_{2}^{2}\right)\right) + 2 s_{1} \left(\eta_{44} n_{1} n_{2} s_{2} + \eta_{55} s_{2} t_{1} t_{2} + s_{1} \left(\eta_{00} s_{2}^{2} + \eta_{01} t_{2}^{2} + \eta_{02} n_{2}^{2}\right)\right) + 2 t_{1} \left(\eta_{33} n_{1} n_{2} t_{2} + \eta_{55} s_{1} s_{2} t_{2} + t_{1} \left(\eta_{01} s_{2}^{2} + \eta_{11} t_{2}^{2} + \eta_{12} n_{2}^{2}\right)\right) &amp; \sqrt{2} \left(n_{1} \left(\eta_{33} t_{1} \left(n_{1} t_{2} + n_{2} t_{1}\right) + \eta_{44} s_{1} \left(n_{1} s_{2} + n_{2} s_{1}\right) + 2 n_{1} \left(\eta_{02} s_{1} s_{2} + \eta_{12} t_{1} t_{2} + \eta_{22} n_{1} n_{2}\right)\right) + s_{1} \left(\eta_{44} n_{1} \left(n_{1} s_{2} + n_{2} s_{1}\right) + \eta_{55} t_{1} \left(s_{1} t_{2} + s_{2} t_{1}\right) + 2 s_{1} \left(\eta_{00} s_{1} s_{2} + \eta_{01} t_{1} t_{2} + \eta_{02} n_{1} n_{2}\right)\right) + t_{1} \left(\eta_{33} n_{1} \left(n_{1} t_{2} + n_{2} t_{1}\right) + \eta_{55} s_{1} \left(s_{1} t_{2} + s_{2} t_{1}\right) + 2 t_{1} \left(\eta_{01} s_{1} s_{2} + \eta_{11} t_{1} t_{2} + \eta_{12} n_{1} n_{2}\right)\right)\right) &amp; \sqrt{2} \left(n_{1} \left(\eta_{33} t_{1} \left(n_{0} t_{2} + n_{2} t_{0}\right) + \eta_{44} s_{1} \left(n_{0} s_{2} + n_{2} s_{0}\right) + 2 n_{1} \left(\eta_{02} s_{0} s_{2} + \eta_{12} t_{0} t_{2} + \eta_{22} n_{0} n_{2}\right)\right) + s_{1} \left(\eta_{44} n_{1} \left(n_{0} s_{2} + n_{2} s_{0}\right) + \eta_{55} t_{1} \left(s_{0} t_{2} + s_{2} t_{0}\right) + 2 s_{1} \left(\eta_{00} s_{0} s_{2} + \eta_{01} t_{0} t_{2} + \eta_{02} n_{0} n_{2}\right)\right) + t_{1} \left(\eta_{33} n_{1} \left(n_{0} t_{2} + n_{2} t_{0}\right) + \eta_{55} s_{1} \left(s_{0} t_{2} + s_{2} t_{0}\right) + 2 t_{1} \left(\eta_{01} s_{0} s_{2} + \eta_{11} t_{0} t_{2} + \eta_{12} n_{0} n_{2}\right)\right)\right) &amp; \sqrt{2} \left(n_{1} \left(\eta_{33} t_{1} \left(n_{0} t_{1} + n_{1} t_{0}\right) + \eta_{44} s_{1} \left(n_{0} s_{1} + n_{1} s_{0}\right) + 2 n_{1} \left(\eta_{02} s_{0} s_{1} + \eta_{12} t_{0} t_{1} + \eta_{22} n_{0} n_{1}\right)\right) + s_{1} \left(\eta_{44} n_{1} \left(n_{0} s_{1} + n_{1} s_{0}\right) + \eta_{55} t_{1} \left(s_{0} t_{1} + s_{1} t_{0}\right) + 2 s_{1} \left(\eta_{00} s_{0} s_{1} + \eta_{01} t_{0} t_{1} + \eta_{02} n_{0} n_{1}\right)\right) + t_{1} \left(\eta_{33} n_{1} \left(n_{0} t_{1} + n_{1} t_{0}\right) + \eta_{55} s_{1} \left(s_{0} t_{1} + s_{1} t_{0}\right) + 2 t_{1} \left(\eta_{01} s_{0} s_{1} + \eta_{11} t_{0} t_{1} + \eta_{12} n_{0} n_{1}\right)\right)\right)\\2 n_{2} \left(\eta_{33} n_{0} t_{0} t_{2} + \eta_{44} n_{0} s_{0} s_{2} + n_{2} \left(\eta_{02} s_{0}^{2} + \eta_{12} t_{0}^{2} + \eta_{22} n_{0}^{2}\right)\right) + 2 s_{2} \left(\eta_{44} n_{0} n_{2} s_{0} + \eta_{55} s_{0} t_{0} t_{2} + s_{2} \left(\eta_{00} s_{0}^{2} + \eta_{01} t_{0}^{2} + \eta_{02} n_{0}^{2}\right)\right) + 2 t_{2} \left(\eta_{33} n_{0} n_{2} t_{0} + \eta_{55} s_{0} s_{2} t_{0} + t_{2} \left(\eta_{01} s_{0}^{2} + \eta_{11} t_{0}^{2} + \eta_{12} n_{0}^{2}\right)\right) &amp; 2 n_{2} \left(\eta_{33} n_{1} t_{1} t_{2} + \eta_{44} n_{1} s_{1} s_{2} + n_{2} \left(\eta_{02} s_{1}^{2} + \eta_{12} t_{1}^{2} + \eta_{22} n_{1}^{2}\right)\right) + 2 s_{2} \left(\eta_{44} n_{1} n_{2} s_{1} + \eta_{55} s_{1} t_{1} t_{2} + s_{2} \left(\eta_{00} s_{1}^{2} + \eta_{01} t_{1}^{2} + \eta_{02} n_{1}^{2}\right)\right) + 2 t_{2} \left(\eta_{33} n_{1} n_{2} t_{1} + \eta_{55} s_{1} s_{2} t_{1} + t_{2} \left(\eta_{01} s_{1}^{2} + \eta_{11} t_{1}^{2} + \eta_{12} n_{1}^{2}\right)\right) &amp; 2 \eta_{00} s_{2}^{4} + 4 \eta_{01} s_{2}^{2} t_{2}^{2} + 4 \eta_{02} n_{2}^{2} s_{2}^{2} + 2 \eta_{11} t_{2}^{4} + 4 \eta_{12} n_{2}^{2} t_{2}^{2} + 2 \eta_{22} n_{2}^{4} + 4 \eta_{33} n_{2}^{2} t_{2}^{2} + 4 \eta_{44} n_{2}^{2} s_{2}^{2} + 4 \eta_{55} s_{2}^{2} t_{2}^{2} &amp; \sqrt{2} \left(n_{2} \left(\eta_{33} t_{2} \left(n_{1} t_{2} + n_{2} t_{1}\right) + \eta_{44} s_{2} \left(n_{1} s_{2} + n_{2} s_{1}\right) + 2 n_{2} \left(\eta_{02} s_{1} s_{2} + \eta_{12} t_{1} t_{2} + \eta_{22} n_{1} n_{2}\right)\right) + s_{2} \left(\eta_{44} n_{2} \left(n_{1} s_{2} + n_{2} s_{1}\right) + \eta_{55} t_{2} \left(s_{1} t_{2} + s_{2} t_{1}\right) + 2 s_{2} \left(\eta_{00} s_{1} s_{2} + \eta_{01} t_{1} t_{2} + \eta_{02} n_{1} n_{2}\right)\right) + t_{2} \left(\eta_{33} n_{2} \left(n_{1} t_{2} + n_{2} t_{1}\right) + \eta_{55} s_{2} \left(s_{1} t_{2} + s_{2} t_{1}\right) + 2 t_{2} \left(\eta_{01} s_{1} s_{2} + \eta_{11} t_{1} t_{2} + \eta_{12} n_{1} n_{2}\right)\right)\right) &amp; \sqrt{2} \left(n_{2} \left(\eta_{33} t_{2} \left(n_{0} t_{2} + n_{2} t_{0}\right) + \eta_{44} s_{2} \left(n_{0} s_{2} + n_{2} s_{0}\right) + 2 n_{2} \left(\eta_{02} s_{0} s_{2} + \eta_{12} t_{0} t_{2} + \eta_{22} n_{0} n_{2}\right)\right) + s_{2} \left(\eta_{44} n_{2} \left(n_{0} s_{2} + n_{2} s_{0}\right) + \eta_{55} t_{2} \left(s_{0} t_{2} + s_{2} t_{0}\right) + 2 s_{2} \left(\eta_{00} s_{0} s_{2} + \eta_{01} t_{0} t_{2} + \eta_{02} n_{0} n_{2}\right)\right) + t_{2} \left(\eta_{33} n_{2} \left(n_{0} t_{2} + n_{2} t_{0}\right) + \eta_{55} s_{2} \left(s_{0} t_{2} + s_{2} t_{0}\right) + 2 t_{2} \left(\eta_{01} s_{0} s_{2} + \eta_{11} t_{0} t_{2} + \eta_{12} n_{0} n_{2}\right)\right)\right) &amp; \sqrt{2} \left(n_{2} \left(\eta_{33} t_{2} \left(n_{0} t_{1} + n_{1} t_{0}\right) + \eta_{44} s_{2} \left(n_{0} s_{1} + n_{1} s_{0}\right) + 2 n_{2} \left(\eta_{02} s_{0} s_{1} + \eta_{12} t_{0} t_{1} + \eta_{22} n_{0} n_{1}\right)\right) + s_{2} \left(\eta_{44} n_{2} \left(n_{0} s_{1} + n_{1} s_{0}\right) + \eta_{55} t_{2} \left(s_{0} t_{1} + s_{1} t_{0}\right) + 2 s_{2} \left(\eta_{00} s_{0} s_{1} + \eta_{01} t_{0} t_{1} + \eta_{02} n_{0} n_{1}\right)\right) + t_{2} \left(\eta_{33} n_{2} \left(n_{0} t_{1} + n_{1} t_{0}\right) + \eta_{55} s_{2} \left(s_{0} t_{1} + s_{1} t_{0}\right) + 2 t_{2} \left(\eta_{01} s_{0} s_{1} + \eta_{11} t_{0} t_{1} + \eta_{12} n_{0} n_{1}\right)\right)\right)\\\sqrt{2} \cdot \left(2 n_{1} \left(\eta_{33} n_{0} t_{0} t_{2} + \eta_{44} n_{0} s_{0} s_{2} + n_{2} \left(\eta_{02} s_{0}^{2} + \eta_{12} t_{0}^{2} + \eta_{22} n_{0}^{2}\right)\right) + 2 s_{1} \left(\eta_{44} n_{0} n_{2} s_{0} + \eta_{55} s_{0} t_{0} t_{2} + s_{2} \left(\eta_{00} s_{0}^{2} + \eta_{01} t_{0}^{2} + \eta_{02} n_{0}^{2}\right)\right) + 2 t_{1} \left(\eta_{33} n_{0} n_{2} t_{0} + \eta_{55} s_{0} s_{2} t_{0} + t_{2} \left(\eta_{01} s_{0}^{2} + \eta_{11} t_{0}^{2} + \eta_{12} n_{0}^{2}\right)\right)\right) &amp; \sqrt{2} \cdot \left(2 n_{1} \left(\eta_{33} n_{1} t_{1} t_{2} + \eta_{44} n_{1} s_{1} s_{2} + n_{2} \left(\eta_{02} s_{1}^{2} + \eta_{12} t_{1}^{2} + \eta_{22} n_{1}^{2}\right)\right) + 2 s_{1} \left(\eta_{44} n_{1} n_{2} s_{1} + \eta_{55} s_{1} t_{1} t_{2} + s_{2} \left(\eta_{00} s_{1}^{2} + \eta_{01} t_{1}^{2} + \eta_{02} n_{1}^{2}\right)\right) + 2 t_{1} \left(\eta_{33} n_{1} n_{2} t_{1} + \eta_{55} s_{1} s_{2} t_{1} + t_{2} \left(\eta_{01} s_{1}^{2} + \eta_{11} t_{1}^{2} + \eta_{12} n_{1}^{2}\right)\right)\right) &amp; \sqrt{2} \cdot \left(2 n_{1} n_{2} \left(\eta_{02} s_{2}^{2} + \eta_{12} t_{2}^{2} + \eta_{22} n_{2}^{2} + \eta_{33} t_{2}^{2} + \eta_{44} s_{2}^{2}\right) + 2 s_{1} s_{2} \left(\eta_{00} s_{2}^{2} + \eta_{01} t_{2}^{2} + \eta_{02} n_{2}^{2} + \eta_{44} n_{2}^{2} + \eta_{55} t_{2}^{2}\right) + 2 t_{1} t_{2} \left(\eta_{01} s_{2}^{2} + \eta_{11} t_{2}^{2} + \eta_{12} n_{2}^{2} + \eta_{33} n_{2}^{2} + \eta_{55} s_{2}^{2}\right)\right) &amp; 2 n_{1} \left(\eta_{33} t_{2} \left(n_{1} t_{2} + n_{2} t_{1}\right) + \eta_{44} s_{2} \left(n_{1} s_{2} + n_{2} s_{1}\right) + 2 n_{2} \left(\eta_{02} s_{1} s_{2} + \eta_{12} t_{1} t_{2} + \eta_{22} n_{1} n_{2}\right)\right) + 2 s_{1} \left(\eta_{44} n_{2} \left(n_{1} s_{2} + n_{2} s_{1}\right) + \eta_{55} t_{2} \left(s_{1} t_{2} + s_{2} t_{1}\right) + 2 s_{2} \left(\eta_{00} s_{1} s_{2} + \eta_{01} t_{1} t_{2} + \eta_{02} n_{1} n_{2}\right)\right) + 2 t_{1} \left(\eta_{33} n_{2} \left(n_{1} t_{2} + n_{2} t_{1}\right) + \eta_{55} s_{2} \left(s_{1} t_{2} + s_{2} t_{1}\right) + 2 t_{2} \left(\eta_{01} s_{1} s_{2} + \eta_{11} t_{1} t_{2} + \eta_{12} n_{1} n_{2}\right)\right) &amp; 2 n_{1} \left(\eta_{33} t_{2} \left(n_{0} t_{2} + n_{2} t_{0}\right) + \eta_{44} s_{2} \left(n_{0} s_{2} + n_{2} s_{0}\right) + 2 n_{2} \left(\eta_{02} s_{0} s_{2} + \eta_{12} t_{0} t_{2} + \eta_{22} n_{0} n_{2}\right)\right) + 2 s_{1} \left(\eta_{44} n_{2} \left(n_{0} s_{2} + n_{2} s_{0}\right) + \eta_{55} t_{2} \left(s_{0} t_{2} + s_{2} t_{0}\right) + 2 s_{2} \left(\eta_{00} s_{0} s_{2} + \eta_{01} t_{0} t_{2} + \eta_{02} n_{0} n_{2}\right)\right) + 2 t_{1} \left(\eta_{33} n_{2} \left(n_{0} t_{2} + n_{2} t_{0}\right) + \eta_{55} s_{2} \left(s_{0} t_{2} + s_{2} t_{0}\right) + 2 t_{2} \left(\eta_{01} s_{0} s_{2} + \eta_{11} t_{0} t_{2} + \eta_{12} n_{0} n_{2}\right)\right) &amp; 2 n_{1} \left(\eta_{33} t_{2} \left(n_{0} t_{1} + n_{1} t_{0}\right) + \eta_{44} s_{2} \left(n_{0} s_{1} + n_{1} s_{0}\right) + 2 n_{2} \left(\eta_{02} s_{0} s_{1} + \eta_{12} t_{0} t_{1} + \eta_{22} n_{0} n_{1}\right)\right) + 2 s_{1} \left(\eta_{44} n_{2} \left(n_{0} s_{1} + n_{1} s_{0}\right) + \eta_{55} t_{2} \left(s_{0} t_{1} + s_{1} t_{0}\right) + 2 s_{2} \left(\eta_{00} s_{0} s_{1} + \eta_{01} t_{0} t_{1} + \eta_{02} n_{0} n_{1}\right)\right) + 2 t_{1} \left(\eta_{33} n_{2} \left(n_{0} t_{1} + n_{1} t_{0}\right) + \eta_{55} s_{2} \left(s_{0} t_{1} + s_{1} t_{0}\right) + 2 t_{2} \left(\eta_{01} s_{0} s_{1} + \eta_{11} t_{0} t_{1} + \eta_{12} n_{0} n_{1}\right)\right)\\\sqrt{2} \cdot \left(2 n_{0} \left(\eta_{33} n_{0} t_{0} t_{2} + \eta_{44} n_{0} s_{0} s_{2} + n_{2} \left(\eta_{02} s_{0}^{2} + \eta_{12} t_{0}^{2} + \eta_{22} n_{0}^{2}\right)\right) + 2 s_{0} \left(\eta_{44} n_{0} n_{2} s_{0} + \eta_{55} s_{0} t_{0} t_{2} + s_{2} \left(\eta_{00} s_{0}^{2} + \eta_{01} t_{0}^{2} + \eta_{02} n_{0}^{2}\right)\right) + 2 t_{0} \left(\eta_{33} n_{0} n_{2} t_{0} + \eta_{55} s_{0} s_{2} t_{0} + t_{2} \left(\eta_{01} s_{0}^{2} + \eta_{11} t_{0}^{2} + \eta_{12} n_{0}^{2}\right)\right)\right) &amp; \sqrt{2} \cdot \left(2 n_{0} \left(\eta_{33} n_{1} t_{1} t_{2} + \eta_{44} n_{1} s_{1} s_{2} + n_{2} \left(\eta_{02} s_{1}^{2} + \eta_{12} t_{1}^{2} + \eta_{22} n_{1}^{2}\right)\right) + 2 s_{0} \left(\eta_{44} n_{1} n_{2} s_{1} + \eta_{55} s_{1} t_{1} t_{2} + s_{2} \left(\eta_{00} s_{1}^{2} + \eta_{01} t_{1}^{2} + \eta_{02} n_{1}^{2}\right)\right) + 2 t_{0} \left(\eta_{33} n_{1} n_{2} t_{1} + \eta_{55} s_{1} s_{2} t_{1} + t_{2} \left(\eta_{01} s_{1}^{2} + \eta_{11} t_{1}^{2} + \eta_{12} n_{1}^{2}\right)\right)\right) &amp; \sqrt{2} \cdot \left(2 n_{0} n_{2} \left(\eta_{02} s_{2}^{2} + \eta_{12} t_{2}^{2} + \eta_{22} n_{2}^{2} + \eta_{33} t_{2}^{2} + \eta_{44} s_{2}^{2}\right) + 2 s_{0} s_{2} \left(\eta_{00} s_{2}^{2} + \eta_{01} t_{2}^{2} + \eta_{02} n_{2}^{2} + \eta_{44} n_{2}^{2} + \eta_{55} t_{2}^{2}\right) + 2 t_{0} t_{2} \left(\eta_{01} s_{2}^{2} + \eta_{11} t_{2}^{2} + \eta_{12} n_{2}^{2} + \eta_{33} n_{2}^{2} + \eta_{55} s_{2}^{2}\right)\right) &amp; 2 n_{0} \left(\eta_{33} t_{2} \left(n_{1} t_{2} + n_{2} t_{1}\right) + \eta_{44} s_{2} \left(n_{1} s_{2} + n_{2} s_{1}\right) + 2 n_{2} \left(\eta_{02} s_{1} s_{2} + \eta_{12} t_{1} t_{2} + \eta_{22} n_{1} n_{2}\right)\right) + 2 s_{0} \left(\eta_{44} n_{2} \left(n_{1} s_{2} + n_{2} s_{1}\right) + \eta_{55} t_{2} \left(s_{1} t_{2} + s_{2} t_{1}\right) + 2 s_{2} \left(\eta_{00} s_{1} s_{2} + \eta_{01} t_{1} t_{2} + \eta_{02} n_{1} n_{2}\right)\right) + 2 t_{0} \left(\eta_{33} n_{2} \left(n_{1} t_{2} + n_{2} t_{1}\right) + \eta_{55} s_{2} \left(s_{1} t_{2} + s_{2} t_{1}\right) + 2 t_{2} \left(\eta_{01} s_{1} s_{2} + \eta_{11} t_{1} t_{2} + \eta_{12} n_{1} n_{2}\right)\right) &amp; 2 n_{0} \left(\eta_{33} t_{2} \left(n_{0} t_{2} + n_{2} t_{0}\right) + \eta_{44} s_{2} \left(n_{0} s_{2} + n_{2} s_{0}\right) + 2 n_{2} \left(\eta_{02} s_{0} s_{2} + \eta_{12} t_{0} t_{2} + \eta_{22} n_{0} n_{2}\right)\right) + 2 s_{0} \left(\eta_{44} n_{2} \left(n_{0} s_{2} + n_{2} s_{0}\right) + \eta_{55} t_{2} \left(s_{0} t_{2} + s_{2} t_{0}\right) + 2 s_{2} \left(\eta_{00} s_{0} s_{2} + \eta_{01} t_{0} t_{2} + \eta_{02} n_{0} n_{2}\right)\right) + 2 t_{0} \left(\eta_{33} n_{2} \left(n_{0} t_{2} + n_{2} t_{0}\right) + \eta_{55} s_{2} \left(s_{0} t_{2} + s_{2} t_{0}\right) + 2 t_{2} \left(\eta_{01} s_{0} s_{2} + \eta_{11} t_{0} t_{2} + \eta_{12} n_{0} n_{2}\right)\right) &amp; 2 n_{0} \left(\eta_{33} t_{2} \left(n_{0} t_{1} + n_{1} t_{0}\right) + \eta_{44} s_{2} \left(n_{0} s_{1} + n_{1} s_{0}\right) + 2 n_{2} \left(\eta_{02} s_{0} s_{1} + \eta_{12} t_{0} t_{1} + \eta_{22} n_{0} n_{1}\right)\right) + 2 s_{0} \left(\eta_{44} n_{2} \left(n_{0} s_{1} + n_{1} s_{0}\right) + \eta_{55} t_{2} \left(s_{0} t_{1} + s_{1} t_{0}\right) + 2 s_{2} \left(\eta_{00} s_{0} s_{1} + \eta_{01} t_{0} t_{1} + \eta_{02} n_{0} n_{1}\right)\right) + 2 t_{0} \left(\eta_{33} n_{2} \left(n_{0} t_{1} + n_{1} t_{0}\right) + \eta_{55} s_{2} \left(s_{0} t_{1} + s_{1} t_{0}\right) + 2 t_{2} \left(\eta_{01} s_{0} s_{1} + \eta_{11} t_{0} t_{1} + \eta_{12} n_{0} n_{1}\right)\right)\\\sqrt{2} \cdot \left(2 n_{0} \left(\eta_{33} n_{0} t_{0} t_{1} + \eta_{44} n_{0} s_{0} s_{1} + n_{1} \left(\eta_{02} s_{0}^{2} + \eta_{12} t_{0}^{2} + \eta_{22} n_{0}^{2}\right)\right) + 2 s_{0} \left(\eta_{44} n_{0} n_{1} s_{0} + \eta_{55} s_{0} t_{0} t_{1} + s_{1} \left(\eta_{00} s_{0}^{2} + \eta_{01} t_{0}^{2} + \eta_{02} n_{0}^{2}\right)\right) + 2 t_{0} \left(\eta_{33} n_{0} n_{1} t_{0} + \eta_{55} s_{0} s_{1} t_{0} + t_{1} \left(\eta_{01} s_{0}^{2} + \eta_{11} t_{0}^{2} + \eta_{12} n_{0}^{2}\right)\right)\right) &amp; \sqrt{2} \cdot \left(2 n_{0} n_{1} \left(\eta_{02} s_{1}^{2} + \eta_{12} t_{1}^{2} + \eta_{22} n_{1}^{2} + \eta_{33} t_{1}^{2} + \eta_{44} s_{1}^{2}\right) + 2 s_{0} s_{1} \left(\eta_{00} s_{1}^{2} + \eta_{01} t_{1}^{2} + \eta_{02} n_{1}^{2} + \eta_{44} n_{1}^{2} + \eta_{55} t_{1}^{2}\right) + 2 t_{0} t_{1} \left(\eta_{01} s_{1}^{2} + \eta_{11} t_{1}^{2} + \eta_{12} n_{1}^{2} + \eta_{33} n_{1}^{2} + \eta_{55} s_{1}^{2}\right)\right) &amp; \sqrt{2} \cdot \left(2 n_{0} \left(\eta_{33} n_{2} t_{1} t_{2} + \eta_{44} n_{2} s_{1} s_{2} + n_{1} \left(\eta_{02} s_{2}^{2} + \eta_{12} t_{2}^{2} + \eta_{22} n_{2}^{2}\right)\right) + 2 s_{0} \left(\eta_{44} n_{1} n_{2} s_{2} + \eta_{55} s_{2} t_{1} t_{2} + s_{1} \left(\eta_{00} s_{2}^{2} + \eta_{01} t_{2}^{2} + \eta_{02} n_{2}^{2}\right)\right) + 2 t_{0} \left(\eta_{33} n_{1} n_{2} t_{2} + \eta_{55} s_{1} s_{2} t_{2} + t_{1} \left(\eta_{01} s_{2}^{2} + \eta_{11} t_{2}^{2} + \eta_{12} n_{2}^{2}\right)\right)\right) &amp; 2 n_{0} \left(\eta_{33} t_{1} \left(n_{1} t_{2} + n_{2} t_{1}\right) + \eta_{44} s_{1} \left(n_{1} s_{2} + n_{2} s_{1}\right) + 2 n_{1} \left(\eta_{02} s_{1} s_{2} + \eta_{12} t_{1} t_{2} + \eta_{22} n_{1} n_{2}\right)\right) + 2 s_{0} \left(\eta_{44} n_{1} \left(n_{1} s_{2} + n_{2} s_{1}\right) + \eta_{55} t_{1} \left(s_{1} t_{2} + s_{2} t_{1}\right) + 2 s_{1} \left(\eta_{00} s_{1} s_{2} + \eta_{01} t_{1} t_{2} + \eta_{02} n_{1} n_{2}\right)\right) + 2 t_{0} \left(\eta_{33} n_{1} \left(n_{1} t_{2} + n_{2} t_{1}\right) + \eta_{55} s_{1} \left(s_{1} t_{2} + s_{2} t_{1}\right) + 2 t_{1} \left(\eta_{01} s_{1} s_{2} + \eta_{11} t_{1} t_{2} + \eta_{12} n_{1} n_{2}\right)\right) &amp; 2 n_{0} \left(\eta_{33} t_{1} \left(n_{0} t_{2} + n_{2} t_{0}\right) + \eta_{44} s_{1} \left(n_{0} s_{2} + n_{2} s_{0}\right) + 2 n_{1} \left(\eta_{02} s_{0} s_{2} + \eta_{12} t_{0} t_{2} + \eta_{22} n_{0} n_{2}\right)\right) + 2 s_{0} \left(\eta_{44} n_{1} \left(n_{0} s_{2} + n_{2} s_{0}\right) + \eta_{55} t_{1} \left(s_{0} t_{2} + s_{2} t_{0}\right) + 2 s_{1} \left(\eta_{00} s_{0} s_{2} + \eta_{01} t_{0} t_{2} + \eta_{02} n_{0} n_{2}\right)\right) + 2 t_{0} \left(\eta_{33} n_{1} \left(n_{0} t_{2} + n_{2} t_{0}\right) + \eta_{55} s_{1} \left(s_{0} t_{2} + s_{2} t_{0}\right) + 2 t_{1} \left(\eta_{01} s_{0} s_{2} + \eta_{11} t_{0} t_{2} + \eta_{12} n_{0} n_{2}\right)\right) &amp; 2 n_{0} \left(\eta_{33} t_{1} \left(n_{0} t_{1} + n_{1} t_{0}\right) + \eta_{44} s_{1} \left(n_{0} s_{1} + n_{1} s_{0}\right) + 2 n_{1} \left(\eta_{02} s_{0} s_{1} + \eta_{12} t_{0} t_{1} + \eta_{22} n_{0} n_{1}\right)\right) + 2 s_{0} \left(\eta_{44} n_{1} \left(n_{0} s_{1} + n_{1} s_{0}\right) + \eta_{55} t_{1} \left(s_{0} t_{1} + s_{1} t_{0}\right) + 2 s_{1} \left(\eta_{00} s_{0} s_{1} + \eta_{01} t_{0} t_{1} + \eta_{02} n_{0} n_{1}\right)\right) + 2 t_{0} \left(\eta_{33} n_{1} \left(n_{0} t_{1} + n_{1} t_{0}\right) + \eta_{55} s_{1} \left(s_{0} t_{1} + s_{1} t_{0}\right) + 2 t_{1} \left(\eta_{01} s_{0} s_{1} + \eta_{11} t_{0} t_{1} + \eta_{12} n_{0} n_{1}\right)\right)\end{matrix}\right]\]</span></p>
+<p>In the Browaeys formulation, the orthorhombic part has two unique values (in the Voigt notation this gives three unique entries in the <span class="math inline">\(C_{IJ}\)</span> matrix). The canonical (Mandel) form is</p>
+<p><span class="math display">\[\left[\begin{matrix}2 \xi_{0} &amp; 0 &amp; 2 \xi_{1} &amp; 0 &amp; 0 &amp; 0\\0 &amp; - 2 \xi_{0} &amp; - 2 \xi_{1} &amp; 0 &amp; 0 &amp; 0\\2 \xi_{1} &amp; - 2 \xi_{1} &amp; 0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; - 2 \xi_{1} &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0 &amp; 2 \xi_{1} &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0\end{matrix}\right]\]</span></p>
+<p>The rotated form:</p>
+<p><span class="math display">\[\left[\begin{matrix}2 \eta_{00} s_{0}^{4} + 4 \eta_{01} s_{0}^{2} t_{0}^{2} + 4 \eta_{02} n_{0}^{2} s_{0}^{2} + 2 \eta_{11} t_{0}^{4} + 4 \eta_{12} n_{0}^{2} t_{0}^{2} + 2 \eta_{22} n_{0}^{4} + 4 \eta_{33} n_{0}^{2} t_{0}^{2} + 4 \eta_{44} n_{0}^{2} s_{0}^{2} + 4 \eta_{55} s_{0}^{2} t_{0}^{2} &amp; 2 n_{0} \left(\eta_{33} n_{1} t_{0} t_{1} + \eta_{44} n_{1} s_{0} s_{1} + n_{0} \left(\eta_{02} s_{1}^{2} + \eta_{12} t_{1}^{2} + \eta_{22} n_{1}^{2}\right)\right) + 2 s_{0} \left(\eta_{44} n_{0} n_{1} s_{1} + \eta_{55} s_{1} t_{0} t_{1} + s_{0} \left(\eta_{00} s_{1}^{2} + \eta_{01} t_{1}^{2} + \eta_{02} n_{1}^{2}\right)\right) + 2 t_{0} \left(\eta_{33} n_{0} n_{1} t_{1} + \eta_{55} s_{0} s_{1} t_{1} + t_{0} \left(\eta_{01} s_{1}^{2} + \eta_{11} t_{1}^{2} + \eta_{12} n_{1}^{2}\right)\right) &amp; 2 n_{0} \left(\eta_{33} n_{2} t_{0} t_{2} + \eta_{44} n_{2} s_{0} s_{2} + n_{0} \left(\eta_{02} s_{2}^{2} + \eta_{12} t_{2}^{2} + \eta_{22} n_{2}^{2}\right)\right) + 2 s_{0} \left(\eta_{44} n_{0} n_{2} s_{2} + \eta_{55} s_{2} t_{0} t_{2} + s_{0} \left(\eta_{00} s_{2}^{2} + \eta_{01} t_{2}^{2} + \eta_{02} n_{2}^{2}\right)\right) + 2 t_{0} \left(\eta_{33} n_{0} n_{2} t_{2} + \eta_{55} s_{0} s_{2} t_{2} + t_{0} \left(\eta_{01} s_{2}^{2} + \eta_{11} t_{2}^{2} + \eta_{12} n_{2}^{2}\right)\right) &amp; \sqrt{2} \left(n_{0} \left(\eta_{33} t_{0} \left(n_{1} t_{2} + n_{2} t_{1}\right) + \eta_{44} s_{0} \left(n_{1} s_{2} + n_{2} s_{1}\right) + 2 n_{0} \left(\eta_{02} s_{1} s_{2} + \eta_{12} t_{1} t_{2} + \eta_{22} n_{1} n_{2}\right)\right) + s_{0} \left(\eta_{44} n_{0} \left(n_{1} s_{2} + n_{2} s_{1}\right) + \eta_{55} t_{0} \left(s_{1} t_{2} + s_{2} t_{1}\right) + 2 s_{0} \left(\eta_{00} s_{1} s_{2} + \eta_{01} t_{1} t_{2} + \eta_{02} n_{1} n_{2}\right)\right) + t_{0} \left(\eta_{33} n_{0} \left(n_{1} t_{2} + n_{2} t_{1}\right) + \eta_{55} s_{0} \left(s_{1} t_{2} + s_{2} t_{1}\right) + 2 t_{0} \left(\eta_{01} s_{1} s_{2} + \eta_{11} t_{1} t_{2} + \eta_{12} n_{1} n_{2}\right)\right)\right) &amp; \sqrt{2} \left(n_{0} \left(\eta_{33} t_{0} \left(n_{0} t_{2} + n_{2} t_{0}\right) + \eta_{44} s_{0} \left(n_{0} s_{2} + n_{2} s_{0}\right) + 2 n_{0} \left(\eta_{02} s_{0} s_{2} + \eta_{12} t_{0} t_{2} + \eta_{22} n_{0} n_{2}\right)\right) + s_{0} \left(\eta_{44} n_{0} \left(n_{0} s_{2} + n_{2} s_{0}\right) + \eta_{55} t_{0} \left(s_{0} t_{2} + s_{2} t_{0}\right) + 2 s_{0} \left(\eta_{00} s_{0} s_{2} + \eta_{01} t_{0} t_{2} + \eta_{02} n_{0} n_{2}\right)\right) + t_{0} \left(\eta_{33} n_{0} \left(n_{0} t_{2} + n_{2} t_{0}\right) + \eta_{55} s_{0} \left(s_{0} t_{2} + s_{2} t_{0}\right) + 2 t_{0} \left(\eta_{01} s_{0} s_{2} + \eta_{11} t_{0} t_{2} + \eta_{12} n_{0} n_{2}\right)\right)\right) &amp; \sqrt{2} \left(n_{0} \left(\eta_{33} t_{0} \left(n_{0} t_{1} + n_{1} t_{0}\right) + \eta_{44} s_{0} \left(n_{0} s_{1} + n_{1} s_{0}\right) + 2 n_{0} \left(\eta_{02} s_{0} s_{1} + \eta_{12} t_{0} t_{1} + \eta_{22} n_{0} n_{1}\right)\right) + s_{0} \left(\eta_{44} n_{0} \left(n_{0} s_{1} + n_{1} s_{0}\right) + \eta_{55} t_{0} \left(s_{0} t_{1} + s_{1} t_{0}\right) + 2 s_{0} \left(\eta_{00} s_{0} s_{1} + \eta_{01} t_{0} t_{1} + \eta_{02} n_{0} n_{1}\right)\right) + t_{0} \left(\eta_{33} n_{0} \left(n_{0} t_{1} + n_{1} t_{0}\right) + \eta_{55} s_{0} \left(s_{0} t_{1} + s_{1} t_{0}\right) + 2 t_{0} \left(\eta_{01} s_{0} s_{1} + \eta_{11} t_{0} t_{1} + \eta_{12} n_{0} n_{1}\right)\right)\right)\\2 n_{1} \left(\eta_{33} n_{0} t_{0} t_{1} + \eta_{44} n_{0} s_{0} s_{1} + n_{1} \left(\eta_{02} s_{0}^{2} + \eta_{12} t_{0}^{2} + \eta_{22} n_{0}^{2}\right)\right) + 2 s_{1} \left(\eta_{44} n_{0} n_{1} s_{0} + \eta_{55} s_{0} t_{0} t_{1} + s_{1} \left(\eta_{00} s_{0}^{2} + \eta_{01} t_{0}^{2} + \eta_{02} n_{0}^{2}\right)\right) + 2 t_{1} \left(\eta_{33} n_{0} n_{1} t_{0} + \eta_{55} s_{0} s_{1} t_{0} + t_{1} \left(\eta_{01} s_{0}^{2} + \eta_{11} t_{0}^{2} + \eta_{12} n_{0}^{2}\right)\right) &amp; 2 \eta_{00} s_{1}^{4} + 4 \eta_{01} s_{1}^{2} t_{1}^{2} + 4 \eta_{02} n_{1}^{2} s_{1}^{2} + 2 \eta_{11} t_{1}^{4} + 4 \eta_{12} n_{1}^{2} t_{1}^{2} + 2 \eta_{22} n_{1}^{4} + 4 \eta_{33} n_{1}^{2} t_{1}^{2} + 4 \eta_{44} n_{1}^{2} s_{1}^{2} + 4 \eta_{55} s_{1}^{2} t_{1}^{2} &amp; 2 n_{1} \left(\eta_{33} n_{2} t_{1} t_{2} + \eta_{44} n_{2} s_{1} s_{2} + n_{1} \left(\eta_{02} s_{2}^{2} + \eta_{12} t_{2}^{2} + \eta_{22} n_{2}^{2}\right)\right) + 2 s_{1} \left(\eta_{44} n_{1} n_{2} s_{2} + \eta_{55} s_{2} t_{1} t_{2} + s_{1} \left(\eta_{00} s_{2}^{2} + \eta_{01} t_{2}^{2} + \eta_{02} n_{2}^{2}\right)\right) + 2 t_{1} \left(\eta_{33} n_{1} n_{2} t_{2} + \eta_{55} s_{1} s_{2} t_{2} + t_{1} \left(\eta_{01} s_{2}^{2} + \eta_{11} t_{2}^{2} + \eta_{12} n_{2}^{2}\right)\right) &amp; \sqrt{2} \left(n_{1} \left(\eta_{33} t_{1} \left(n_{1} t_{2} + n_{2} t_{1}\right) + \eta_{44} s_{1} \left(n_{1} s_{2} + n_{2} s_{1}\right) + 2 n_{1} \left(\eta_{02} s_{1} s_{2} + \eta_{12} t_{1} t_{2} + \eta_{22} n_{1} n_{2}\right)\right) + s_{1} \left(\eta_{44} n_{1} \left(n_{1} s_{2} + n_{2} s_{1}\right) + \eta_{55} t_{1} \left(s_{1} t_{2} + s_{2} t_{1}\right) + 2 s_{1} \left(\eta_{00} s_{1} s_{2} + \eta_{01} t_{1} t_{2} + \eta_{02} n_{1} n_{2}\right)\right) + t_{1} \left(\eta_{33} n_{1} \left(n_{1} t_{2} + n_{2} t_{1}\right) + \eta_{55} s_{1} \left(s_{1} t_{2} + s_{2} t_{1}\right) + 2 t_{1} \left(\eta_{01} s_{1} s_{2} + \eta_{11} t_{1} t_{2} + \eta_{12} n_{1} n_{2}\right)\right)\right) &amp; \sqrt{2} \left(n_{1} \left(\eta_{33} t_{1} \left(n_{0} t_{2} + n_{2} t_{0}\right) + \eta_{44} s_{1} \left(n_{0} s_{2} + n_{2} s_{0}\right) + 2 n_{1} \left(\eta_{02} s_{0} s_{2} + \eta_{12} t_{0} t_{2} + \eta_{22} n_{0} n_{2}\right)\right) + s_{1} \left(\eta_{44} n_{1} \left(n_{0} s_{2} + n_{2} s_{0}\right) + \eta_{55} t_{1} \left(s_{0} t_{2} + s_{2} t_{0}\right) + 2 s_{1} \left(\eta_{00} s_{0} s_{2} + \eta_{01} t_{0} t_{2} + \eta_{02} n_{0} n_{2}\right)\right) + t_{1} \left(\eta_{33} n_{1} \left(n_{0} t_{2} + n_{2} t_{0}\right) + \eta_{55} s_{1} \left(s_{0} t_{2} + s_{2} t_{0}\right) + 2 t_{1} \left(\eta_{01} s_{0} s_{2} + \eta_{11} t_{0} t_{2} + \eta_{12} n_{0} n_{2}\right)\right)\right) &amp; \sqrt{2} \left(n_{1} \left(\eta_{33} t_{1} \left(n_{0} t_{1} + n_{1} t_{0}\right) + \eta_{44} s_{1} \left(n_{0} s_{1} + n_{1} s_{0}\right) + 2 n_{1} \left(\eta_{02} s_{0} s_{1} + \eta_{12} t_{0} t_{1} + \eta_{22} n_{0} n_{1}\right)\right) + s_{1} \left(\eta_{44} n_{1} \left(n_{0} s_{1} + n_{1} s_{0}\right) + \eta_{55} t_{1} \left(s_{0} t_{1} + s_{1} t_{0}\right) + 2 s_{1} \left(\eta_{00} s_{0} s_{1} + \eta_{01} t_{0} t_{1} + \eta_{02} n_{0} n_{1}\right)\right) + t_{1} \left(\eta_{33} n_{1} \left(n_{0} t_{1} + n_{1} t_{0}\right) + \eta_{55} s_{1} \left(s_{0} t_{1} + s_{1} t_{0}\right) + 2 t_{1} \left(\eta_{01} s_{0} s_{1} + \eta_{11} t_{0} t_{1} + \eta_{12} n_{0} n_{1}\right)\right)\right)\\2 n_{2} \left(\eta_{33} n_{0} t_{0} t_{2} + \eta_{44} n_{0} s_{0} s_{2} + n_{2} \left(\eta_{02} s_{0}^{2} + \eta_{12} t_{0}^{2} + \eta_{22} n_{0}^{2}\right)\right) + 2 s_{2} \left(\eta_{44} n_{0} n_{2} s_{0} + \eta_{55} s_{0} t_{0} t_{2} + s_{2} \left(\eta_{00} s_{0}^{2} + \eta_{01} t_{0}^{2} + \eta_{02} n_{0}^{2}\right)\right) + 2 t_{2} \left(\eta_{33} n_{0} n_{2} t_{0} + \eta_{55} s_{0} s_{2} t_{0} + t_{2} \left(\eta_{01} s_{0}^{2} + \eta_{11} t_{0}^{2} + \eta_{12} n_{0}^{2}\right)\right) &amp; 2 n_{2} \left(\eta_{33} n_{1} t_{1} t_{2} + \eta_{44} n_{1} s_{1} s_{2} + n_{2} \left(\eta_{02} s_{1}^{2} + \eta_{12} t_{1}^{2} + \eta_{22} n_{1}^{2}\right)\right) + 2 s_{2} \left(\eta_{44} n_{1} n_{2} s_{1} + \eta_{55} s_{1} t_{1} t_{2} + s_{2} \left(\eta_{00} s_{1}^{2} + \eta_{01} t_{1}^{2} + \eta_{02} n_{1}^{2}\right)\right) + 2 t_{2} \left(\eta_{33} n_{1} n_{2} t_{1} + \eta_{55} s_{1} s_{2} t_{1} + t_{2} \left(\eta_{01} s_{1}^{2} + \eta_{11} t_{1}^{2} + \eta_{12} n_{1}^{2}\right)\right) &amp; 2 \eta_{00} s_{2}^{4} + 4 \eta_{01} s_{2}^{2} t_{2}^{2} + 4 \eta_{02} n_{2}^{2} s_{2}^{2} + 2 \eta_{11} t_{2}^{4} + 4 \eta_{12} n_{2}^{2} t_{2}^{2} + 2 \eta_{22} n_{2}^{4} + 4 \eta_{33} n_{2}^{2} t_{2}^{2} + 4 \eta_{44} n_{2}^{2} s_{2}^{2} + 4 \eta_{55} s_{2}^{2} t_{2}^{2} &amp; \sqrt{2} \left(n_{2} \left(\eta_{33} t_{2} \left(n_{1} t_{2} + n_{2} t_{1}\right) + \eta_{44} s_{2} \left(n_{1} s_{2} + n_{2} s_{1}\right) + 2 n_{2} \left(\eta_{02} s_{1} s_{2} + \eta_{12} t_{1} t_{2} + \eta_{22} n_{1} n_{2}\right)\right) + s_{2} \left(\eta_{44} n_{2} \left(n_{1} s_{2} + n_{2} s_{1}\right) + \eta_{55} t_{2} \left(s_{1} t_{2} + s_{2} t_{1}\right) + 2 s_{2} \left(\eta_{00} s_{1} s_{2} + \eta_{01} t_{1} t_{2} + \eta_{02} n_{1} n_{2}\right)\right) + t_{2} \left(\eta_{33} n_{2} \left(n_{1} t_{2} + n_{2} t_{1}\right) + \eta_{55} s_{2} \left(s_{1} t_{2} + s_{2} t_{1}\right) + 2 t_{2} \left(\eta_{01} s_{1} s_{2} + \eta_{11} t_{1} t_{2} + \eta_{12} n_{1} n_{2}\right)\right)\right) &amp; \sqrt{2} \left(n_{2} \left(\eta_{33} t_{2} \left(n_{0} t_{2} + n_{2} t_{0}\right) + \eta_{44} s_{2} \left(n_{0} s_{2} + n_{2} s_{0}\right) + 2 n_{2} \left(\eta_{02} s_{0} s_{2} + \eta_{12} t_{0} t_{2} + \eta_{22} n_{0} n_{2}\right)\right) + s_{2} \left(\eta_{44} n_{2} \left(n_{0} s_{2} + n_{2} s_{0}\right) + \eta_{55} t_{2} \left(s_{0} t_{2} + s_{2} t_{0}\right) + 2 s_{2} \left(\eta_{00} s_{0} s_{2} + \eta_{01} t_{0} t_{2} + \eta_{02} n_{0} n_{2}\right)\right) + t_{2} \left(\eta_{33} n_{2} \left(n_{0} t_{2} + n_{2} t_{0}\right) + \eta_{55} s_{2} \left(s_{0} t_{2} + s_{2} t_{0}\right) + 2 t_{2} \left(\eta_{01} s_{0} s_{2} + \eta_{11} t_{0} t_{2} + \eta_{12} n_{0} n_{2}\right)\right)\right) &amp; \sqrt{2} \left(n_{2} \left(\eta_{33} t_{2} \left(n_{0} t_{1} + n_{1} t_{0}\right) + \eta_{44} s_{2} \left(n_{0} s_{1} + n_{1} s_{0}\right) + 2 n_{2} \left(\eta_{02} s_{0} s_{1} + \eta_{12} t_{0} t_{1} + \eta_{22} n_{0} n_{1}\right)\right) + s_{2} \left(\eta_{44} n_{2} \left(n_{0} s_{1} + n_{1} s_{0}\right) + \eta_{55} t_{2} \left(s_{0} t_{1} + s_{1} t_{0}\right) + 2 s_{2} \left(\eta_{00} s_{0} s_{1} + \eta_{01} t_{0} t_{1} + \eta_{02} n_{0} n_{1}\right)\right) + t_{2} \left(\eta_{33} n_{2} \left(n_{0} t_{1} + n_{1} t_{0}\right) + \eta_{55} s_{2} \left(s_{0} t_{1} + s_{1} t_{0}\right) + 2 t_{2} \left(\eta_{01} s_{0} s_{1} + \eta_{11} t_{0} t_{1} + \eta_{12} n_{0} n_{1}\right)\right)\right)\\\sqrt{2} \cdot \left(2 n_{1} \left(\eta_{33} n_{0} t_{0} t_{2} + \eta_{44} n_{0} s_{0} s_{2} + n_{2} \left(\eta_{02} s_{0}^{2} + \eta_{12} t_{0}^{2} + \eta_{22} n_{0}^{2}\right)\right) + 2 s_{1} \left(\eta_{44} n_{0} n_{2} s_{0} + \eta_{55} s_{0} t_{0} t_{2} + s_{2} \left(\eta_{00} s_{0}^{2} + \eta_{01} t_{0}^{2} + \eta_{02} n_{0}^{2}\right)\right) + 2 t_{1} \left(\eta_{33} n_{0} n_{2} t_{0} + \eta_{55} s_{0} s_{2} t_{0} + t_{2} \left(\eta_{01} s_{0}^{2} + \eta_{11} t_{0}^{2} + \eta_{12} n_{0}^{2}\right)\right)\right) &amp; \sqrt{2} \cdot \left(2 n_{1} \left(\eta_{33} n_{1} t_{1} t_{2} + \eta_{44} n_{1} s_{1} s_{2} + n_{2} \left(\eta_{02} s_{1}^{2} + \eta_{12} t_{1}^{2} + \eta_{22} n_{1}^{2}\right)\right) + 2 s_{1} \left(\eta_{44} n_{1} n_{2} s_{1} + \eta_{55} s_{1} t_{1} t_{2} + s_{2} \left(\eta_{00} s_{1}^{2} + \eta_{01} t_{1}^{2} + \eta_{02} n_{1}^{2}\right)\right) + 2 t_{1} \left(\eta_{33} n_{1} n_{2} t_{1} + \eta_{55} s_{1} s_{2} t_{1} + t_{2} \left(\eta_{01} s_{1}^{2} + \eta_{11} t_{1}^{2} + \eta_{12} n_{1}^{2}\right)\right)\right) &amp; \sqrt{2} \cdot \left(2 n_{1} n_{2} \left(\eta_{02} s_{2}^{2} + \eta_{12} t_{2}^{2} + \eta_{22} n_{2}^{2} + \eta_{33} t_{2}^{2} + \eta_{44} s_{2}^{2}\right) + 2 s_{1} s_{2} \left(\eta_{00} s_{2}^{2} + \eta_{01} t_{2}^{2} + \eta_{02} n_{2}^{2} + \eta_{44} n_{2}^{2} + \eta_{55} t_{2}^{2}\right) + 2 t_{1} t_{2} \left(\eta_{01} s_{2}^{2} + \eta_{11} t_{2}^{2} + \eta_{12} n_{2}^{2} + \eta_{33} n_{2}^{2} + \eta_{55} s_{2}^{2}\right)\right) &amp; 2 n_{1} \left(\eta_{33} t_{2} \left(n_{1} t_{2} + n_{2} t_{1}\right) + \eta_{44} s_{2} \left(n_{1} s_{2} + n_{2} s_{1}\right) + 2 n_{2} \left(\eta_{02} s_{1} s_{2} + \eta_{12} t_{1} t_{2} + \eta_{22} n_{1} n_{2}\right)\right) + 2 s_{1} \left(\eta_{44} n_{2} \left(n_{1} s_{2} + n_{2} s_{1}\right) + \eta_{55} t_{2} \left(s_{1} t_{2} + s_{2} t_{1}\right) + 2 s_{2} \left(\eta_{00} s_{1} s_{2} + \eta_{01} t_{1} t_{2} + \eta_{02} n_{1} n_{2}\right)\right) + 2 t_{1} \left(\eta_{33} n_{2} \left(n_{1} t_{2} + n_{2} t_{1}\right) + \eta_{55} s_{2} \left(s_{1} t_{2} + s_{2} t_{1}\right) + 2 t_{2} \left(\eta_{01} s_{1} s_{2} + \eta_{11} t_{1} t_{2} + \eta_{12} n_{1} n_{2}\right)\right) &amp; 2 n_{1} \left(\eta_{33} t_{2} \left(n_{0} t_{2} + n_{2} t_{0}\right) + \eta_{44} s_{2} \left(n_{0} s_{2} + n_{2} s_{0}\right) + 2 n_{2} \left(\eta_{02} s_{0} s_{2} + \eta_{12} t_{0} t_{2} + \eta_{22} n_{0} n_{2}\right)\right) + 2 s_{1} \left(\eta_{44} n_{2} \left(n_{0} s_{2} + n_{2} s_{0}\right) + \eta_{55} t_{2} \left(s_{0} t_{2} + s_{2} t_{0}\right) + 2 s_{2} \left(\eta_{00} s_{0} s_{2} + \eta_{01} t_{0} t_{2} + \eta_{02} n_{0} n_{2}\right)\right) + 2 t_{1} \left(\eta_{33} n_{2} \left(n_{0} t_{2} + n_{2} t_{0}\right) + \eta_{55} s_{2} \left(s_{0} t_{2} + s_{2} t_{0}\right) + 2 t_{2} \left(\eta_{01} s_{0} s_{2} + \eta_{11} t_{0} t_{2} + \eta_{12} n_{0} n_{2}\right)\right) &amp; 2 n_{1} \left(\eta_{33} t_{2} \left(n_{0} t_{1} + n_{1} t_{0}\right) + \eta_{44} s_{2} \left(n_{0} s_{1} + n_{1} s_{0}\right) + 2 n_{2} \left(\eta_{02} s_{0} s_{1} + \eta_{12} t_{0} t_{1} + \eta_{22} n_{0} n_{1}\right)\right) + 2 s_{1} \left(\eta_{44} n_{2} \left(n_{0} s_{1} + n_{1} s_{0}\right) + \eta_{55} t_{2} \left(s_{0} t_{1} + s_{1} t_{0}\right) + 2 s_{2} \left(\eta_{00} s_{0} s_{1} + \eta_{01} t_{0} t_{1} + \eta_{02} n_{0} n_{1}\right)\right) + 2 t_{1} \left(\eta_{33} n_{2} \left(n_{0} t_{1} + n_{1} t_{0}\right) + \eta_{55} s_{2} \left(s_{0} t_{1} + s_{1} t_{0}\right) + 2 t_{2} \left(\eta_{01} s_{0} s_{1} + \eta_{11} t_{0} t_{1} + \eta_{12} n_{0} n_{1}\right)\right)\\\sqrt{2} \cdot \left(2 n_{0} \left(\eta_{33} n_{0} t_{0} t_{2} + \eta_{44} n_{0} s_{0} s_{2} + n_{2} \left(\eta_{02} s_{0}^{2} + \eta_{12} t_{0}^{2} + \eta_{22} n_{0}^{2}\right)\right) + 2 s_{0} \left(\eta_{44} n_{0} n_{2} s_{0} + \eta_{55} s_{0} t_{0} t_{2} + s_{2} \left(\eta_{00} s_{0}^{2} + \eta_{01} t_{0}^{2} + \eta_{02} n_{0}^{2}\right)\right) + 2 t_{0} \left(\eta_{33} n_{0} n_{2} t_{0} + \eta_{55} s_{0} s_{2} t_{0} + t_{2} \left(\eta_{01} s_{0}^{2} + \eta_{11} t_{0}^{2} + \eta_{12} n_{0}^{2}\right)\right)\right) &amp; \sqrt{2} \cdot \left(2 n_{0} \left(\eta_{33} n_{1} t_{1} t_{2} + \eta_{44} n_{1} s_{1} s_{2} + n_{2} \left(\eta_{02} s_{1}^{2} + \eta_{12} t_{1}^{2} + \eta_{22} n_{1}^{2}\right)\right) + 2 s_{0} \left(\eta_{44} n_{1} n_{2} s_{1} + \eta_{55} s_{1} t_{1} t_{2} + s_{2} \left(\eta_{00} s_{1}^{2} + \eta_{01} t_{1}^{2} + \eta_{02} n_{1}^{2}\right)\right) + 2 t_{0} \left(\eta_{33} n_{1} n_{2} t_{1} + \eta_{55} s_{1} s_{2} t_{1} + t_{2} \left(\eta_{01} s_{1}^{2} + \eta_{11} t_{1}^{2} + \eta_{12} n_{1}^{2}\right)\right)\right) &amp; \sqrt{2} \cdot \left(2 n_{0} n_{2} \left(\eta_{02} s_{2}^{2} + \eta_{12} t_{2}^{2} + \eta_{22} n_{2}^{2} + \eta_{33} t_{2}^{2} + \eta_{44} s_{2}^{2}\right) + 2 s_{0} s_{2} \left(\eta_{00} s_{2}^{2} + \eta_{01} t_{2}^{2} + \eta_{02} n_{2}^{2} + \eta_{44} n_{2}^{2} + \eta_{55} t_{2}^{2}\right) + 2 t_{0} t_{2} \left(\eta_{01} s_{2}^{2} + \eta_{11} t_{2}^{2} + \eta_{12} n_{2}^{2} + \eta_{33} n_{2}^{2} + \eta_{55} s_{2}^{2}\right)\right) &amp; 2 n_{0} \left(\eta_{33} t_{2} \left(n_{1} t_{2} + n_{2} t_{1}\right) + \eta_{44} s_{2} \left(n_{1} s_{2} + n_{2} s_{1}\right) + 2 n_{2} \left(\eta_{02} s_{1} s_{2} + \eta_{12} t_{1} t_{2} + \eta_{22} n_{1} n_{2}\right)\right) + 2 s_{0} \left(\eta_{44} n_{2} \left(n_{1} s_{2} + n_{2} s_{1}\right) + \eta_{55} t_{2} \left(s_{1} t_{2} + s_{2} t_{1}\right) + 2 s_{2} \left(\eta_{00} s_{1} s_{2} + \eta_{01} t_{1} t_{2} + \eta_{02} n_{1} n_{2}\right)\right) + 2 t_{0} \left(\eta_{33} n_{2} \left(n_{1} t_{2} + n_{2} t_{1}\right) + \eta_{55} s_{2} \left(s_{1} t_{2} + s_{2} t_{1}\right) + 2 t_{2} \left(\eta_{01} s_{1} s_{2} + \eta_{11} t_{1} t_{2} + \eta_{12} n_{1} n_{2}\right)\right) &amp; 2 n_{0} \left(\eta_{33} t_{2} \left(n_{0} t_{2} + n_{2} t_{0}\right) + \eta_{44} s_{2} \left(n_{0} s_{2} + n_{2} s_{0}\right) + 2 n_{2} \left(\eta_{02} s_{0} s_{2} + \eta_{12} t_{0} t_{2} + \eta_{22} n_{0} n_{2}\right)\right) + 2 s_{0} \left(\eta_{44} n_{2} \left(n_{0} s_{2} + n_{2} s_{0}\right) + \eta_{55} t_{2} \left(s_{0} t_{2} + s_{2} t_{0}\right) + 2 s_{2} \left(\eta_{00} s_{0} s_{2} + \eta_{01} t_{0} t_{2} + \eta_{02} n_{0} n_{2}\right)\right) + 2 t_{0} \left(\eta_{33} n_{2} \left(n_{0} t_{2} + n_{2} t_{0}\right) + \eta_{55} s_{2} \left(s_{0} t_{2} + s_{2} t_{0}\right) + 2 t_{2} \left(\eta_{01} s_{0} s_{2} + \eta_{11} t_{0} t_{2} + \eta_{12} n_{0} n_{2}\right)\right) &amp; 2 n_{0} \left(\eta_{33} t_{2} \left(n_{0} t_{1} + n_{1} t_{0}\right) + \eta_{44} s_{2} \left(n_{0} s_{1} + n_{1} s_{0}\right) + 2 n_{2} \left(\eta_{02} s_{0} s_{1} + \eta_{12} t_{0} t_{1} + \eta_{22} n_{0} n_{1}\right)\right) + 2 s_{0} \left(\eta_{44} n_{2} \left(n_{0} s_{1} + n_{1} s_{0}\right) + \eta_{55} t_{2} \left(s_{0} t_{1} + s_{1} t_{0}\right) + 2 s_{2} \left(\eta_{00} s_{0} s_{1} + \eta_{01} t_{0} t_{1} + \eta_{02} n_{0} n_{1}\right)\right) + 2 t_{0} \left(\eta_{33} n_{2} \left(n_{0} t_{1} + n_{1} t_{0}\right) + \eta_{55} s_{2} \left(s_{0} t_{1} + s_{1} t_{0}\right) + 2 t_{2} \left(\eta_{01} s_{0} s_{1} + \eta_{11} t_{0} t_{1} + \eta_{12} n_{0} n_{1}\right)\right)\\\sqrt{2} \cdot \left(2 n_{0} \left(\eta_{33} n_{0} t_{0} t_{1} + \eta_{44} n_{0} s_{0} s_{1} + n_{1} \left(\eta_{02} s_{0}^{2} + \eta_{12} t_{0}^{2} + \eta_{22} n_{0}^{2}\right)\right) + 2 s_{0} \left(\eta_{44} n_{0} n_{1} s_{0} + \eta_{55} s_{0} t_{0} t_{1} + s_{1} \left(\eta_{00} s_{0}^{2} + \eta_{01} t_{0}^{2} + \eta_{02} n_{0}^{2}\right)\right) + 2 t_{0} \left(\eta_{33} n_{0} n_{1} t_{0} + \eta_{55} s_{0} s_{1} t_{0} + t_{1} \left(\eta_{01} s_{0}^{2} + \eta_{11} t_{0}^{2} + \eta_{12} n_{0}^{2}\right)\right)\right) &amp; \sqrt{2} \cdot \left(2 n_{0} n_{1} \left(\eta_{02} s_{1}^{2} + \eta_{12} t_{1}^{2} + \eta_{22} n_{1}^{2} + \eta_{33} t_{1}^{2} + \eta_{44} s_{1}^{2}\right) + 2 s_{0} s_{1} \left(\eta_{00} s_{1}^{2} + \eta_{01} t_{1}^{2} + \eta_{02} n_{1}^{2} + \eta_{44} n_{1}^{2} + \eta_{55} t_{1}^{2}\right) + 2 t_{0} t_{1} \left(\eta_{01} s_{1}^{2} + \eta_{11} t_{1}^{2} + \eta_{12} n_{1}^{2} + \eta_{33} n_{1}^{2} + \eta_{55} s_{1}^{2}\right)\right) &amp; \sqrt{2} \cdot \left(2 n_{0} \left(\eta_{33} n_{2} t_{1} t_{2} + \eta_{44} n_{2} s_{1} s_{2} + n_{1} \left(\eta_{02} s_{2}^{2} + \eta_{12} t_{2}^{2} + \eta_{22} n_{2}^{2}\right)\right) + 2 s_{0} \left(\eta_{44} n_{1} n_{2} s_{2} + \eta_{55} s_{2} t_{1} t_{2} + s_{1} \left(\eta_{00} s_{2}^{2} + \eta_{01} t_{2}^{2} + \eta_{02} n_{2}^{2}\right)\right) + 2 t_{0} \left(\eta_{33} n_{1} n_{2} t_{2} + \eta_{55} s_{1} s_{2} t_{2} + t_{1} \left(\eta_{01} s_{2}^{2} + \eta_{11} t_{2}^{2} + \eta_{12} n_{2}^{2}\right)\right)\right) &amp; 2 n_{0} \left(\eta_{33} t_{1} \left(n_{1} t_{2} + n_{2} t_{1}\right) + \eta_{44} s_{1} \left(n_{1} s_{2} + n_{2} s_{1}\right) + 2 n_{1} \left(\eta_{02} s_{1} s_{2} + \eta_{12} t_{1} t_{2} + \eta_{22} n_{1} n_{2}\right)\right) + 2 s_{0} \left(\eta_{44} n_{1} \left(n_{1} s_{2} + n_{2} s_{1}\right) + \eta_{55} t_{1} \left(s_{1} t_{2} + s_{2} t_{1}\right) + 2 s_{1} \left(\eta_{00} s_{1} s_{2} + \eta_{01} t_{1} t_{2} + \eta_{02} n_{1} n_{2}\right)\right) + 2 t_{0} \left(\eta_{33} n_{1} \left(n_{1} t_{2} + n_{2} t_{1}\right) + \eta_{55} s_{1} \left(s_{1} t_{2} + s_{2} t_{1}\right) + 2 t_{1} \left(\eta_{01} s_{1} s_{2} + \eta_{11} t_{1} t_{2} + \eta_{12} n_{1} n_{2}\right)\right) &amp; 2 n_{0} \left(\eta_{33} t_{1} \left(n_{0} t_{2} + n_{2} t_{0}\right) + \eta_{44} s_{1} \left(n_{0} s_{2} + n_{2} s_{0}\right) + 2 n_{1} \left(\eta_{02} s_{0} s_{2} + \eta_{12} t_{0} t_{2} + \eta_{22} n_{0} n_{2}\right)\right) + 2 s_{0} \left(\eta_{44} n_{1} \left(n_{0} s_{2} + n_{2} s_{0}\right) + \eta_{55} t_{1} \left(s_{0} t_{2} + s_{2} t_{0}\right) + 2 s_{1} \left(\eta_{00} s_{0} s_{2} + \eta_{01} t_{0} t_{2} + \eta_{02} n_{0} n_{2}\right)\right) + 2 t_{0} \left(\eta_{33} n_{1} \left(n_{0} t_{2} + n_{2} t_{0}\right) + \eta_{55} s_{1} \left(s_{0} t_{2} + s_{2} t_{0}\right) + 2 t_{1} \left(\eta_{01} s_{0} s_{2} + \eta_{11} t_{0} t_{2} + \eta_{12} n_{0} n_{2}\right)\right) &amp; 2 n_{0} \left(\eta_{33} t_{1} \left(n_{0} t_{1} + n_{1} t_{0}\right) + \eta_{44} s_{1} \left(n_{0} s_{1} + n_{1} s_{0}\right) + 2 n_{1} \left(\eta_{02} s_{0} s_{1} + \eta_{12} t_{0} t_{1} + \eta_{22} n_{0} n_{1}\right)\right) + 2 s_{0} \left(\eta_{44} n_{1} \left(n_{0} s_{1} + n_{1} s_{0}\right) + \eta_{55} t_{1} \left(s_{0} t_{1} + s_{1} t_{0}\right) + 2 s_{1} \left(\eta_{00} s_{0} s_{1} + \eta_{01} t_{0} t_{1} + \eta_{02} n_{0} n_{1}\right)\right) + 2 t_{0} \left(\eta_{33} n_{1} \left(n_{0} t_{1} + n_{1} t_{0}\right) + \eta_{55} s_{1} \left(s_{0} t_{1} + s_{1} t_{0}\right) + 2 t_{1} \left(\eta_{01} s_{0} s_{1} + \eta_{11} t_{0} t_{1} + \eta_{12} n_{0} n_{1}\right)\right)\end{matrix}\right]
+\]</span></p>
+<p>The python code for this is:</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Underworld python script">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Underworld python script
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">## I can't see much benefit in expanding the full orthorhombic model</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">## in this way - keeping the rotations separated makes more sense.</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>eta_00 <span class="op">=</span> sympy.symbols(<span class="vs">r"\eta_00"</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>eta_11 <span class="op">=</span> sympy.symbols(<span class="vs">r"\eta_11"</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>eta_22 <span class="op">=</span> sympy.symbols(<span class="vs">r"\eta_22"</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>eta_33 <span class="op">=</span> sympy.symbols(<span class="vs">r"\eta_33"</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>eta_44 <span class="op">=</span> sympy.symbols(<span class="vs">r"\eta_44"</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>eta_55 <span class="op">=</span> sympy.symbols(<span class="vs">r"\eta_55"</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>eta_01 <span class="op">=</span> sympy.symbols(<span class="vs">r"\eta_01"</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>eta_02 <span class="op">=</span> sympy.symbols(<span class="vs">r"\eta_02"</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>eta_12 <span class="op">=</span> sympy.symbols(<span class="vs">r"\eta_12"</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>I_ijkl <span class="op">=</span> uw.maths.tensor.rank4_identity(<span class="dv">3</span>) <span class="op">*</span> <span class="dv">0</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>C_IJm_ORTHO <span class="op">=</span> uw.maths.tensor.rank4_to_mandel(I_ijkl, <span class="dv">3</span>)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>C_IJm_ORTHO[<span class="dv">0</span>,<span class="dv">0</span>] <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>eta_00</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>C_IJm_ORTHO[<span class="dv">1</span>,<span class="dv">1</span>] <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>eta_11</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>C_IJm_ORTHO[<span class="dv">2</span>,<span class="dv">2</span>] <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>eta_22</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>C_IJm_ORTHO[<span class="dv">3</span>,<span class="dv">3</span>] <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>eta_33  <span class="co"># yz</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>C_IJm_ORTHO[<span class="dv">4</span>,<span class="dv">4</span>] <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>eta_44  <span class="co"># xz</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>C_IJm_ORTHO[<span class="dv">5</span>,<span class="dv">5</span>] <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>eta_55  <span class="co"># xy</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>C_IJm_ORTHO[<span class="dv">0</span>,<span class="dv">1</span>] <span class="op">=</span> C_IJm_ORTHO[<span class="dv">1</span>,<span class="dv">0</span>] <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>eta_01</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>C_IJm_ORTHO[<span class="dv">0</span>,<span class="dv">2</span>] <span class="op">=</span> C_IJm_ORTHO[<span class="dv">2</span>,<span class="dv">0</span>] <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>eta_02</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>C_IJm_ORTHO[<span class="dv">1</span>,<span class="dv">2</span>] <span class="op">=</span> C_IJm_ORTHO[<span class="dv">2</span>,<span class="dv">1</span>] <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>eta_12</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>C_ijkl_ORTHO <span class="op">=</span> uw.maths.tensor.mandel_to_rank4(C_IJm_ORTHO, <span class="dv">3</span>)</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>C_IJv_ORTHO <span class="op">=</span> sympy.simplify(uw.maths.tensor.rank4_to_voigt(C_ijkl_ORTHO, <span class="dv">3</span>))</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>display(C_IJv_ORTHO)</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Rotation: Use 3 orthogonal unit vectors to define cannonical orientation</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> sympy.Matrix(sympy.symarray(<span class="st">"n"</span>,(<span class="dv">3</span>,)))</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> sympy.Matrix(sympy.symarray(<span class="st">"s"</span>,(<span class="dv">3</span>,)))</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> sympy.Matrix(sympy.symarray(<span class="st">"t"</span>,(<span class="dv">3</span>,)))</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a><span class="co"># This would work but is less clear in terms of notation</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a><span class="co"># t = -mesh3.vector.cross(n,s).T # complete the coordinate triad</span></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>Rx <span class="op">=</span> sympy.BlockMatrix((s,t,n)).as_explicit()</span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>display(Rx)</span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>C_ijkl_ORTHO <span class="op">=</span> uw.maths.tensor.mandel_to_rank4(C_IJm_ORTHO, <span class="dv">3</span>)</span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>C_ijkl_ORTHO_R <span class="op">=</span> sympy.simplify(uw.maths.tensor.tensor_rotation(Rx, C_ijkl_ORTHO))</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>uw.maths.tensor.rank4_to_mandel(C_ijkl_ORTHO_R, <span class="dv">3</span>)</span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a><span class="co"># print(sympy.latex(uw.maths.tensor.rank4_to_mandel(C_ijkl_ORTHO_R, 3)))</span></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>xi_0 <span class="op">=</span> sympy.symbols(<span class="vs">r"\xi_0"</span>)</span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>xi_1 <span class="op">=</span> sympy.symbols(<span class="vs">r"\xi_0"</span>)</span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>I_ijkl <span class="op">=</span> uw.maths.tensor.rank4_identity(<span class="dv">3</span>) <span class="op">*</span> <span class="dv">0</span></span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>C_IJm_BC <span class="op">=</span> uw.maths.tensor.rank4_to_mandel(I_ijkl, <span class="dv">3</span>)</span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>C_IJm_BC[<span class="dv">0</span>,<span class="dv">0</span>] <span class="op">=</span>  <span class="dv">2</span><span class="op">*</span>xi_0</span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>C_IJm_BC[<span class="dv">1</span>,<span class="dv">1</span>] <span class="op">=</span> <span class="op">-</span><span class="dv">2</span><span class="op">*</span>xi_0</span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>C_IJm_BC[<span class="dv">3</span>,<span class="dv">3</span>] <span class="op">=</span> <span class="op">-</span><span class="dv">2</span><span class="op">*</span>xi_1  <span class="co"># yz</span></span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>C_IJm_BC[<span class="dv">4</span>,<span class="dv">4</span>] <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>xi_1  <span class="co"># xz</span></span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a>C_IJm_BC[<span class="dv">5</span>,<span class="dv">5</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>C_IJm_BC[<span class="dv">0</span>,<span class="dv">2</span>] <span class="op">=</span> C_IJm_BC[<span class="dv">2</span>,<span class="dv">0</span>] <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>xi_1</span>
+<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>C_IJm_BC[<span class="dv">1</span>,<span class="dv">2</span>] <span class="op">=</span> C_IJm_BC[<span class="dv">2</span>,<span class="dv">1</span>] <span class="op">=</span> <span class="op">-</span><span class="dv">2</span><span class="op">*</span>xi_1</span>
+<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>C_ijkl_BC <span class="op">=</span> uw.maths.tensor.mandel_to_rank4(C_IJm_BC, <span class="dv">3</span>)</span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a>C_IJv_BC <span class="op">=</span> sympy.simplify(uw.maths.tensor.rank4_to_voigt(C_ijkl_BC, <span class="dv">3</span>))</span>
+<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a><span class="co"># print(sympy.latex(C_IJm_BC))</span></span>
+<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a>C_IJv_BC</span>
+<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a><span class="co"># Rotation by Rx</span></span>
+<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a>C_ijkl_BC <span class="op">=</span> uw.maths.tensor.mandel_to_rank4(C_IJm_BC, <span class="dv">3</span>)</span>
+<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a>C_ijkl_BC_R <span class="op">=</span> sympy.simplify(uw.maths.tensor.tensor_rotation(Rx, C_ijkl_ORTHO))</span>
+<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a>uw.maths.tensor.rank4_to_mandel(C_ijkl_BC_R, <span class="dv">3</span>)</span>
+<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a><span class="co"># print(sympy.latex(uw.maths.tensor.rank4_to_mandel(C_ijkl_BC_R, 3)))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-nyePhysicalPropertiesCrystals1984" class="csl-entry" role="listitem">
+Nye, J. F. 1984. <em>Physical Properties of Crystals: Their Representation by Tensors and Matrices</em>. 1st published in pbk. with corrections, 1984. <span>Oxford [Oxfordshire] : New York</span>: <span>Clarendon Press ; Oxford University Press</span>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./ConstitutiveModels_Introduction.html" class="pagination-link" aria-label="Underworld 3: Constitutive Models">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Underworld 3: Constitutive Models</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
