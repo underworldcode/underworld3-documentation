@@ -24,7 +24,6 @@ import sympy
 
 options = PETSc.Options()
 
-# options.getAll()
 # -
 meshball = uw.meshing.Annulus(
     radiusOuter=1.0, radiusInner=0.5, cellSize=0.2, refinement=1, qdegree=3
@@ -186,6 +185,9 @@ timing.start()
 delta_t = 0.001
 
 adv_diff.solve(timestep=delta_t, verbose=False, _force_setup=False)
+# -
+
+
 
 # +
 # check the mesh if in a notebook / serial
@@ -221,6 +223,9 @@ if uw.mpi.size == 1:
     pl.remove_scalar_bar("mag")
 
     pl.show()
+# -
+
+
 
 # +
 # Advection/diffusion model / update in time

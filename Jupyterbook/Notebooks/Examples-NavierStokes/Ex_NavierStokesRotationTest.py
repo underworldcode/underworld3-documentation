@@ -23,35 +23,38 @@ nest_asyncio.apply()
 
 
 # +
-import petsc4py
-from petsc4py import PETSc
-
 import underworld3 as uw
 from underworld3.systems import Stokes
 from underworld3.systems import NavierStokesSLCN
-
 from underworld3 import function
+
 
 import numpy as np
 import sympy
-
 
 # +
 # Parameters that define the notebook
 # These can be set when launching the script as
 # mpirun python3 scriptname -uw_resolution=0.1 etc
 
-resolution = uw.options.getInt("model_resolution", default=25)
+resolution = uw.options.getInt("model_resolution", default=10)
 refinement = uw.options.getInt("model_refinement", default=0)
-maxsteps = uw.options.getInt("max_steps", default=1000)
+maxsteps = uw.options.getInt("max_steps", default=25)
 restart_step = uw.options.getInt("restart_step", default=-1)
 rho = uw.options.getReal("rho", default=1000)
+
+outdir="output"
+
+if uw.mpi.rank == 0:
+    print(f"restart: {restart_step}")
+    print(f"resolution: {resolution}")
 # -
 
 meshball = uw.meshing.Annulus(
-    radiusOuter=1.0, radiusInner=0.5, cellSize=1/resolution, qdegree=3
+    radiusOuter=1.0, radiusInner=0.0, cellSize=1/resolution, qdegree=3
 )
 
+meshball.view()
 
 # +
 # Define some functions on the mesh
@@ -74,18 +77,17 @@ th = sympy.atan2(y + 1.0e-5, x + 1.0e-5)
 # Rigid body rotation v_theta = constant, v_r = 0.0
 
 theta_dot = 2.0 * np.pi  # i.e one revolution in time 1.0
-v_x = -1.0 * r * theta_dot * sympy.sin(th)  # * y # to make a convergent / divergent bc
-v_y = r * theta_dot * sympy.cos(th)  # * y
+v_x = -1.0 * r * theta_dot * sympy.sin(th) * y # to make a convergent / divergent bc
+v_y = r * theta_dot * sympy.cos(th) * y
 # -
 
 v_soln = uw.discretisation.MeshVariable("U", meshball, meshball.dim, degree=2)
 p_soln = uw.discretisation.MeshVariable("P", meshball, 1, degree=1)
 vorticity = uw.discretisation.MeshVariable(
-    "\omega", meshball, 1, degree=1, continuous=False
+    "\omega", meshball, 1, degree=1, continuous=True
 )
 
-
-navier_stokes = NavierStokesSLCN(
+navier_stokes = uw.systems.NavierStokes(
     meshball,
     velocityField=v_soln,
     pressureField=p_soln,
@@ -124,22 +126,10 @@ nodal_vorticity_from_v.uw_function = meshball.vector.curl(v_soln.sym)
 nodal_vorticity_from_v.smoothing = 0.0
 
 
-# +
 passive_swarm = uw.swarm.Swarm(mesh=meshball)
 passive_swarm.populate(
     fill_param=3,
 )
-
-# add new points at the 12 o'clock position
-
-npoints = 100
-passive_swarm.dm.addNPoints(npoints)
-with passive_swarm.access(passive_swarm.particle_coordinates):
-    for i in range(npoints):
-        passive_swarm.particle_coordinates.data[-1 : -(npoints + 1) : -1, :] = np.array(
-            [-0.05, 0.9] + 0.1 * np.random.random((npoints, 2))
-        )
-
 
 # +
 # Constant visc
@@ -153,18 +143,59 @@ navier_stokes.penalty = 0.1
 navier_stokes.bodyforce = sympy.Matrix([0, 0])
 
 # Velocity boundary conditions
-navier_stokes.add_dirichlet_bc((v_x, v_y), "Upper", (0, 1))
-navier_stokes.add_dirichlet_bc((0.0, 0.0), "Lower", (0, 1))
+# navier_stokes.add_dirichlet_bc((v_x, v_y), "Upper")
+# navier_stokes.add_dirichlet_bc((0.0, 0.0), "Lower")
+
+# Try this one:
+
+
+# upper_mask = meshball.meshVariable_mask_from_label("UW_Boundaries", meshball.boundaries.Upper.value )
+# lower_mask = meshball.meshVariable_mask_from_label("UW_Boundaries", meshball.boundaries.Lower.value )
+
+# vbc_xn = 1000 * ((v_soln.sym[0] - v_x) * upper_mask.sym[0] + v_soln.sym[0] * lower_mask.sym[0])
+# vbc_yn = 1000 * ((v_soln.sym[1] - v_y) * upper_mask.sym[0] + v_soln.sym[1] * lower_mask.sym[0])
+
+# vbc_x = v_x * upper_mask.sym[0] + 0 * lower_mask.sym[0]
+# vbc_y = v_y * upper_mask.sym[0] + 0 * lower_mask.sym[0]
+
+# navier_stokes.add_natural_bc( (vbc_xn, vbc_yn), "All_Boundaries")
+
+# navier_stokes.add_natural_bc( (1000 * (v_soln.sym[0] - v_x), 1000* ( v_soln.sym[1] - v_y)), "Upper")
+# navier_stokes.add_natural_bc( (1000 * v_x, 1000*v_y), "Lower")
+
+
+# navier_stokes.add_natural_bc( (vbc_xn, vbc_yn), "Upper")
+# navier_stokes.add_natural_bc( (vbc_xn, vbc_yn), "Lower")
+
+navier_stokes.add_dirichlet_bc((v_x, v_y), "Upper")
+# navier_stokes.add_dirichlet_bc((0.0, 0.0), "Lower")
 
 expt_name = f"Cylinder_NS_rho_{navier_stokes.rho}_{resolution}"
 
 # -
 
-navier_stokes.solve(timestep=0.1)
+
+navier_stokes.delta_t_physical = 0.1
+navier_stokes.solve(timestep=0.1, verbose=False, evalf=True, order=1)
+# navier_stokes.rho = rho
+
 navier_stokes.estimate_dt()
 
-nodal_vorticity_from_v.solve()
+if restart_step > 0:
+    if uw.mpi.rank == 0:
+        print(f"Reading step {restart_step}", flush=True)
 
+    passive_swarm = uw.swarm.Swarm(mesh=meshball)
+    passive_swarm.read_timestep(
+        expt_name, "passive_swarm", restart_step, outputPath=outdir
+    )
+    
+    v_soln.read_timestep(expt_name, "U", restart_step, outputPath=outdir)
+    p_soln.read_timestep(expt_name, "P", restart_step, outputPath=outdir)
+    
+    # Flux history variable might be a good idea
+# +
+nodal_vorticity_from_v.solve()
 
 # check the mesh if in a notebook / serial
 if uw.mpi.size == 1:
@@ -204,7 +235,7 @@ if uw.mpi.size == 1:
     pl.add_arrows(
         velocity_points.points,
         velocity_points.point_data["V"],
-        mag=1.0e-2,
+        mag=2.0e-2,
         opacity=0.75,
     )
 
@@ -309,39 +340,40 @@ def plot_V_mesh(filename):
         # pl.show()
 
 
-ts = 0
+# -
+if restart_step > 0:
+    ts = restart_step
+else:
+    ts = 0
+
 
 # +
 # Time evolution model / update in time
+navier_stokes.delta_t_physical = 0.1
 
-for step in range(0, 100):  # 250
-    delta_t = 2.0 * navier_stokes.estimate_dt()
-    navier_stokes.solve(timestep=delta_t, zero_init_guess=False)
+delta_t = 0.1 #  5.0 * navier_stokes.estimate_dt()
 
+for step in range(0, maxsteps+1):  # 250
+    
+    # if step%10 == 0:
+    #     delta_t = 5.0 * navier_stokes.estimate_dt()
+
+    navier_stokes.solve(timestep=delta_t, zero_init_guess=False, evalf=True)    
     passive_swarm.advection(v_soln.sym, delta_t, order=2, corrector=False, evalf=False)
 
     nodal_vorticity_from_v.solve()
 
-    npoints = 100
-    passive_swarm.dm.addNPoints(npoints)
-    with passive_swarm.access(passive_swarm.particle_coordinates):
-        for i in range(npoints):
-            passive_swarm.particle_coordinates.data[-1 : -(npoints + 1) : -1, :] = np.array(
-                [-0.05, 0.9] + 0.1 * np.random.random((npoints, 2))
-            )
-
-
     if uw.mpi.rank == 0:
-        print("Timestep {}, dt {}".format(ts, delta_t))
+        print("Timestep {}, dt {}".format(ts, delta_t), flush=True)
 
     if ts % 5 == 0:
-        plot_V_mesh(filename="output/{}_step_{}".format(expt_name, ts))
-
+        plot_V_mesh(filename=f"{outdir}/{expt_name}_step_{ts}")
+        
         meshball.write_timestep(
             expt_name,
             meshUpdates=True,
-            meshVars=[p_soln, v_soln, vorticity, St],
-            outputPath="output",
+            meshVars=[p_soln, v_soln, vorticity],
+            outputPath=outdir,
             index=ts,
         )
 
@@ -349,17 +381,18 @@ for step in range(0, 100):  # 250
             expt_name,
             "passive_swarm",
             swarmVars=None,
-            outputPath="output",
+            outputPath=outdir,
             index=ts,
             force_sequential=True,
         )
 
     ts += 1
 # -
-pvmesh.point_data["V"].min()
+
+
 
 # # ! open .
 
-
+navier_stokes._u_f0
 
 

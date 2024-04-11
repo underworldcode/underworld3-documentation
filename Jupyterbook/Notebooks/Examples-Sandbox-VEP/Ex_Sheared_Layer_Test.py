@@ -148,14 +148,44 @@ mesh1 = uw.discretisation.Mesh("tmp_shear_inclusion.msh",
                               )
 
 ## build periodic mesh (mesh1)
-# mesh1.view()
+mesh1.view()
 # uw.cython.petsc_discretisation.petsc_dm_set_periodicity(
 #     mesh1.dm, [0.1, 0.0], [-1.5, 0.0], [1.5, 0.0])
 
 
 # -
+bmask = mesh1.meshVariable_mask_from_label("Bottom", 1 )
+tmask = mesh1.meshVariable_mask_from_label("UW_Boundaries", mesh1.boundaries.Top.value )
 
 
+if uw.mpi.size == 1:
+    
+    import pyvista as pv
+    import underworld3.visualisation as vis
+
+    pvmesh = vis.mesh_to_pv_mesh(mesh1)
+    pvmesh.point_data["MB"] = vis.scalar_fn_to_pv_points(pvmesh, bmask.sym)
+    pvmesh.point_data["MT"] = vis.scalar_fn_to_pv_points(pvmesh, tmask.sym)
+
+    pl = pv.Plotter(window_size=(1000, 1000))
+
+    pl.add_mesh(
+        pvmesh,
+        cmap="Blues",
+        edge_color="Grey",
+        show_edges=True,
+        # clim=[0.0,1.0],
+        scalars="MT",
+        use_transparency=False,
+        opacity=0.5,
+    )
+
+    pl.show()
+
+
+
+
+0/0
 
 # +
 
@@ -547,11 +577,6 @@ for step in range(0, 10):
         print("Timestep {}, dt {}".format(step, delta_t))
         
     ts += 1
-
-# -
-
-
-
 
 # +
 nodal_visc_calc.uw_function = sympy.log(stokes.constitutive_model.Parameters.viscosity)
