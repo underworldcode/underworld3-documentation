@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.16.0
+#       jupytext_version: 1.16.1
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -257,7 +257,7 @@ nodal_vorticity_from_v.petsc_options.delValue("ksp_monitor")
 # Set solve options here (or remove default values
 # stokes.petsc_options.getAll()
 
-navier_stokes = uw.systems.NavierStokesSLCN(
+navier_stokes = uw.systems.NavierStokes(
     pipemesh,
     velocityField=v_soln,
     pressureField=p_soln,
@@ -423,8 +423,10 @@ def plot_V_mesh(filename):
         )
     
         pl.clear()
-    
 
+dt1, _ = navier_stokes.estimate_dt()
+
+0/0
 
 ts = 0
 elapsed_time = 0.0

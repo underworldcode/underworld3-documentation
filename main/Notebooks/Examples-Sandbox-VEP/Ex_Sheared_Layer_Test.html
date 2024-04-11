@@ -612,9 +612,53 @@ Check the implementation of the Jacobians using various non-linear terms.</p>
                               <span class="p">)</span>
 
 <span class="c1">## build periodic mesh (mesh1)</span>
-<span class="c1"># mesh1.view()</span>
+<span class="n">mesh1</span><span class="o">.</span><span class="n">view</span><span class="p">()</span>
 <span class="c1"># uw.cython.petsc_discretisation.petsc_dm_set_periodicity(</span>
 <span class="c1">#     mesh1.dm, [0.1, 0.0], [-1.5, 0.0], [1.5, 0.0])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bmask</span> <span class="o">=</span> <span class="n">mesh1</span><span class="o">.</span><span class="n">meshVariable_mask_from_label</span><span class="p">(</span><span class="s2">&quot;Bottom&quot;</span><span class="p">,</span> <span class="mi">1</span> <span class="p">)</span>
+<span class="n">tmask</span> <span class="o">=</span> <span class="n">mesh1</span><span class="o">.</span><span class="n">meshVariable_mask_from_label</span><span class="p">(</span><span class="s2">&quot;UW_Boundaries&quot;</span><span class="p">,</span> <span class="n">mesh1</span><span class="o">.</span><span class="n">boundaries</span><span class="o">.</span><span class="n">Top</span><span class="o">.</span><span class="n">value</span> <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">uw</span><span class="o">.</span><span class="n">mpi</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+    
+    <span class="kn">import</span> <span class="nn">pyvista</span> <span class="k">as</span> <span class="nn">pv</span>
+    <span class="kn">import</span> <span class="nn">underworld3.visualisation</span> <span class="k">as</span> <span class="nn">vis</span>
+
+    <span class="n">pvmesh</span> <span class="o">=</span> <span class="n">vis</span><span class="o">.</span><span class="n">mesh_to_pv_mesh</span><span class="p">(</span><span class="n">mesh1</span><span class="p">)</span>
+    <span class="n">pvmesh</span><span class="o">.</span><span class="n">point_data</span><span class="p">[</span><span class="s2">&quot;MB&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vis</span><span class="o">.</span><span class="n">scalar_fn_to_pv_points</span><span class="p">(</span><span class="n">pvmesh</span><span class="p">,</span> <span class="n">bmask</span><span class="o">.</span><span class="n">sym</span><span class="p">)</span>
+    <span class="n">pvmesh</span><span class="o">.</span><span class="n">point_data</span><span class="p">[</span><span class="s2">&quot;MT&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vis</span><span class="o">.</span><span class="n">scalar_fn_to_pv_points</span><span class="p">(</span><span class="n">pvmesh</span><span class="p">,</span> <span class="n">tmask</span><span class="o">.</span><span class="n">sym</span><span class="p">)</span>
+
+    <span class="n">pl</span> <span class="o">=</span> <span class="n">pv</span><span class="o">.</span><span class="n">Plotter</span><span class="p">(</span><span class="n">window_size</span><span class="o">=</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
+
+    <span class="n">pl</span><span class="o">.</span><span class="n">add_mesh</span><span class="p">(</span>
+        <span class="n">pvmesh</span><span class="p">,</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;Blues&quot;</span><span class="p">,</span>
+        <span class="n">edge_color</span><span class="o">=</span><span class="s2">&quot;Grey&quot;</span><span class="p">,</span>
+        <span class="n">show_edges</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="c1"># clim=[0.0,1.0],</span>
+        <span class="n">scalars</span><span class="o">=</span><span class="s2">&quot;MT&quot;</span><span class="p">,</span>
+        <span class="n">use_transparency</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">opacity</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">pl</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span>
 </pre></div>
 </div>
 </div>

@@ -68,6 +68,8 @@ mesh1.dm.view()
 # mesh1.dm.view()
 # -
 
+0/0
+
 v_soln = uw.discretisation.MeshVariable("U", mesh1, mesh1.dim, degree=2)
 p_soln = uw.discretisation.MeshVariable(
     "P", mesh1, 1, vtype=uw.VarType.SCALAR, degree=1, continuous=True

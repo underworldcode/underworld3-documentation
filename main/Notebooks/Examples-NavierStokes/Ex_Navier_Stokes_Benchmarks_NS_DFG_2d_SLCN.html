@@ -730,7 +730,7 @@ document.write(`
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set solve options here (or remove default values</span>
 <span class="c1"># stokes.petsc_options.getAll()</span>
 
-<span class="n">navier_stokes</span> <span class="o">=</span> <span class="n">uw</span><span class="o">.</span><span class="n">systems</span><span class="o">.</span><span class="n">NavierStokesSLCN</span><span class="p">(</span>
+<span class="n">navier_stokes</span> <span class="o">=</span> <span class="n">uw</span><span class="o">.</span><span class="n">systems</span><span class="o">.</span><span class="n">NavierStokes</span><span class="p">(</span>
     <span class="n">pipemesh</span><span class="p">,</span>
     <span class="n">velocityField</span><span class="o">=</span><span class="n">v_soln</span><span class="p">,</span>
     <span class="n">pressureField</span><span class="o">=</span><span class="n">p_soln</span><span class="p">,</span>
@@ -914,6 +914,20 @@ document.write(`
         <span class="p">)</span>
     
         <span class="n">pl</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dt1</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">navier_stokes</span><span class="o">.</span><span class="n">estimate_dt</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span>
 </pre></div>
 </div>
 </div>

@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.16.0
+#       jupytext_version: 1.16.1
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -13,7 +13,7 @@
 # ---
 
 
-# # Navier Stokes test: flow in an annulus with a moving boundary (2D)
+# # Navier Stokes test: flow in an disk / annulus with a moving boundary (2D)
 #
 
 # to fix trame issue
@@ -28,23 +28,23 @@ import sympy
 
 # + language="sh"
 #
-# ls -tr /Users/lmoresi/+Simulations/NS_benchmarks/
+# ls -tr /Users/lmoresi/+Simulations/NS_benchmarks/NS_Disc | tail -5
 # #ls -tr /Users/lmoresi/+Underworld/underworld3/JupyterBook/Notebooks/Examples-NavierStokes/output_res_033/*mesh*h5 | tail -10
 #
 # -
 
 
-# ls -tr /Users/lmoresi/+Simulations/NS_benchmarks/NS_Annulus_Re1000/Cylinder_NS_rho_1000_25*omega* | tail -5
+# ls -tr /Users/lmoresi/+Simulations/NS_benchmarks/NS_Disc/rho1e4/Cylinder_NS_rho_10000.0_50_dt0.1*omega* | tail -5
 
 # +
 ## Reading the checkpoints back in ... 
 
-step = 320
+step = 260
 
-checkpoint_dir = "/Users/lmoresi/+Simulations/NS_benchmarks/NS_Annulus_Re1000"
+checkpoint_dir = "/Users/lmoresi/+Simulations/NS_benchmarks/NS_Disc/rho1e4/"
 # checkpoint_dir = "/Users/lmoresi/+Underworld/underworld3/JupyterBook/Notebooks/Examples-NavierStokes//Users/lmoresi/+Simulations/NS_benchmarks/NS_BMK_DvDt_std"
 
-checkpoint_base = "Cylinder_NS_rho_1000_25"
+checkpoint_base = "Cylinder_NS_rho_10000.0_50_dt0.1"
 base_filename = os.path.join(checkpoint_dir, checkpoint_base)
 
 # +
@@ -56,11 +56,6 @@ p_soln_ckpt = uw.discretisation.MeshVariable("P", mesh, 1, degree=1)
 vorticity_ckpt = uw.discretisation.MeshVariable("omega", mesh, 1, degree=1)
 
 passive_swarm_ckpt = uw.swarm.Swarm(mesh)
-active_swarm_ckpt = uw.swarm.Swarm(mesh)
-# -
-
-
-
 
 # +
 v_soln_ckpt.read_timestep(checkpoint_base, "U", step, outputPath=checkpoint_dir)
@@ -81,23 +76,25 @@ if uw.mpi.size == 1:
 
     pvmesh = vis.mesh_to_pv_mesh(mesh)
     pvmesh.point_data["P"] = vis.scalar_fn_to_pv_points(pvmesh, p_soln_ckpt.sym[0])
-    pvmesh.point_data["Omega"] = vis.scalar_fn_to_pv_points(pvmesh, vorticity_ckpt.sym)
+    pvmesh.point_data["Omega"] = vis.scalar_fn_to_pv_points(pvmesh, vorticity_ckpt.sym)                                       
     pvmesh.point_data["V"] = vis.vector_fn_to_pv_points(pvmesh, v_soln_ckpt.sym)
     pvmesh.point_data["Vmag"] = vis.scalar_fn_to_pv_points(pvmesh, sympy.sqrt(v_soln_ckpt.sym.dot(v_soln_ckpt.sym)))
 
+    pvmesh.point_data["Omag"] = np.abs(pvmesh.point_data["Omega"])
+    pvmesh.point_data["Omag"] /= pvmesh.point_data["Omag"].max()
+    pvmesh.point_data["Omag"] = 0.2 + 0.8 * pvmesh.point_data["Omag"]**0.25
+    
     velocity_points = vis.meshVariable_to_pv_cloud(v_soln_ckpt)
     velocity_points.point_data["V"] = vis.vector_fn_to_pv_points(velocity_points, v_soln_ckpt.sym)
     
     x,y = mesh.X
-    U0 = 1.5
-    Vb = (4.0 * U0 * y * (0.41 - y)) / 0.41**2
-        
+
     # swarm points
     points = vis.swarm_to_pv_cloud(passive_swarm_ckpt)
     swarm_point_cloud = pv.PolyData(points)
 
     # point sources at cell centres
-    skip = 5
+    skip = 25
     points = np.zeros((mesh._centroids[::skip].shape[0], 3))
     points[:, 0] = mesh._centroids[::skip, 0]
     points[:, 1] = mesh._centroids[::skip, 1]
@@ -111,43 +108,42 @@ if uw.mpi.size == 1:
     )
 
     pl = pv.Plotter(window_size=(1000, 750))
-    pl.add_arrows(velocity_points.points, velocity_points.point_data["V"], mag=0.03, opacity=0.5)
+
+    # pl.add_arrows(
+    #     velocity_points.points, 
+    #     velocity_points.point_data["V"], mag=0.01, 
+    #     opacity=0.25, show_scalar_bar=False)
+
+    pl.add_mesh(pvmesh,'Grey', 'wireframe', opacity=0.25)
+    pl.add_mesh(pvstream, opacity=0.5, show_scalar_bar=False)
 
     pl.add_mesh(
         pvmesh,
-        cmap="bwr",
+        cmap="RdBu_r",
         edge_color="Black",
+        color="White",
         show_edges=False,
         scalars="Omega",
-        clim=[-1000,1000],
-        use_transparency=False,
-        opacity=1.0,
+        opacity="Omag",
+        clim=[-250,250],
+        show_scalar_bar=False,
     )
+
+
 
     pl.add_points(swarm_point_cloud, color="Black",
                   render_points_as_spheres=True,
-                  point_size=3, opacity=0.25
+                  point_size=3, opacity=0.5
                 )
 
-    pl.add_mesh(pvmesh,'Black', 'wireframe', opacity=0.25)
-    pl.add_mesh(pvstream, opacity=0.5)
 
-    pl.remove_scalar_bar("Omega")
-    pl.remove_scalar_bar("mag")
-    pl.remove_scalar_bar("V")
-        
     pl.camera.SetPosition(0.0, 0.0, 4.7)
     pl.camera.SetFocalPoint(0.0, 0.0, 0.0)
     pl.camera.SetClippingRange(1.0, 8.0)
-        
-        
-    pl.screenshot(
-            filename=f"{base_filename}.{step}.png",
-            window_size=(1600, 1600),
-            return_img=False,
-        )
-    
+            
     pl.show(jupyter_backend="client")
+
+    # pl.close()
 # -
 
 
@@ -165,9 +161,8 @@ print(steps)
 
 
 # +
-# Override output range (but need to run above cell to get the files themselves)
-
-# steps = range(0,100,5)
+# Override output range
+# steps = range(120,175,5)
 
 # +
 if uw.mpi.size == 1:
@@ -197,15 +192,13 @@ for step in steps:
     velocity_points.point_data["V"] = vis.vector_fn_to_pv_points(velocity_points, v_soln_ckpt.sym)
         
     x,y = mesh.X
-    U0 = 1.5
-    Vb = (4.0 * U0 * y * (0.41 - y)) / 0.41**2
 
     # swarm points
     points = vis.swarm_to_pv_cloud(passive_swarm_ckpt)
     swarm_point_cloud = pv.PolyData(points)
 
     # point sources at cell centres
-    skip = 15
+    skip = 10
     points = np.zeros((mesh._centroids[::skip].shape[0], 3))
     points[:, 0] = mesh._centroids[::skip, 0]
     points[:, 1] = mesh._centroids[::skip, 1]
@@ -218,7 +211,11 @@ for step in steps:
         max_time=0.5,
     )
 
-    pl.add_arrows(velocity_points.points, velocity_points.point_data["V"], mag=0.03, opacity=0.5)
+    # pl.add_arrows(
+    #     velocity_points.points, 
+    #     velocity_points.point_data["V"], 
+    #     mag=0.01, opacity=0.25, 
+    #     show_scalar_bar=False)
 
 
     pl.add_points(swarm_point_cloud, color="Black",
@@ -226,7 +223,7 @@ for step in steps:
                   point_size=3, opacity=0.5
                 )
 
-    pl.add_mesh(pvmesh,'Black', 'wireframe', opacity=0.05)
+    pl.add_mesh(pvmesh,'Grey', 'wireframe', opacity=0.25)
     
     pl.add_mesh(
         pvmesh,
@@ -237,14 +234,10 @@ for step in steps:
         clim=[-250,250],
         use_transparency=False,
         opacity=0.75,
+        show_scalar_bar=False,
     )
     
-    pl.add_mesh(pvstream, opacity=0.5)
-
-
-    pl.remove_scalar_bar("Omega")
-    # pl.remove_scalar_bar("mag")
-    pl.remove_scalar_bar("V")
+    pl.add_mesh(pvstream, opacity=0.5, show_scalar_bar=False)
     
     pl.camera.SetPosition(0.0, 0.0, 4.7)
     pl.camera.SetFocalPoint(0.0, 0.0, 0.0)
@@ -258,7 +251,6 @@ for step in steps:
     
     pl.clear()
 # -
-# ! open .
-
+passive_swarm_ckpt.dm.getLocalSize()
 
 

@@ -202,6 +202,8 @@ with meshball.access(r_mesh):
 stokes.bodyforce = unit_rvec * gravity_fn * Rayleigh * t_soln.fn
 stokes.solve(verbose=False)
 
+
+
 # +
 # Check the diffusion part of the solve converges
 
