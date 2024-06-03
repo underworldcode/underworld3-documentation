@@ -34,17 +34,17 @@ import sympy
 # -
 
 
-# ls -tr /Users/lmoresi/+Simulations/NS_benchmarks/NS_Disc/rho1e4/Cylinder_NS_rho_10000.0_50_dt0.1*omega* | tail -5
+# ls -tr /Users/lmoresi/+Simulations/NS_benchmarks/NS_Disc/Rho3e3 | tail -5
 
 # +
 ## Reading the checkpoints back in ... 
 
-step = 260
+step = 135
 
-checkpoint_dir = "/Users/lmoresi/+Simulations/NS_benchmarks/NS_Disc/rho1e4/"
+checkpoint_dir = "/Users/lmoresi/+Simulations/NS_benchmarks/NS_Disc/Rho3e3/"
 # checkpoint_dir = "/Users/lmoresi/+Underworld/underworld3/JupyterBook/Notebooks/Examples-NavierStokes//Users/lmoresi/+Simulations/NS_benchmarks/NS_BMK_DvDt_std"
 
-checkpoint_base = "Cylinder_NS_rho_10000.0_50_dt0.1"
+checkpoint_base = "Cylinder_NS_rho_3000.0_30_dt0.1"
 base_filename = os.path.join(checkpoint_dir, checkpoint_base)
 
 # +
@@ -57,6 +57,8 @@ vorticity_ckpt = uw.discretisation.MeshVariable("omega", mesh, 1, degree=1)
 
 passive_swarm_ckpt = uw.swarm.Swarm(mesh)
 
+
+
 # +
 v_soln_ckpt.read_timestep(checkpoint_base, "U", step, outputPath=checkpoint_dir)
 p_soln_ckpt.read_timestep(checkpoint_base, "P", step, outputPath=checkpoint_dir)
@@ -64,7 +66,10 @@ vorticity_ckpt.read_timestep(checkpoint_base, "omega", step, outputPath=checkpoi
 
 # This one is just the individual points
 passive_swarm_ckpt.read_timestep(checkpoint_base, "passive_swarm", step, outputPath=checkpoint_dir)
+# -
 
+
+passive_swarm_ckpt.dm.getLocalSize()
 
 # +
 # check the mesh if in a notebook / serial
@@ -109,10 +114,10 @@ if uw.mpi.size == 1:
 
     pl = pv.Plotter(window_size=(1000, 750))
 
-    # pl.add_arrows(
-    #     velocity_points.points, 
-    #     velocity_points.point_data["V"], mag=0.01, 
-    #     opacity=0.25, show_scalar_bar=False)
+    pl.add_arrows(
+        velocity_points.points, 
+        velocity_points.point_data["V"], mag=0.01, 
+        opacity=0.25, show_scalar_bar=False)
 
     pl.add_mesh(pvmesh,'Grey', 'wireframe', opacity=0.25)
     pl.add_mesh(pvstream, opacity=0.5, show_scalar_bar=False)
@@ -133,7 +138,7 @@ if uw.mpi.size == 1:
 
     pl.add_points(swarm_point_cloud, color="Black",
                   render_points_as_spheres=True,
-                  point_size=3, opacity=0.5
+                  point_size=3, opacity=0.2
                 )
 
 
@@ -145,6 +150,8 @@ if uw.mpi.size == 1:
 
     # pl.close()
 # -
+
+
 
 
 0/0
@@ -162,7 +169,7 @@ print(steps)
 
 # +
 # Override output range
-# steps = range(120,175,5)
+# steps = range(500,600,5)
 
 # +
 if uw.mpi.size == 1:
@@ -220,7 +227,7 @@ for step in steps:
 
     pl.add_points(swarm_point_cloud, color="Black",
                   render_points_as_spheres=True,
-                  point_size=3, opacity=0.5
+                  point_size=3, opacity=0.25
                 )
 
     pl.add_mesh(pvmesh,'Grey', 'wireframe', opacity=0.25)
@@ -250,7 +257,15 @@ for step in steps:
         )
     
     pl.clear()
+# +
+# # ! mkdir /Users/lmoresi/+Simulations/NS_benchmarks/NS_Disc/rho1e4/Cylinder_NS_rho_10000.0_50_dt0.1_images
+# # ! cp /Users/lmoresi/+Simulations/NS_benchmarks/NS_Disc/rho1e4/Cylinder_NS_rho_10000.0_50_dt0.1*png /Users/lmoresi/+Simulations/NS_benchmarks/NS_Disc/rho1e4/Cylinder_NS_rho_10000.0_50_dt0.1_images
+
+
 # -
-passive_swarm_ckpt.dm.getLocalSize()
+
+
+
+
 
 

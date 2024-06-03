@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.16.0
+#       jupytext_version: 1.16.1
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -105,7 +105,8 @@ grid_type = "simplex_sphere"
 r_o = 1.0
 r_i = 0.547
 
-Rayleigh = 1.0e6  # Doesn't actually matter to the solution pattern,
+Rayleigh = uw.function.expression(R"\mathrm{Ra}", 1000000, "Rayleigh number")
+
 
 # +
 if problem_size <= 1:
@@ -200,7 +201,7 @@ p_soln = stokes.Unknowns.p
 
 stokes.constitutive_model = uw.constitutive_models.ViscousFlowModel
 stokes.constitutive_model.Parameters.viscosity = 1
-stokes.penalty = 0.0
+stokes.penalty = 0
 
 # +
 # Create a density structure / buoyancy force
@@ -359,6 +360,9 @@ if uw.mpi.size == 1:
     import underworld3.visualisation as vis
 
     pvmesh = vis.mesh_to_pv_mesh(meshball)
+    pv.global_theme.jupyter_backend = 'trame'
+
+    
     pvmesh.point_data["V"] = vis.vector_fn_to_pv_points(pvmesh, v_soln.sym)
     pvmesh.point_data["T"] = vis.scalar_fn_to_pv_points(pvmesh, t_soln.sym)
     pvmesh.point_data["P"] = vis.scalar_fn_to_pv_points(pvmesh, p_soln.sym)
@@ -397,7 +401,7 @@ if uw.mpi.size == 1:
         cmap="Reds",
         # cmap="coolwarm",
         edge_color="Black",
-        show_edges=False,
+        show_edges=True,
         scalars="T",
         use_transparency=False,
         show_scalar_bar = False,
@@ -416,17 +420,26 @@ if uw.mpi.size == 1:
     
     arrows = pl.add_arrows(clippedv.points, clippedv.point_data["V"], 
                            show_scalar_bar = False, 
-                           mag=100/Rayleigh, )
+                           mag=100/Rayleigh.value, )
 
     # pl.screenshot(filename="sphere.png", window_size=(1000, 1000), return_img=False)
     # OR
-    pl.show(cpos="xy")
+    pl.show(cpos="xy", jupyter_backend="trame")
+    pl.screenshot("snapshot.png", window_size=(2000,2000), return_img=True)
 
 # -
 
 
-pl.screenshot("snapshot.png", window_size=(2000,2000), return_img=False)
+stokes
 
-# ! open snapshot.png
+v_soln.sym.diff(meshball.X)
+
+with meshball.access():
+    print(v_soln.data)
+
+uw.systems.Stokes.view()
+
+
+
 
 

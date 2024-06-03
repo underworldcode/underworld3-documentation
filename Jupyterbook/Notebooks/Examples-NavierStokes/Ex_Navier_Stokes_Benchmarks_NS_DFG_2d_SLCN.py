@@ -55,10 +55,10 @@ import sympy
 # These can be set when launching the script as
 # mpirun python3 scriptname -uw_resolution=0.1 etc
 
-resolution = uw.options.getInt("model_resolution", default=30)
+resolution = uw.options.getInt("model_resolution", default=20)
 refinement = uw.options.getInt("model_refinement", default=0)
-model = uw.options.getInt("model_number", default=4)
-maxsteps = uw.options.getInt("max_steps", default=1000)
+model = uw.options.getInt("model_number", default=1)
+maxsteps = uw.options.getInt("max_steps", default=201)
 restart_step = uw.options.getInt("restart_step", default=-1)
 
 # +
@@ -104,7 +104,7 @@ class boundaries(Enum):
 # Mesh a 2D pipe with a circular hole
 
 csize = 1.0 / resolution
-csize_circle = 0.5 * csize
+csize_circle = 0.25 * csize
 res = csize_circle
 
 width = 2.2
@@ -212,7 +212,8 @@ Vb = (4.0 * U0 * y * (0.41 - y)) / 0.41**2
 # +
 v_soln = uw.discretisation.MeshVariable("U", pipemesh, pipemesh.dim, degree=2)
 vs_soln = uw.discretisation.MeshVariable("Us", pipemesh, pipemesh.dim, degree=2)
-p_soln = uw.discretisation.MeshVariable("P", pipemesh, 1, degree=1)
+p_soln = uw.discretisation.MeshVariable("P", pipemesh, 1, degree=1, continuous=True)
+p_cont = uw.discretisation.MeshVariable("Pc", pipemesh, 1, degree=2, continuous=True)
 vorticity = uw.discretisation.MeshVariable("omega", pipemesh, 1, degree=1)
 r_inc = uw.discretisation.MeshVariable("R", pipemesh, 1, degree=1)
 rho = uw.discretisation.MeshVariable("rho", pipemesh, 1, degree=1, varsymbol=r"{\rho}")
@@ -221,6 +222,7 @@ rho = uw.discretisation.MeshVariable("rho", pipemesh, 1, degree=1, varsymbol=r"{
 work = uw.discretisation.MeshVariable(
     "W", pipemesh, 1, vtype=uw.VarType.SCALAR, degree=1, continuous=False
 )
+
 St = uw.discretisation.MeshVariable(
     r"Stress",
     pipemesh,
@@ -261,7 +263,7 @@ navier_stokes = uw.systems.NavierStokes(
     pipemesh,
     velocityField=v_soln,
     pressureField=p_soln,
-    rho=1000.0,
+    rho=1000,
     verbose=False,
     solver_name="navier_stokes",
     order=2,
@@ -271,7 +273,7 @@ navier_stokes.constitutive_model = uw.constitutive_models.ViscousFlowModel
 
 # Constant visc
 
-navier_stokes.penalty = 0
+navier_stokes.penalty = 100
 navier_stokes.bodyforce = sympy.Matrix([0, 0])
 
 hw = 1000.0 / res
@@ -289,9 +291,18 @@ navier_stokes.add_dirichlet_bc(
 navier_stokes.add_dirichlet_bc((0.0, 0.0), "top")
 navier_stokes.add_dirichlet_bc((0.0, 0.0), "bottom")
 navier_stokes.add_dirichlet_bc((Vb, 0.0), "left")
+# -
 
-navier_stokes.tolerance = 1.0e-3
-navier_stokes.delta_t = 10.0  # stokes-like at the beginning
+
+continuous_pressure_projection = uw.systems.Projection(pipemesh, p_cont)
+continuous_pressure_projection.uw_function = p_soln.sym[0]
+continuous_pressure_projection.solve()
+
+
+
+# +
+navier_stokes.tolerance = 1.0e-4
+navier_stokes.delta_t = 10 # stokes-like at the beginning
 
 if model == 2:  # Steady state !
     # remove the d/dt term ... replace the time dependence with the
@@ -301,13 +312,10 @@ if model == 2:  # Steady state !
     navier_stokes.UF0 = -(
         navier_stokes.rho * (v_soln.sym - v_soln_1.sym) / navier_stokes.delta_t
     )
-
 # -
 
 
 navier_stokes.view()
-
-navier_stokes.constitutive_model.flux
 
 # +
 navier_stokes.petsc_options["snes_monitor"] = None
@@ -350,9 +358,11 @@ navier_stokes.solve(
 nodal_vorticity_from_v.solve()
 
 timing.print_table(display_fraction=0.999)
-
-
 # -
+
+continuous_pressure_projection.solve()
+
+
 def plot_V_mesh(filename):
 
     if uw.mpi.size == 1:
@@ -426,22 +436,20 @@ def plot_V_mesh(filename):
 
 dt1, _ = navier_stokes.estimate_dt()
 
-0/0
-
 ts = 0
 elapsed_time = 0.0
-dt_ns = 0.01
-delta_t_cfl = 2 * navier_stokes.estimate_dt()
-delta_t = min(delta_t_cfl, dt_ns)
+dt_ns = 0.005
+delta_t_diff, delta_t_adv  = navier_stokes.estimate_dt()
+delta_t = dt_ns
 
+
+print(f"Dt_adv -> {delta_t_adv}; Dt_diff -> {delta_t_diff}")
+
+print(delta_t / delta_t_adv)
 
 for step in range(0, maxsteps): #1500
-    delta_t_cfl = 2 * navier_stokes.estimate_dt()
 
-    if step % 10 == 0:
-        delta_t = min(delta_t_cfl, dt_ns)
-
-    navier_stokes.solve(timestep=dt_ns, zero_init_guess=False)
+    navier_stokes.solve(timestep=delta_t, zero_init_guess=False, verbose=False)
 
     # update passive swarm
     passive_swarm.advection(v_soln.sym, delta_t, order=2, corrector=False, evalf=False)
@@ -456,7 +464,7 @@ for step in range(0, maxsteps): #1500
             ] = np.array([0.0, 0.195] + 0.01 * np.random.random((npoints, 2)))
 
     if uw.mpi.rank == 0:
-        print("Timestep {}, t {}, dt {}, dt_s {}".format(ts, elapsed_time, delta_t, delta_t_cfl))
+        print("Timestep {}, t {}, dt {}".format(ts, elapsed_time, delta_t))
 
     if ts % 10 == 0:
         nodal_vorticity_from_v.solve()
@@ -494,6 +502,7 @@ if uw.mpi.size == 1:
     pvmesh.point_data["Vmag"] = vis.scalar_fn_to_pv_points(pvmesh, v_soln.sym.dot(v_soln.sym))
     pvmesh.point_data["Omega"] = vis.scalar_fn_to_pv_points(pvmesh, vorticity.sym)
     pvmesh.point_data["P"] = vis.scalar_fn_to_pv_points(pvmesh, p_soln.sym)
+    pvmesh.point_data["Pc"] = vis.scalar_fn_to_pv_points(pvmesh, p_cont.sym)
     
     velocity_points = vis.meshVariable_to_pv_cloud(v_soln)
     velocity_points.point_data["V"] = vis.vector_fn_to_pv_points(velocity_points, v_soln.sym)
@@ -521,20 +530,20 @@ if uw.mpi.size == 1:
 
     pl.add_arrows(velocity_points.points, velocity_points.point_data["V"], mag=0.025 / U0, opacity=0.75)
 
-    pl.add_points(
-        point_cloud,
-        color="Black",
-        render_points_as_spheres=False,
-        point_size=5,
-        opacity=0.66,
-    )
+    # pl.add_points(
+    #     point_cloud,
+    #     color="Black",
+    #     render_points_as_spheres=False,
+    #     point_size=5,
+    #     opacity=0.66,
+    # )
 
     pl.add_mesh(
         pvmesh,
         cmap="coolwarm",
-        edge_color="Black",
+        edge_color="Grey",
         show_edges=True,
-        scalars="Omega",
+        scalars="P",
         use_transparency=False,
         opacity=1.0,
     )
@@ -546,23 +555,25 @@ if uw.mpi.size == 1:
         passive_swarm_points,
         color="Black",
         render_points_as_spheres=True,
-        point_size=5,
-        opacity=0.5,
+        point_size=2,
+        opacity=0.25,
     )
 
     pl.show()
-
-
-# +
-# with pipemesh.access():
-#     print(navier_stokes.DFDt.psi_star[0].data.max())
-
-# +
-# navier_stokes._u_f1
 # -
 
 
+with pipemesh.access():
+    print(navier_stokes.DFDt.psi_star[0].data.max())
 
+navier_stokes._u_f1
 
+navier_stokes._u_f0
+
+ pvmesh.point_data["P"].max()
+
+ pvmesh.point_data["Pc"].max()
+
+navier_stokes.penalty
 
 

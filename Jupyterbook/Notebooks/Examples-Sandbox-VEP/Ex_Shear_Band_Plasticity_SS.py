@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.16.0
+#       jupytext_version: 1.16.1
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -31,6 +31,8 @@ import numpy as np
 
 # +
 import meshio, pygmsh
+from enum import Enum
+
 
 # Mesh a 2D pipe with a circular hole
 
@@ -41,6 +43,15 @@ res = csize_circle
 width = 3.0
 height = 1.0
 radius = 0.1
+
+
+class boundaries(Enum):
+    bottom = 1
+    right = 2
+    top = 3
+    left  = 4
+    inclusion = 5
+    All_Boundaries = 1001 
 
 if uw.mpi.rank == 0:
     # Generate local mesh on boss process
@@ -61,22 +72,31 @@ if uw.mpi.rank == 0:
             mesh_size=csize,
         )
 
-        geom.add_physical(domain.surface.curve_loop.curves[0], label="bottom")
-        geom.add_physical(domain.surface.curve_loop.curves[1], label="right")
-        geom.add_physical(domain.surface.curve_loop.curves[2], label="top")
-        geom.add_physical(domain.surface.curve_loop.curves[3], label="left")
-
-        geom.add_physical(inclusion.curve_loop.curves, label="inclusion")
-
+        geom.add_physical(domain.surface.curve_loop.curves[0], label=boundaries.bottom.name)
+        geom.add_physical(domain.surface.curve_loop.curves[1], label=boundaries.right.name)
+        geom.add_physical(domain.surface.curve_loop.curves[2], label=boundaries.top.name)
+        geom.add_physical(domain.surface.curve_loop.curves[3], label=boundaries.left.name)
+        geom.add_physical(inclusion.curve_loop.curves, label=boundaries.inclusion.name)
         geom.add_physical(domain.surface, label="Elements")
-
+        
         geom.generate_mesh(dim=2, verbose=False)
         geom.save_geometry("tmp_shear_inclusion.msh")
 
 # -
 
 
-mesh1 = uw.discretisation.Mesh("tmp_shear_inclusion.msh", simplex=True)
+mesh1 = uw.discretisation.Mesh("tmp_shear_inclusion.msh",
+    markVertices=True,
+    useMultipleTags=True,
+    useRegions=True,
+    refinement=0,
+    # refinement_callback=_mesh_refinement_callback,
+    # return_coords_to_bounds= _return_coords_to_bounds,
+    boundaries=boundaries,
+    qdegree=3,
+)
+
+
 
 # +
 # Define some functions on the mesh
@@ -125,15 +145,31 @@ stokes = uw.systems.Stokes(
     solver_name="stokes",
 )
 
+mu = uw.function.expression(R"\mu", 0.1, "Friction")
+C  = uw.function.expression(R"C", 1000, "Cohesion")
 
-stokes.constitutive_model = uw.constitutive_models.ViscousFlowModel
-stokes.constitutive_model.Parameters.viscosity = 1
-stokes.saddle_preconditioner = 1 / stokes.constitutive_model.Parameters.viscosity
+stokes.constitutive_model = uw.constitutive_models.ViscoPlasticFlowModel
+stokes.constitutive_model.Parameters.shear_viscosity_0 = 1
+stokes.constitutive_model.Parameters.yield_stress =  mu * p_soln.sym[0] + C
+stokes.constitutive_model.Parameters.yield_min = 1000
 stokes.penalty = 0.0
 
 stokes.petsc_options["ksp_monitor"] = None
 stokes.petsc_options["snes_atol"] = 0.001
+# -
 
+
+stokes.constitutive_model.Parameters.yield_stress.sub_all()
+
+stokes.constitutive_model.Parameters.yield_stress.sub_all(keep_constants=False)
+
+stokes.constitutive_model.viscosity.sub_all(keep_constants=False)
+
+stokes.constitutive_model.Parameters.shear_viscosity_min
+
+stokes.constitutive_model.viscosity
+
+0/0
 
 # +
 nodal_strain_rate_inv2 = uw.systems.Projection(
@@ -154,7 +190,7 @@ nodal_tau_inv2.smoothing = 1.0e-3
 nodal_tau_inv2.petsc_options.delValue("ksp_monitor")
 
 nodal_visc_calc = uw.systems.Projection(mesh1, node_viscosity, solver_name="visc")
-nodal_visc_calc.uw_function = stokes.constitutive_model.Parameters.viscosity
+nodal_visc_calc.uw_function = stokes.constitutive_model.viscosity
 nodal_visc_calc.smoothing = 1.0e-3
 nodal_visc_calc.petsc_options.delValue("ksp_monitor")
 
@@ -190,6 +226,9 @@ stokes.add_dirichlet_bc(0.0, "right", 1)
 # linear solve first
 
 stokes.solve()
+# -
+
+stokes.constitutive_model.Parameters.shear_viscosity_0
 
 # +
 # Approach the required non-linear value by gradually adjusting the parameters
@@ -201,8 +240,7 @@ for i in range(steps):
     print(f"Mu - {mu}, C = {C}")
     tau_y = sympy.Max(C + mu * stokes.p.sym[0], 0.1)
     viscosity = sympy.Min(tau_y / (2 * stokes.Unknowns.Einv2 + 0.01), 1.0)
-    # viscosity = 100 * (0.01 + stokes._Einv2)
-    stokes.constitutive_model.Parameters.viscosity = viscosity
+    stokes.constitutive_model.Parameters. = viscosity
     stokes.saddle_preconditioner = 1 / viscosity
     stokes.solve(zero_init_guess=False)
 
@@ -285,5 +323,7 @@ pvmesh.point_data["Str"].min(), pvmesh.point_data["Str"].max()
 pvmesh.point_data["Edot"].min(), pvmesh.point_data["Edot"].max()
 
 pvmesh.point_data["V"].min(), pvmesh.point_data["V"].max()
+
+
 
 

@@ -1,7 +1,41 @@
 # %% [markdown]
-# # Stokes Poiseuille flow
+# ## Stokes Poiseuille flow
 #
-# [UW2 example]( https://github.com/underworldcode/underworld2/blob/v2.15.1b/docs/test/StokesEq_PoiseuilleFlow.ipynb)
+# This is the [UW2 implementation]( https://github.com/underworldcode/underworld2/blob/v2.15.1b/docs/test/StokesEq_PoiseuilleFlow.ipynb)
+#
+# 2D, Stokes Equation with noslip BC at top and bottom boundary and a lateral pressure gradient driving the flow, a.k.a. Poiseuille Flow.
+#
+# $$
+#  \frac{\partial \tau}{\partial y} = \mu \frac{\partial^{2} \mathbf{u}}{\partial{y}^{2}} = \frac{\partial p}{\partial x},
+# $$
+#
+# $$ 
+# \nabla \cdot \mathbf{u} = 0,
+# $$
+#
+# with $ x_{a} \leqslant x \leqslant x_{b} $ and $ 0.0 \leqslant y \leqslant h $
+#
+# ### Boundary conditions:
+#
+#   * $\mathbf{u}(x,y=h) = \mathbf{u}(x,y=0) = \left[0,0 \right]$
+#   * $P(x_a) = P_a$
+#   * $P(x_b) = P_b $
+#     
+# A 1D solution in $y$-axis, described by
+#
+# $\mathbf{u}(x,y) =  \left[ \frac{1}{2 \mu} \frac{\partial p }{\partial x} ( y^{2} - h y ), 0.0 \right]$
+#
+# We implement the above boundary conditions using:,
+#  * a `essential_bc` for $\mathbf{u}(x,y=1) = \mathbf{u}(x,y=0) = \left[0,0 \right]$,
+#  * a `natural_bc` for $P(x_a) = P_a$ & $P(x_b) = P_b $,
+# ,
+# The `natural_bc`, used with the `Stokes` object, defines a stress along a boundary such that:,
+#   * $ \sigma_{ij} n_{j} = \phi_{i} $ on $ \Gamma_{\phi} $,
+# ,
+#   where  ,
+#     * $n$ is the surface normal pointing outwards,,
+#     * $ \sigma_{ij} = \tau_{ij} - \delta_{ij} P$ is the prescribed stress tensor, which is multiplied my $ n $ at $ \Gamma_{\phi} $ to produce $\phi_{i}$, a surface traction on the given boundary."
+#
 
 # %%
 import underworld3 as uw
@@ -24,9 +58,6 @@ if uw.mpi.size == 1:
     # Set the font used for MathJax
     rc('mathtext',**{'default':'regular'})
     rc('figure',**{'figsize':(8,6)})
-
-
-
 
 # %%
 ### Create folder to save data
@@ -70,7 +101,7 @@ vdegree  = 2
 pdegree  = 1
 pcont = False
 
-res = uw.options.getInt("model_resolution", default=64)
+res = uw.options.getInt("model_resolution", default=32)
 refinement = uw.options.getInt("model_refinement", default=0)
 simplex = uw.options.getBool("simplex", default=True)
 filename = "PoiseuilleTest"
@@ -299,6 +330,11 @@ with open(f'{outputPath}{filename}', 'a') as f:
         else:
             f.write(f',{item}')
 
+
+
+# %%
+# ! more output/Stokes-PoiseuilleFlow/PoiseuilleTest
+
 # %%
 
 # import matplotlib.pyplot as plt
@@ -405,5 +441,7 @@ with open(f'{outputPath}{filename}', 'a') as f:
 # plt.savefig('PoiseuilleFlow_benchmark.jpg')
 
 
+
+# %%
 
 # %%

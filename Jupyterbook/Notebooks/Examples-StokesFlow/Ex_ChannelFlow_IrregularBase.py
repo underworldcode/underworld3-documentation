@@ -221,7 +221,7 @@ terrain_mesh.view()
 
 
 
-0/0
+
 
 terrain_mesh.dm.view()
 

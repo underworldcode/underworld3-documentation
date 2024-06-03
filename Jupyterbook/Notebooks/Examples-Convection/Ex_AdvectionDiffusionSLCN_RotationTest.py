@@ -166,7 +166,7 @@ def plot_T_mesh(filename):
             return_img=False,
         )
     
-    pl.show()
+    # pl.show()
 
 
 t_soln2 = uw.discretisation.MeshVariable(
@@ -223,10 +223,6 @@ if uw.mpi.size == 1:
     pl.remove_scalar_bar("mag")
 
     pl.show()
-# -
-
-
-
 # +
 # Advection/diffusion model / update in time
 

@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.15.2
+#       jupytext_version: 1.16.1
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -46,10 +46,14 @@ import sympy
 # +
 ## Reading the checkpoints back in ... 
 
-step = 230
-basename = f"/Users/lmoresi/+Simulations/NS_benchmarks/Re250_res001/NS_test_Re_250_0.01"
-mesh_filename = f"{basename}.mesh.50.h5"
+step = 200
+output_dir = f"output/output_res_20"
+expt_name = f"NS_benchmark_DFG2d_SLCN_1_20"
+mesh_filename = os.path.join(output_dir, expt_name)  + ".mesh.00000.h5"
 mesh_filename
+# -
+
+
 
 # +
 mesh = uw.discretisation.Mesh(mesh_filename)
@@ -62,9 +66,25 @@ passive_swarm_ckpt = uw.swarm.Swarm(mesh, recycle_rate=0)
 
 
 # +
-v_soln_ckpt.read_from_vertex_checkpoint(f"{basename}.U.{step}.h5", "U")
-p_soln_ckpt.read_from_vertex_checkpoint(f"{basename}.P.{step}.h5", "P")
-vorticity_ckpt.read_from_vertex_checkpoint(f"{basename}.omega.{step}.h5", "omega")
+# v_soln_ckpt.read_timestep(f"{basename}.U.{step}.h5", "U")
+# p_soln_ckpt.read_from_vertex_checkpoint(f"{basename}.P.{step}.h5", "P")
+# vorticity_ckpt.read_from_vertex_checkpoint(f"{basename}.omega.{step}.h5", "omega")
+
+
+v_soln_ckpt.read_timestep(
+            expt_name,
+            outputPath=output_dir,
+            data_name="U",
+            index=step,
+        )
+
+p_soln_ckpt.read_timestep(
+            expt_name,
+            outputPath=output_dir,
+            data_name="P",
+            index=step,
+        )
+
 
 # passive_swarm_ckpt.load(f"output/NS_test_Re_250_{res}.passive_swarm.{step}.h5")
 
@@ -116,9 +136,9 @@ if uw.mpi.size == 1:
         cmap="coolwarm",
         edge_color="Black",
         show_edges=False,
-        scalars="Omega",
+        scalars="P",
         use_transparency=False,
-        opacity=1.0,
+        opacity=0.9,
     )
 
     # pl.add_points(swarm_point_cloud, color="Black",
@@ -134,4 +154,6 @@ if uw.mpi.size == 1:
 
     pl.show()
 # -
+v_soln_ckpt.shape
+
 

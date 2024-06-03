@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.16.0
+#       jupytext_version: 1.16.1
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -52,13 +52,14 @@
 # $$
 #      \rho\frac{\mathbf{u}_{[3]} - \mathbf{u}^*}{\Delta t}
 #              = \rho g - \nabla \cdot \left[ \frac{5}{12} \boldsymbol{\tau}
+#                                                         - \frac{1}{12} \boldsymbol{\tau^{**}}
+#
 #                                                          - \frac{1}{12} \boldsymbol{\tau^{**}}
 #                                                           \right] - \nabla p
 # $$
 #
 # Where $\boldsymbol\tau^*$ and $\boldsymbol\tau^{**}$ are the upstream history values at $t - \Delta t$ and $t - 2\Delta t$ respectively.
 # + \frac [markdown] {"incorrectly_encoded_metadata": "{1}{12} \\boldsymbol{\\tau^{* *}} \\right]"}
-#
 # In the Navier-stokes problem, it is common to write $\boldsymbol\tau=\eta \left(\nabla \mathbf u + (\nabla \mathbf u)^T \right)$ and $\boldsymbol\tau^*=\eta \left(\nabla \mathbf u^* + (\nabla \mathbf u^*)^T \right)$ which ignores  rotation and shearing of the stress during the interval $\Delta T$. This simplifies the implementation because only the velocity history is required, not the history of the stress tensor.
 #
 #
@@ -99,11 +100,11 @@
 # $$
 #     \rho\frac{\mathbf{u}_{[2]} - \mathbf{u}^*}{\Delta t}  = \rho g - \frac{1}{2} \nabla \cdot \left[ 2 \dot\varepsilon \eta_{\textrm{eff}_{(1)}} + \left[\frac{\eta}{\Delta t \mu + \eta} + 1\right]\tau^*  \right] + \nabla p
 # $$
-#
+# + \frac [markdown] {"incorrectly_encoded_metadata": "{1}{12} \\boldsymbol{\\tau^{* *}} \\right]"}
 # If we use $\tau^{**}$ in the estimate for the stress rate, we have
 #
 # $$
-#     \frac{3 \tau - 4 \tau^{*} + \tau^{**}}{4 \Delta t \mu} + \frac{\tau}{2 \eta}  = \dot\varepsilon
+#     \frac{3 \tau - 4 \tau^{*} + \tau^{**}} {4 \Delta t \mu} + \frac{\tau}{2 \eta}  = \dot\varepsilon
 # $$
 #
 # Giving
@@ -118,24 +119,21 @@
 #
 #
 # $$
-#     \frac{\mathbf{u}_{[3]} - \mathbf{u}^*}{\Delta t} =   \rho g
-#                 - \nabla \cdot \left[ \frac{5 \dot{\boldsymbol\varepsilon} \eta_{\textrm{eff_(2)}}}{6} +
-#                  \frac{5 \eta \boldsymbol\tau^{*}}{3 \cdot \left(2 \Delta t \mu + 3 \eta\right)} + \frac{2\boldsymbol\tau^{*}}{3}
-#                - \frac{5 \eta \boldsymbol\tau^{**}}{12 \cdot \left(2 \Delta t \mu + 3 \eta\right)} - \frac{\boldsymbol\tau^{**}}{12}
-#                                                                     \right] + \nabla p
+#    \frac{ \mathbf{u}_{[3]} - \mathbf{u}^*}{\Delta t} =   
+#     \rho g
+#     - \nabla \cdot \left[ 
+# \frac{5 \dot\varepsilon \eta_\textrm{eff}}{6} + \frac{5 \eta \tau^{*}}{3 \cdot \left(2 \Delta\,\!t \mu + 3 \eta\right)} - \frac{5 \eta \tau^{**}}{12 \cdot \left(2 \Delta\,\!t \mu + 3 \eta\right)} + \frac{2 \tau^{*}}{3} - \frac{\tau^{**}}{12} \right] + \nabla p
 # $$
-#
-#
-#
-# ---
 #
 # $$
 # \nabla\cdot\left[ \color{blue}{ \boldsymbol{\tau} - p \boldsymbol{I}   }   \right] = \color{green}{\frac{D \boldsymbol{u}}{Dt}} - \rho g
 # $$
-#
 # -
 # $$
-# \frac{5 \dot\varepsilon \eta_\textrm{eff}}{6} + \frac{5 \eta \tau^{*}}{3 \cdot \left(2 \Delta\,\!t \mu + 3 \eta\right)} - \frac{5 \eta \tau^{**}}{12 \cdot \left(2 \Delta\,\!t \mu + 3 \eta\right)} + \frac{2 \tau^{*}}{3} - \frac{\tau^{**}}{12}
+#    \frac{ \mathbf{u}_{[3]} - \mathbf{u}^*}{\Delta t} =   
+#     \rho g
+#     - \nabla \cdot \left[ 
+# \frac{5 \dot\varepsilon \eta_\textrm{eff}}{6} + \frac{5 \eta \tau^{*}}{3 \cdot \left(2 \Delta\,\!t \mu + 3 \eta\right)} - \frac{5 \eta \tau^{**}}{12 \cdot \left(2 \Delta\,\!t \mu + 3 \eta\right)} + \frac{2 \tau^{*}}{3} - \frac{\tau^{**}}{12} \right] + \nabla p
 # $$
 
 # ## Mock up ... BDF / Adams-Moulton coefficients
@@ -160,7 +158,10 @@ import os
 
 # + \frac {"incorrectly_encoded_metadata": "{2 \\tau^{*}}{3}"}
 os.path.join("", "test")
+# -
 
+
+0/0
 
 # +
 
@@ -275,8 +276,8 @@ stress_star_star = uw.swarm.SwarmVariable(
 )
 
 swarm.populate(fill_param=2)
+# -
 
-# +
 stokes = uw.systems.Stokes(
     mesh1,
     velocityField=U,
@@ -285,9 +286,7 @@ stokes = uw.systems.Stokes(
     solver_name="stokes",
 )
 
-stokes
-# -
-uw.systems.Stokes
+uw.systems.Stokes.view()
 
 
 # +
