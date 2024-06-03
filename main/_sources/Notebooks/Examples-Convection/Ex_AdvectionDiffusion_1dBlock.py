@@ -5,14 +5,14 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.16.0
+#       jupytext_version: 1.16.1
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
 #     name: python3
 # ---
 
-# # Advection-diffusion of a hot pipe
+# # Advection-diffusion (1d / cross mesh)
 #
 # - Using the adv_diff solver.
 # - Advection of the rectangular pulse vertically as it also diffuses. The velocity is 0.05 and has a diffusivity value of 1, 0.1 or 0.01
@@ -64,9 +64,9 @@ if uw.mpi.size == 1:
 import sys
 
 init_t = 0.0001
-dt   = 0.0003
+dt   = 0.0006
 velocity = 1000.
-centre = 0.2
+centre = 0.1
 width = 0.2
 
 
@@ -77,7 +77,7 @@ tmax = 1.0 # temp max
 # I think we should get into the habit of doing this consistently with the PETSc interface
 
 res = uw.options.getReal("model_resolution", default=16)
-kappa = uw.options.getInt("kappa", default=1.0)
+kappa = uw.options.getInt("kappa", default=1)
 Tdegree = uw.options.getInt("Tdeg", default=3)
 Vdegree = uw.options.getInt("Vdeg", default=2)
 simplex = uw.options.getBool("simplex", default=True)
@@ -136,7 +136,6 @@ def build_analytic_fn_at_t(time):
     fn = Ts.subs({vs:velocity, ts:time, ks:kappa, delta:width, x0:centre, t0:init_t})
     return fn
 
-
 Ts0 = build_analytic_fn_at_t(time=0.0)
 TsVKT = build_analytic_fn_at_t(time=dt)
 
@@ -158,6 +157,8 @@ adv_diff = uw.systems.AdvDiffusionSLCN(
     solver_name="adv_diff",
 )
 
+
+
 # ### Set up properties of the adv_diff solver
 # - Constitutive model (Diffusivity)
 # - Boundary conditions
@@ -165,14 +166,20 @@ adv_diff = uw.systems.AdvDiffusionSLCN(
 # - Initial temperature distribution 
 
 adv_diff.constitutive_model = uw.constitutive_models.DiffusionModel
-adv_diff.constitutive_model.Parameters.diffusivity = kappa
+adv_diff.constitutive_model.Parameters.diffusivity = 1.0
+
+adv_diff.constitutive_model.Parameters.diffusivity.value
 
 adv_diff.add_dirichlet_bc(tmin, "Left")
 adv_diff.add_dirichlet_bc(tmin, "Right")
 
 
-adv_diff.estimate_dt(v_factor=10)
-steps = int(dt // (10*adv_diff.estimate_dt()))
+print(adv_diff.estimate_dt())
+steps = int(dt // (12*adv_diff.estimate_dt()[1]))
+
+
+
+
 
 # ### Create points to sample the UW results
 
@@ -192,14 +199,24 @@ adv_diff.petsc_options["snes_monitor_short"] = None
 
 # if uw.mpi.size == 1:
 #     adv_diff.petsc_options['pc_type'] = 'lu'
-    
+
+
 # -
 
-while model_time < dt:    
+adv_diff
+
+adv_diff.constitutive_model.diffusivity
+
+
+
+for step in range(0, steps):
     adv_diff.solve(timestep=dt/steps, zero_init_guess=False)
     model_time += dt/steps
-    step += 1
-    print(f"Timestep: {step}, model time {model_time}")
+    print(f"Timestep: {step}/{steps}, model time {model_time}")
+
+
+
+
 
 
 # %%
@@ -238,7 +255,7 @@ if uw.mpi.size == 1:
             cmap="coolwarm",
             edge_color="Black",
             show_edges=True,
-            scalars="T",
+            scalars="T0",
             use_transparency=False,
             show_scalar_bar=False,
             opacity=1,
@@ -272,7 +289,9 @@ if uw.mpi.size == 1:
 
 T_points.point_data["dT"].max()
 
-T_points.point_data["Ta"].max()
+adv_diff
+
+adv_diff.F1
 
 #
 #

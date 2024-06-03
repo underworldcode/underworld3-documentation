@@ -1,0 +1,866 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>&lt;no title&gt; &#8212; Underworld 3</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/customize.css?v=47e70012" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=3ee479438cf8b5e0d341"></script>
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script async="async" kind="hypothesis" src="https://hypothes.is/embed.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Notebooks/Examples-FreeSurface/AnnulusND_FS-OuterSphere';</script>
+    <script src="../../_static/font_button.js?v=3ec2d3a6"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../../FrontPage.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/AuWorldEQ.jpg" class="logo__image only-light" alt="Underworld 3 - Home"/>
+    <script>document.write(`<img src="../../_static/AuWorldEQ.jpg" class="logo__image only-dark" alt="Underworld 3 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../FrontPage.html">
+                    The Underworld Geodynamics Platform
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Instruction Manual</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../Manual/Index.html">Introduction to Underworld 3</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../Manual/Meshes.html">Meshes and model objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Manual/Swarms.html">Particle Swarms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Manual/VariablesAndFunctions.html">Underworld Variables</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Theory</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../Theory/Index.html">Underworld Theory Manual</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../Theory/MathematicalBackground.html">Mathematical Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Theory/FiniteElements.html">The Lagrangian-Particle FEM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Theory/PointwiseFunctions.html">PETSc pointwise functions and PDE solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Theory/LinearAlgebra.html">Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Theory/NonLinear.html">Non Linear Methods</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../Index.html">Index of Sample notebooks</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-PoissonEquation/Readme.html">Solving the Poisson Equation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_Poisson_Gradient_Recovery.html">Poisson Equation with flux recovery</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_Poisson_Cartesian_Generic.html">Poisson Equation (generic)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_Poisson_Spherical.html">Steady state diffusion in a hollow sphere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_DiffusionSLCN_Cartesian-NL.html">Nonlinear diffusion of a hot pipe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_DiffusionSLCN_Cartesian.html">Linear diffusion of a hot pipe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_Poisson_Cartesian.html">Poisson Equation (simple)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-PorousFlow/Readme.html">Porous flow examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PorousFlow/Ex_Darcy_1D_benchmark.html">Darcy flow (1d) using xy coordinates to define permeability distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PorousFlow/Ex_Darcy_1D_benchmark-Swarm.html">Darcy flow (1d) using swarm variable to define permeability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PorousFlow/Ex_Darcy_Cartesian.html">Underworld Groundwater Flow Benchmark 1</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-StokesFlow/Readme.html">Stokes Flow</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Swarm_Bubbles.html">Multiple materials - Drips and Blobs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Cartesian_SolNL.html">Non-linear Stokes benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Sinker.html">Multiple materials - Linear stokes sinker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Cartesian_SolC.html">Stokes Benchmark SolCx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Disk_CylCoords.html">Cylindrical Stokes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Spherical_FreeSlipBCs.html">Stokes flow in a Spherical Domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Swarm_RT_Cartesian.html">Rayleigh Taylor - swarm materials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Swarm_RT_Spherical.html">Rayleigh-Taylor (Level-set based) in the sphere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_WIP_Stokes_Periodic.html">Periodic Mesh Example (WIP)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-Convection/Readme.html">Convection modelling examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_AdvectionDiffusionSLCN_RotationTest.html">Field (SemiLagrange) Advection solver test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_AdvectionDiffusionSwarm_RotationTest.html">Swarm Advection solver test - shear flow driven by a pre-defined, rigid body rotation in a disc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_1_SLCN_Cartesian.html">Constant viscosity convection, Cartesian domain (benchmark)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_2_SLCN_Cartesian-TdepVisc.html">Temperature-dependent viscosity convection, Cartesian Domain(benchmark)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_3_SLCN_Cylindrical-TdepVisc.html">Temperature-dependent viscosity convection, Cylindrical domain (benchmark)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_4_SLCN_Cartesian-NL.html">Non-linear viscosity convection, Cartesian domain (benchmark)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_5_SLCN_Cartesian-Yield.html">Non-linear viscosity convection, Cartesian domain (benchmark)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_Cartesian-Swarm.html">Constant viscosity convection, Cartesian domain (benchmark)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_Cartesian_ThermoChem.html">Thermochemical convection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_Cylinder.html">Stokes in a disc with adv_diff to solve T and back-in-time sampling with particles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_Disc_InternalHeat.html">Convection in a disc with internal heating and rigid or free boundaries</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-Sandbox-VEP/Readme.html">Visco-elastic-plastic models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Sandbox-VEP/Ex_Shear_Band_Notch_Benchmark.html">Spiegelman et al, notch-deformation benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Sandbox-VEP/Ex_Shear_Band_Plasticity_PS.html">Flow and Shear banding around a circular inclusion in pure shear</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Sandbox-VEP/Ex_Shear_Band_Plasticity_SS.html">Shear bands around a circular inclusion in a simple shear flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Sandbox-VEP/Ex_Sheared_Layer_Test.html">Validate constitutive models</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-NavierStokes/Readme.html">Navier Stokes Equation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-NavierStokes/Ex_NavierStokesRotationTest.html">Navier Stokes test: boundary driven ring with step change in boundary conditions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-NavierStokes/Ex_Navier_Stokes_Disk_FreeSlipBCs-Coriolis.html">Cylindrical Stokes with Coriolis term (out of plane)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-NavierStokes/Ex_Navier_Stokes_Disk_NoSlipBCs-Coriolis_ss.html">Cylindrical Stokes with Coriolis term (out of plane)</a></li>
+
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-Utilities/Readme.html">Miscellaneous Tips and Tricks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Utilities/Ex_BCs_from_meshVariables.html">Cylindrical 2D Diffusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Utilities/Ex_Integrals_on_Meshes.html">Using the PETSc mesh integration routines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Utilities/Ex_Projection_Function_Eval.html">Projection-based function evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Utilities/Ex_Tensor_Variables_etc.html">Examples with General Mesh variable manipulation</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/underworldcode/underworld3" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/Notebooks/Examples-FreeSurface/AnnulusND_FS-OuterSphere.py" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.py</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1><no title></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="simple visible nav section-nav flex-column">
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>import os
+
+os.environ[&quot;UW_TIMING_ENABLE&quot;] = &quot;1&quot;
+
+import petsc4py
+import underworld3 as uw
+from underworld3 import timing
+
+import nest_asyncio
+nest_asyncio.apply()
+
+import numpy as np
+import sympy
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>
+r_inf = 1.5
+r_o = 1
+r_i = 0.5
+res = 20
+
+cellsize = 1/res
+
+mesh = uw.meshing.AnnulusInternalBoundary(radiusOuter=r_inf, radiusInternal=r_o, radiusInner=r_i, 
+                                          cellSize_Outer=3.0*cellsize,
+                                          cellSize=cellsize, qdegree=3)
+
+r, th = mesh.CoordinateSystem.R
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Vr = uw.discretisation.MeshVariable(&quot;Vr&quot;, mesh, vtype=uw.VarType.SCALAR, degree=1, continuous=True, varsymbol=r&quot;{v_r}&quot;)
+v = uw.discretisation.MeshVariable(&quot;V&quot;, mesh, vtype=uw.VarType.VECTOR, degree=2, continuous=True, varsymbol=r&quot;\mathbf{v}&quot;)
+p = uw.discretisation.MeshVariable(&quot;P&quot;, mesh, vtype=uw.VarType.SCALAR, degree=1, continuous=True, varsymbol=r&quot;p&quot;)
+M = uw.discretisation.MeshVariable(&quot;M&quot;, mesh, vtype=uw.VarType.SCALAR, degree=0, continuous=False, varsymbol=r&quot;{\cal{M}}&quot;)
+R0 = uw.discretisation.MeshVariable(&quot;r0&quot;, mesh, vtype=uw.VarType.SCALAR, degree=1, continuous=True, varsymbol=r&quot;{r_0}&quot;)
+R0c = uw.discretisation.MeshVariable(&quot;r0c&quot;, mesh, vtype=uw.VarType.SCALAR, degree=0, continuous=False, varsymbol=r&quot;{r_{0,c}}&quot;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>layer_fn = sympy.Piecewise(
+    (1, r &lt;= r_o),
+    (0, True)
+)
+
+with mesh.access(M):
+    M.data[:,0] = uw.function.evalf(layer_fn, M.coords)
+
+with mesh.access(R0):
+    R0.data[:,0] = uw.function.evalf(r, R0.coords)
+
+with mesh.access(R0c):
+    R0c.data[:,0] = uw.function.evalf(r, R0c.coords)
+
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># deformation of upper surface
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>deform_fn = (r / r_o) * sympy.sin(10 * th) / 20
+
+diffuser = uw.systems.Poisson(mesh, Vr)
+diffuser.constitutive_model = uw.constitutive_models.DiffusionModel
+diffuser.constitutive_model.Parameters.diffusivity = 1
+
+diffuser.add_essential_bc((0,), mesh.boundaries.Upper.name)
+diffuser.add_essential_bc((deform_fn,), mesh.boundaries.Internal.name)
+diffuser.add_essential_bc((0,), mesh.boundaries.Lower.name)
+
+diffuser.tolerance = 1.0e-3
+
+diffuser.solve()
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>## Now deform the mesh using this smooth field
+
+displacement = uw.function.evalf(Vr.sym * mesh.CoordinateSystem.unit_e_0 , mesh.data)
+mesh.deform_mesh(mesh.data + displacement)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>if uw.mpi.size == 1:
+    
+    import pyvista as pv
+    import underworld3.visualisation as vis
+
+    pvmesh = vis.mesh_to_pv_mesh(mesh)
+    pvmesh.point_data[&quot;Vr&quot;] = vis.scalar_fn_to_pv_points(pvmesh, Vr.sym)
+    pvmesh.point_data[&quot;R0&quot;]  = vis.scalar_fn_to_pv_points(pvmesh, R0.sym)
+
+    pl = pv.Plotter(window_size=(1000, 750))
+
+    pl.add_mesh(
+        pvmesh,
+        cmap=&quot;seismic&quot;,
+        edge_color=&quot;Black&quot;,
+        show_edges=False,
+        scalars=&quot;R0&quot;,
+        use_transparency=False,
+        opacity=0.9,
+    )
+
+    
+
+    pl.add_mesh(pvmesh,&#39;Black&#39;, &#39;wireframe&#39;, opacity=0.75)
+
+    pl.show()
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>stokes = uw.systems.Stokes(mesh, velocityField=v, pressureField=p, solver_name=&quot;stokes&quot;)
+stokes.constitutive_model = uw.constitutive_models.ViscousFlowModel
+stokes.constitutive_model.Parameters.shear_viscosity_0 = 0.01 + M.sym[0]
+stokes.penalty = 0.0
+
+stokes.bodyforce = -mesh.CoordinateSystem.unit_e_0 * M.sym[0]
+stokes.add_essential_bc((0.0,0.0), mesh.boundaries.Lower.name)
+stokes.add_essential_bc((0.0,0.0), mesh.boundaries.Upper.name)
+
+stokes.petsc_options[&quot;snes_monitor&quot;]= None
+stokes.petsc_options[&quot;ksp_monitor&quot;] = None
+
+stokes.solve()
+
+# FSSA
+delta_t = uw.function.expression(R&quot;\delta t&quot;, 0.5 * stokes.estimate_dt(), &quot;Timestep&quot;)
+
+Gamma = mesh.Gamma / sympy.sqrt(mesh.Gamma.dot(mesh.Gamma))
+FSSA_traction = delta_t*Gamma.dot(v.sym) * Gamma / 2
+stokes.add_natural_bc(FSSA_traction, mesh.boundaries.Internal.name)
+
+stokes.solve()
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>## From now on, use V_r to drive deformation. Again, create a smooth, continuous field
+diffuser._reset()
+diffuser.add_essential_bc((0,), mesh.boundaries.Upper.name)
+diffuser.add_essential_bc(v.sym.dot(mesh.CoordinateSystem.unit_e_0,), mesh.boundaries.Internal.name)
+diffuser.add_essential_bc((0,), mesh.boundaries.Lower.name)
+diffuser.solve()
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># check the mesh if in a notebook / serial
+
+if uw.mpi.size == 1:
+
+    import pyvista as pv
+    import underworld3.visualisation as vis
+
+    pvmesh = vis.mesh_to_pv_mesh(mesh)
+    pvmesh.point_data[&quot;V&quot;] = vis.vector_fn_to_pv_points(pvmesh, v.sym)
+    pvmesh.point_data[&quot;Vmag&quot;] = vis.scalar_fn_to_pv_points(pvmesh, v.sym.dot(v.sym))
+    pvmesh.point_data[&quot;Vr&quot;] = vis.scalar_fn_to_pv_points(pvmesh, Vr.sym[0])
+    pvmesh.point_data[&quot;R0&quot;] = vis.scalar_fn_to_pv_points(pvmesh,R0.sym[0])
+
+    velocity_points = vis.meshVariable_to_pv_cloud(v)
+    velocity_points.point_data[&quot;V&quot;] = vis.vector_fn_to_pv_points(velocity_points, v.sym)
+    velocity_points.point_data[&quot;Vr&quot;] = vis.vector_fn_to_pv_points(velocity_points, Vr.sym[0] * mesh.CoordinateSystem.unit_e_0 )
+
+    points = np.zeros((mesh._centroids.shape[0], 3))
+    points[:, 0] = mesh._centroids[:, 0]
+    points[:, 1] = mesh._centroids[:, 1]
+    point_cloud = pv.PolyData(points)
+
+    pvstream = pvmesh.streamlines_from_source(
+        point_cloud, vectors=&quot;V&quot;, 
+        integration_direction=&quot;forward&quot;, 
+        integrator_type=2,
+        surface_streamlines=True,
+        initial_step_length=0.1,
+        max_time=0.1,
+        max_steps=100
+    )
+    
+    pl = pv.Plotter(window_size=(750, 750))
+
+    
+    pl.add_mesh(
+                pvmesh,
+                cmap=&quot;coolwarm&quot;,
+                edge_color=&quot;Black&quot;,
+                scalars=&quot;R0&quot;,
+                show_edges=True,
+                use_transparency=False,
+                opacity=0.75,
+                )
+    
+    pl.add_arrows(velocity_points.points, velocity_points.point_data[&quot;V&quot;], 
+                  mag=20, color=&quot;Green&quot;)
+
+    
+    pl.add_mesh(pvstream)
+    pl.show(cpos=&quot;xy&quot;)
+
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>## Relaxation loop
+
+for step in range(0,100):
+        
+    diffuser._reset()
+    diffuser.add_essential_bc((0,), mesh.boundaries.Upper.name)
+    diffuser.add_essential_bc(v.sym.dot(mesh.CoordinateSystem.unit_e_0,), mesh.boundaries.Internal.name)
+    diffuser.add_essential_bc((0,), mesh.boundaries.Lower.name)
+    diffuser.solve(zero_init_guess=False)
+    
+    # delta_t.value = stokes.estimate_dt()
+    displacement = delta_t.value * uw.function.evalf(Vr.sym * mesh.CoordinateSystem.unit_e_0 , mesh.data)
+
+    print(f&quot;Displacement - Amplitude: {np.abs(displacement).max()}&quot;)
+
+    mesh.deform_mesh(mesh.data + displacement)
+    
+    stokes.solve(zero_init_guess=False)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># check the mesh if in a notebook / serial
+
+if uw.mpi.size == 1:
+
+    import pyvista as pv
+    import underworld3.visualisation as vis
+
+    pvmesh = vis.mesh_to_pv_mesh(mesh)
+    with mesh.access():
+        pvmesh.cell_data[&quot;R0&quot;] = M.data[...]
+
+    pvmesh_inner = pvmesh.threshold(value=1.0, scalars=&quot;R0&quot;, invert=False)
+
+    pvmesh.point_data[&quot;V&quot;] = vis.vector_fn_to_pv_points(pvmesh, v.sym)
+    pvmesh.point_data[&quot;Vmag&quot;] = vis.scalar_fn_to_pv_points(pvmesh, v.sym.dot(v.sym))
+    pvmesh.point_data[&quot;Vr&quot;] = vis.scalar_fn_to_pv_points(pvmesh, v.sym.dot(mesh.CoordinateSystem.unit_e_0 ))
+    pvmesh.point_data[&quot;M&quot;] = vis.scalar_fn_to_pv_points(pvmesh, M.sym)
+
+    pvmesh_inner.point_data[&quot;V&quot;] = vis.vector_fn_to_pv_points(pvmesh_inner, v.sym)
+    pvmesh_inner.point_data[&quot;Vmag&quot;] = vis.scalar_fn_to_pv_points(pvmesh_inner, v.sym.dot(v.sym))
+    pvmesh_inner.point_data[&quot;Vr&quot;] = vis.scalar_fn_to_pv_points(pvmesh_inner, v.sym.dot(mesh.CoordinateSystem.unit_e_0 ))
+    pvmesh_inner.point_data[&quot;M&quot;] = vis.scalar_fn_to_pv_points(pvmesh_inner, M.sym)
+
+    velocity_points = vis.meshVariable_to_pv_cloud(v)
+    velocity_points.point_data[&quot;V&quot;] = vis.vector_fn_to_pv_points(velocity_points, v.sym * M.sym[0])
+    velocity_points.point_data[&quot;Vr&quot;] = vis.vector_fn_to_pv_points(velocity_points, Vr.sym[0] * M.sym[0]  * mesh.CoordinateSystem.unit_e_0 )
+
+    point_cloud = pvmesh_inner.cell_centers()
+
+    pvstream = pvmesh_inner.streamlines_from_source(
+        point_cloud, vectors=&quot;V&quot;, 
+        integration_direction=&quot;forward&quot;, 
+        integrator_type=2,
+        surface_streamlines=True,
+        initial_step_length=0.1,
+        max_time=0.1,
+        max_steps=100
+    )
+    
+    pl = pv.Plotter(window_size=(750, 750))
+
+    pl.add_mesh(
+                pvmesh_inner,
+                cmap=&quot;seismic&quot;,
+                edge_color=&quot;Black&quot;,
+                scalars=&quot;Vmag&quot;,
+                show_edges=True,
+                use_transparency=False,
+                opacity=0.75,
+               )
+
+    # pl.add_mesh(pvmesh, style=&quot;wireframe&quot;, color=&quot;Grey&quot;, opacity=0.1)
+        
+    
+    pl.add_arrows(velocity_points.points, 
+                  velocity_points.point_data[&quot;V&quot;], 
+                  mag=30, color=&quot;Green&quot;)
+    
+    pl.add_mesh(pvstream)
+
+    pl.show(cpos=&quot;xy&quot;)
+</pre></div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./Notebooks/Examples-FreeSurface"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="simple visible nav section-nav flex-column">
+</ul>
+
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Louis Moresi
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

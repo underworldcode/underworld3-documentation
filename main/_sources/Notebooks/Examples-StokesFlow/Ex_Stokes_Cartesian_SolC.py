@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.16.0
+#       jupytext_version: 1.16.1
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -62,33 +62,31 @@ mesh2 = uw.meshing.StructuredQuadBox(
 mesh = mesh1
 x,y = mesh.X
 # -
-
-
-mesh.view()
-
-stokes = uw.systems.Stokes(mesh, verbose=True)
+stokes = uw.systems.Stokes(mesh, verbose=False)
 
 # +
 v = stokes.Unknowns.u
 p = stokes.Unknowns.p
 
-stokes.constitutive_model=uw.constitutive_models.ViscousFlowModel(stokes.Unknowns)
+stokes.constitutive_model=uw.constitutive_models.ViscousFlowModel  # (stokes.Unknowns)
 stokes.constitutive_model.Parameters.shear_viscosity_0 = 1
 # %%
 T = uw.discretisation.MeshVariable("T", mesh, 1, degree=3, continuous=True, varsymbol=r"{T}")
 T2 = uw.discretisation.MeshVariable("T2", mesh, 1, degree=3, continuous=True, varsymbol=r"{T_2}")
 
-v0 = stokes.Unknowns.u.clone("V0", r"{v_0}")
-v1 = v0.clone("V1", r"{v_1}")
+mesh.view()
+
+v0 = stokes.Unknowns.u.clone("v0", r"{v_0}")
+v1 = v0.clone("v1", r"{v_1}")
 # -
+eta_0 = 1
+x_c = sympy.sympify(1)/2
+f_0 = 1
 
 
-eta_0 = 1.0
-x_c = 0.5
-f_0 = 1.0
+x_c
 
-
-stokes.penalty = 100.0
+stokes.penalty = 100
 stokes.bodyforce = sympy.Matrix(
     [
         0,
@@ -117,7 +115,7 @@ stokes.add_dirichlet_bc((0.0,sympy.oo), "Right")
 
 # We may need to adjust the tolerance if $\Delta \eta$ is large
 
-stokes.tolerance = 1.0e-6
+stokes.tolerance = 1e-6
 
 stokes.petsc_options["snes_monitor"]= None
 stokes.petsc_options["ksp_monitor"] = None
@@ -149,13 +147,16 @@ stokes.petsc_options.setValue("fieldsplit_pressure_pc_mg_cycle_type", "v")
 # stokes.petsc_options.setValue("fieldsplit_pressure_pc_type", "mg")
 # stokes.petsc_options.setValue("fieldsplit_pressure_pc_mg_type", "multiplicative")
 # stokes.petsc_options.setValue("fieldsplit_pressure_pc_mg_cycle_type", "v")
-
-
-# +
-# stokes._setup_pointwise_functions(verbose=True)
-# stokes._setup_discretisation(verbose=True)
-# stokes.dm.ds.view()
 # -
+
+
+stokes.view()
+stokes.constitutive_model.viscosity.view()
+
+uw.function.derivative(stokes.F0.value, stokes.Unknowns.u.sym)
+uw.function.derivative(stokes.F0.value, stokes.Unknowns.L)
+uw.function.derivative(stokes.F1.value, stokes.Unknowns.u.sym)
+uw.function.derivative(stokes.F1.value, stokes.Unknowns.L)
 
 # %%
 # Solve time
@@ -215,6 +216,8 @@ stokes.constitutive_model.Parameters.shear_viscosity_0 = viscosity_fn
 
 stokes.constitutive_model.Parameters.shear_viscosity_0
 
+
+
 stokes.saddle_preconditioner = sympy.simplify(1 / (stokes.constitutive_model.viscosity + stokes.penalty))
 
 # +
@@ -254,7 +257,10 @@ stokes.add_dirichlet_bc((sympy.oo,0.0), "Bottom")
 stokes.add_dirichlet_bc((0.0,sympy.oo), "Left")
 stokes.add_dirichlet_bc((0.0,sympy.oo), "Right")
 stokes.solve()
+# -
 
+
+stokes.view()
 
 # +
 # check the mesh if in a notebook / serial
@@ -325,3 +331,10 @@ except ImportError:
     warnings.warn("Unable to test SolC results as UW2 not available.")
 
 # %%
+# -
+
+uw.systems.Stokes.view()
+
+stokes.view(class_documentation=False)
+
+

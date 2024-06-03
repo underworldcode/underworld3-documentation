@@ -14,19 +14,19 @@
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
 
   
-  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=384b581d" />
@@ -34,16 +34,16 @@
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
     <link rel="stylesheet" type="text/css" href="../../_static/customize.css?v=47e70012" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
-  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=3ee479438cf8b5e0d341"></script>
 
     <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
@@ -54,7 +54,7 @@
     <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
     <script async="async" kind="hypothesis" src="https://hypothes.is/embed.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="../../_static/design-tabs.js?v=36754332"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
@@ -74,27 +74,23 @@
 
   
   
-  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
   
   <div id="pst-scroll-pixel-helper"></div>
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>
-    Back to top
-  </button>
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -116,8 +112,13 @@
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
     </header>
   
 
@@ -183,28 +184,28 @@
         </ul>
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Instruction Manual</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../Manual/Index.html">Introduction to Underworld 3</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../Manual/Index.html">Introduction to Underworld 3</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../Manual/Meshes.html">Meshes and model objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../Manual/Swarms.html">Particle Swarms</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../Manual/VariablesAndFunctions.html">Underworld Variables</a></li>
 </ul>
-</li>
+</details></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Theory</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../Theory/Index.html">Underworld Theory Manual</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../Theory/Index.html">Underworld Theory Manual</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../Theory/MathematicalBackground.html">Mathematical Background</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../Theory/FiniteElements.html">The Lagrangian-Particle FEM</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../Theory/PointwiseFunctions.html">PETSc pointwise functions and PDE solvers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../Theory/LinearAlgebra.html">Linear Algebra</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../Theory/NonLinear.html">Non Linear Methods</a></li>
 </ul>
-</li>
+</details></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../Index.html">Index of Sample notebooks</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-PoissonEquation/Readme.html">Solving the Poisson Equation</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-PoissonEquation/Readme.html">Solving the Poisson Equation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_Poisson_Gradient_Recovery.html">Poisson Equation with flux recovery</a></li>
 
 <li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_Poisson_Cartesian_Generic.html">Poisson Equation (generic)</a></li>
@@ -213,14 +214,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_DiffusionSLCN_Cartesian.html">Linear diffusion of a hot pipe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_Poisson_Cartesian.html">Poisson Equation (simple)</a></li>
 </ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-PorousFlow/Readme.html">Porous flow examples</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-PorousFlow/Readme.html">Porous flow examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../Examples-PorousFlow/Ex_Darcy_1D_benchmark.html">Darcy flow (1d) using xy coordinates to define permeability distribution</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Examples-PorousFlow/Ex_Darcy_1D_benchmark-Swarm.html">Darcy flow (1d) using swarm variable to define permeability</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Examples-PorousFlow/Ex_Darcy_Cartesian.html">Underworld Groundwater Flow Benchmark 1</a></li>
 </ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-StokesFlow/Readme.html">Stokes Flow</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-StokesFlow/Readme.html">Stokes Flow</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Swarm_Bubbles.html">Multiple materials - Drips and Blobs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Cartesian_SolNL.html">Non-linear Stokes benchmark</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Sinker.html">Multiple materials - Linear stokes sinker</a></li>
@@ -231,8 +232,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Swarm_RT_Spherical.html">Rayleigh-Taylor (Level-set based) in the sphere</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_WIP_Stokes_Periodic.html">Periodic Mesh Example (WIP)</a></li>
 </ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-Convection/Readme.html">Convection modelling examples</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-Convection/Readme.html">Convection modelling examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_AdvectionDiffusionSLCN_RotationTest.html">Field (SemiLagrange) Advection solver test</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_AdvectionDiffusionSwarm_RotationTest.html">Swarm Advection solver test - shear flow driven by a pre-defined, rigid body rotation in a disc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_1_SLCN_Cartesian.html">Constant viscosity convection, Cartesian domain (benchmark)</a></li>
@@ -245,28 +246,28 @@
 <li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_Cylinder.html">Stokes in a disc with adv_diff to solve T and back-in-time sampling with particles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_Disc_InternalHeat.html">Convection in a disc with internal heating and rigid or free boundaries</a></li>
 </ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-Sandbox-VEP/Readme.html">Visco-elastic-plastic models</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-Sandbox-VEP/Readme.html">Visco-elastic-plastic models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../Examples-Sandbox-VEP/Ex_Shear_Band_Notch_Benchmark.html">Spiegelman et al, notch-deformation benchmark</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Examples-Sandbox-VEP/Ex_Shear_Band_Plasticity_PS.html">Flow and Shear banding around a circular inclusion in pure shear</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Examples-Sandbox-VEP/Ex_Shear_Band_Plasticity_SS.html">Shear bands around a circular inclusion in a simple shear flow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Examples-Sandbox-VEP/Ex_Sheared_Layer_Test.html">Validate constitutive models</a></li>
 </ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="Readme.html">Navier Stokes Equation</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="Readme.html">Navier Stokes Equation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="Ex_NavierStokesRotationTest.html">Navier Stokes test: boundary driven ring with step change in boundary conditions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Ex_Navier_Stokes_Disk_FreeSlipBCs-Coriolis.html">Cylindrical Stokes with Coriolis term (out of plane)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Ex_Navier_Stokes_Disk_NoSlipBCs-Coriolis_ss.html">Cylindrical Stokes with Coriolis term (out of plane)</a></li>
 
 </ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-Utilities/Readme.html">Miscellaneous Tips and Tricks</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-9"><i class="fa-solid fa-chevron-down"></i></label><ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-Utilities/Readme.html">Miscellaneous Tips and Tricks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../Examples-Utilities/Ex_BCs_from_meshVariables.html">Cylindrical 2D Diffusion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Examples-Utilities/Ex_Integrals_on_Meshes.html">Using the PETSc mesh integration routines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Examples-Utilities/Ex_Projection_Function_Eval.html">Projection-based function evaluation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Examples-Utilities/Ex_Tensor_Variables_etc.html">Examples with General Mesh variable manipulation</a></li>
 </ul>
-</li>
+</details></li>
 </ul>
 
     </div>
@@ -282,7 +283,7 @@
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
 
@@ -291,7 +292,7 @@
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
@@ -502,10 +503,10 @@ document.write(`
 <span class="c1"># These can be set when launching the script as</span>
 <span class="c1"># mpirun python3 scriptname -uw_resolution=0.1 etc</span>
 
-<span class="n">resolution</span> <span class="o">=</span> <span class="n">uw</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getInt</span><span class="p">(</span><span class="s2">&quot;model_resolution&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">resolution</span> <span class="o">=</span> <span class="n">uw</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getInt</span><span class="p">(</span><span class="s2">&quot;model_resolution&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 <span class="n">refinement</span> <span class="o">=</span> <span class="n">uw</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getInt</span><span class="p">(</span><span class="s2">&quot;model_refinement&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">uw</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getInt</span><span class="p">(</span><span class="s2">&quot;model_number&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-<span class="n">maxsteps</span> <span class="o">=</span> <span class="n">uw</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getInt</span><span class="p">(</span><span class="s2">&quot;max_steps&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">uw</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getInt</span><span class="p">(</span><span class="s2">&quot;model_number&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">maxsteps</span> <span class="o">=</span> <span class="n">uw</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getInt</span><span class="p">(</span><span class="s2">&quot;max_steps&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">201</span><span class="p">)</span>
 <span class="n">restart_step</span> <span class="o">=</span> <span class="n">uw</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getInt</span><span class="p">(</span><span class="s2">&quot;restart_step&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -563,7 +564,7 @@ document.write(`
 <span class="c1"># Mesh a 2D pipe with a circular hole</span>
 
 <span class="n">csize</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">resolution</span>
-<span class="n">csize_circle</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">csize</span>
+<span class="n">csize_circle</span> <span class="o">=</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="n">csize</span>
 <span class="n">res</span> <span class="o">=</span> <span class="n">csize_circle</span>
 
 <span class="n">width</span> <span class="o">=</span> <span class="mf">2.2</span>
@@ -674,7 +675,8 @@ document.write(`
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">v_soln</span> <span class="o">=</span> <span class="n">uw</span><span class="o">.</span><span class="n">discretisation</span><span class="o">.</span><span class="n">MeshVariable</span><span class="p">(</span><span class="s2">&quot;U&quot;</span><span class="p">,</span> <span class="n">pipemesh</span><span class="p">,</span> <span class="n">pipemesh</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">vs_soln</span> <span class="o">=</span> <span class="n">uw</span><span class="o">.</span><span class="n">discretisation</span><span class="o">.</span><span class="n">MeshVariable</span><span class="p">(</span><span class="s2">&quot;Us&quot;</span><span class="p">,</span> <span class="n">pipemesh</span><span class="p">,</span> <span class="n">pipemesh</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">p_soln</span> <span class="o">=</span> <span class="n">uw</span><span class="o">.</span><span class="n">discretisation</span><span class="o">.</span><span class="n">MeshVariable</span><span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="n">pipemesh</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">p_soln</span> <span class="o">=</span> <span class="n">uw</span><span class="o">.</span><span class="n">discretisation</span><span class="o">.</span><span class="n">MeshVariable</span><span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="n">pipemesh</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">continuous</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">p_cont</span> <span class="o">=</span> <span class="n">uw</span><span class="o">.</span><span class="n">discretisation</span><span class="o">.</span><span class="n">MeshVariable</span><span class="p">(</span><span class="s2">&quot;Pc&quot;</span><span class="p">,</span> <span class="n">pipemesh</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">continuous</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">vorticity</span> <span class="o">=</span> <span class="n">uw</span><span class="o">.</span><span class="n">discretisation</span><span class="o">.</span><span class="n">MeshVariable</span><span class="p">(</span><span class="s2">&quot;omega&quot;</span><span class="p">,</span> <span class="n">pipemesh</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">r_inc</span> <span class="o">=</span> <span class="n">uw</span><span class="o">.</span><span class="n">discretisation</span><span class="o">.</span><span class="n">MeshVariable</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">pipemesh</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">rho</span> <span class="o">=</span> <span class="n">uw</span><span class="o">.</span><span class="n">discretisation</span><span class="o">.</span><span class="n">MeshVariable</span><span class="p">(</span><span class="s2">&quot;rho&quot;</span><span class="p">,</span> <span class="n">pipemesh</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">varsymbol</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;{\rho}&quot;</span><span class="p">)</span>
@@ -683,6 +685,7 @@ document.write(`
 <span class="n">work</span> <span class="o">=</span> <span class="n">uw</span><span class="o">.</span><span class="n">discretisation</span><span class="o">.</span><span class="n">MeshVariable</span><span class="p">(</span>
     <span class="s2">&quot;W&quot;</span><span class="p">,</span> <span class="n">pipemesh</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">vtype</span><span class="o">=</span><span class="n">uw</span><span class="o">.</span><span class="n">VarType</span><span class="o">.</span><span class="n">SCALAR</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">continuous</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">)</span>
+
 <span class="n">St</span> <span class="o">=</span> <span class="n">uw</span><span class="o">.</span><span class="n">discretisation</span><span class="o">.</span><span class="n">MeshVariable</span><span class="p">(</span>
     <span class="sa">r</span><span class="s2">&quot;Stress&quot;</span><span class="p">,</span>
     <span class="n">pipemesh</span><span class="p">,</span>
@@ -734,7 +737,7 @@ document.write(`
     <span class="n">pipemesh</span><span class="p">,</span>
     <span class="n">velocityField</span><span class="o">=</span><span class="n">v_soln</span><span class="p">,</span>
     <span class="n">pressureField</span><span class="o">=</span><span class="n">p_soln</span><span class="p">,</span>
-    <span class="n">rho</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span>
+    <span class="n">rho</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
     <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">solver_name</span><span class="o">=</span><span class="s2">&quot;navier_stokes&quot;</span><span class="p">,</span>
     <span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
@@ -744,7 +747,7 @@ document.write(`
 
 <span class="c1"># Constant visc</span>
 
-<span class="n">navier_stokes</span><span class="o">.</span><span class="n">penalty</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">navier_stokes</span><span class="o">.</span><span class="n">penalty</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="n">navier_stokes</span><span class="o">.</span><span class="n">bodyforce</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 
 <span class="n">hw</span> <span class="o">=</span> <span class="mf">1000.0</span> <span class="o">/</span> <span class="n">res</span>
@@ -762,9 +765,23 @@ document.write(`
 <span class="n">navier_stokes</span><span class="o">.</span><span class="n">add_dirichlet_bc</span><span class="p">((</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span> <span class="s2">&quot;top&quot;</span><span class="p">)</span>
 <span class="n">navier_stokes</span><span class="o">.</span><span class="n">add_dirichlet_bc</span><span class="p">((</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span> <span class="s2">&quot;bottom&quot;</span><span class="p">)</span>
 <span class="n">navier_stokes</span><span class="o">.</span><span class="n">add_dirichlet_bc</span><span class="p">((</span><span class="n">Vb</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span> <span class="s2">&quot;left&quot;</span><span class="p">)</span>
-
-<span class="n">navier_stokes</span><span class="o">.</span><span class="n">tolerance</span> <span class="o">=</span> <span class="mf">1.0e-3</span>
-<span class="n">navier_stokes</span><span class="o">.</span><span class="n">delta_t</span> <span class="o">=</span> <span class="mf">10.0</span>  <span class="c1"># stokes-like at the beginning</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">continuous_pressure_projection</span> <span class="o">=</span> <span class="n">uw</span><span class="o">.</span><span class="n">systems</span><span class="o">.</span><span class="n">Projection</span><span class="p">(</span><span class="n">pipemesh</span><span class="p">,</span> <span class="n">p_cont</span><span class="p">)</span>
+<span class="n">continuous_pressure_projection</span><span class="o">.</span><span class="n">uw_function</span> <span class="o">=</span> <span class="n">p_soln</span><span class="o">.</span><span class="n">sym</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">continuous_pressure_projection</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">navier_stokes</span><span class="o">.</span><span class="n">tolerance</span> <span class="o">=</span> <span class="mf">1.0e-4</span>
+<span class="n">navier_stokes</span><span class="o">.</span><span class="n">delta_t</span> <span class="o">=</span> <span class="mi">10</span> <span class="c1"># stokes-like at the beginning</span>
 
 <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># Steady state !</span>
     <span class="c1"># remove the d/dt term ... replace the time dependence with the</span>
@@ -781,13 +798,6 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">navier_stokes</span><span class="o">.</span><span class="n">view</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">navier_stokes</span><span class="o">.</span><span class="n">constitutive_model</span><span class="o">.</span><span class="n">flux</span>
 </pre></div>
 </div>
 </div>
@@ -838,6 +848,13 @@ document.write(`
 <span class="n">nodal_vorticity_from_v</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 
 <span class="n">timing</span><span class="o">.</span><span class="n">print_table</span><span class="p">(</span><span class="n">display_fraction</span><span class="o">=</span><span class="mf">0.999</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">continuous_pressure_projection</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -927,18 +944,25 @@ document.write(`
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ts</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">elapsed_time</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">dt_ns</span> <span class="o">=</span> <span class="mf">0.005</span>
+<span class="n">delta_t_diff</span><span class="p">,</span> <span class="n">delta_t_adv</span>  <span class="o">=</span> <span class="n">navier_stokes</span><span class="o">.</span><span class="n">estimate_dt</span><span class="p">()</span>
+<span class="n">delta_t</span> <span class="o">=</span> <span class="n">dt_ns</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ts</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">elapsed_time</span> <span class="o">=</span> <span class="mf">0.0</span>
-<span class="n">dt_ns</span> <span class="o">=</span> <span class="mf">0.01</span>
-<span class="n">delta_t_cfl</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">navier_stokes</span><span class="o">.</span><span class="n">estimate_dt</span><span class="p">()</span>
-<span class="n">delta_t</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">delta_t_cfl</span><span class="p">,</span> <span class="n">dt_ns</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dt_adv -&gt; </span><span class="si">{</span><span class="n">delta_t_adv</span><span class="si">}</span><span class="s2">; Dt_diff -&gt; </span><span class="si">{</span><span class="n">delta_t_diff</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">delta_t</span> <span class="o">/</span> <span class="n">delta_t_adv</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -946,12 +970,8 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">maxsteps</span><span class="p">):</span> <span class="c1">#1500</span>
-    <span class="n">delta_t_cfl</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">navier_stokes</span><span class="o">.</span><span class="n">estimate_dt</span><span class="p">()</span>
 
-    <span class="k">if</span> <span class="n">step</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">delta_t</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">delta_t_cfl</span><span class="p">,</span> <span class="n">dt_ns</span><span class="p">)</span>
-
-    <span class="n">navier_stokes</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">timestep</span><span class="o">=</span><span class="n">dt_ns</span><span class="p">,</span> <span class="n">zero_init_guess</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">navier_stokes</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">timestep</span><span class="o">=</span><span class="n">delta_t</span><span class="p">,</span> <span class="n">zero_init_guess</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="c1"># update passive swarm</span>
     <span class="n">passive_swarm</span><span class="o">.</span><span class="n">advection</span><span class="p">(</span><span class="n">v_soln</span><span class="o">.</span><span class="n">sym</span><span class="p">,</span> <span class="n">delta_t</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">corrector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">evalf</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -966,7 +986,7 @@ document.write(`
             <span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.195</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.01</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">npoints</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
 
     <span class="k">if</span> <span class="n">uw</span><span class="o">.</span><span class="n">mpi</span><span class="o">.</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Timestep </span><span class="si">{}</span><span class="s2">, t </span><span class="si">{}</span><span class="s2">, dt </span><span class="si">{}</span><span class="s2">, dt_s </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">elapsed_time</span><span class="p">,</span> <span class="n">delta_t</span><span class="p">,</span> <span class="n">delta_t_cfl</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Timestep </span><span class="si">{}</span><span class="s2">, t </span><span class="si">{}</span><span class="s2">, dt </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">elapsed_time</span><span class="p">,</span> <span class="n">delta_t</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">ts</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">nodal_vorticity_from_v</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
@@ -1009,6 +1029,7 @@ document.write(`
     <span class="n">pvmesh</span><span class="o">.</span><span class="n">point_data</span><span class="p">[</span><span class="s2">&quot;Vmag&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vis</span><span class="o">.</span><span class="n">scalar_fn_to_pv_points</span><span class="p">(</span><span class="n">pvmesh</span><span class="p">,</span> <span class="n">v_soln</span><span class="o">.</span><span class="n">sym</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v_soln</span><span class="o">.</span><span class="n">sym</span><span class="p">))</span>
     <span class="n">pvmesh</span><span class="o">.</span><span class="n">point_data</span><span class="p">[</span><span class="s2">&quot;Omega&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vis</span><span class="o">.</span><span class="n">scalar_fn_to_pv_points</span><span class="p">(</span><span class="n">pvmesh</span><span class="p">,</span> <span class="n">vorticity</span><span class="o">.</span><span class="n">sym</span><span class="p">)</span>
     <span class="n">pvmesh</span><span class="o">.</span><span class="n">point_data</span><span class="p">[</span><span class="s2">&quot;P&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vis</span><span class="o">.</span><span class="n">scalar_fn_to_pv_points</span><span class="p">(</span><span class="n">pvmesh</span><span class="p">,</span> <span class="n">p_soln</span><span class="o">.</span><span class="n">sym</span><span class="p">)</span>
+    <span class="n">pvmesh</span><span class="o">.</span><span class="n">point_data</span><span class="p">[</span><span class="s2">&quot;Pc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vis</span><span class="o">.</span><span class="n">scalar_fn_to_pv_points</span><span class="p">(</span><span class="n">pvmesh</span><span class="p">,</span> <span class="n">p_cont</span><span class="o">.</span><span class="n">sym</span><span class="p">)</span>
     
     <span class="n">velocity_points</span> <span class="o">=</span> <span class="n">vis</span><span class="o">.</span><span class="n">meshVariable_to_pv_cloud</span><span class="p">(</span><span class="n">v_soln</span><span class="p">)</span>
     <span class="n">velocity_points</span><span class="o">.</span><span class="n">point_data</span><span class="p">[</span><span class="s2">&quot;V&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vis</span><span class="o">.</span><span class="n">vector_fn_to_pv_points</span><span class="p">(</span><span class="n">velocity_points</span><span class="p">,</span> <span class="n">v_soln</span><span class="o">.</span><span class="n">sym</span><span class="p">)</span>
@@ -1036,20 +1057,20 @@ document.write(`
 
     <span class="n">pl</span><span class="o">.</span><span class="n">add_arrows</span><span class="p">(</span><span class="n">velocity_points</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">velocity_points</span><span class="o">.</span><span class="n">point_data</span><span class="p">[</span><span class="s2">&quot;V&quot;</span><span class="p">],</span> <span class="n">mag</span><span class="o">=</span><span class="mf">0.025</span> <span class="o">/</span> <span class="n">U0</span><span class="p">,</span> <span class="n">opacity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)</span>
 
-    <span class="n">pl</span><span class="o">.</span><span class="n">add_points</span><span class="p">(</span>
-        <span class="n">point_cloud</span><span class="p">,</span>
-        <span class="n">color</span><span class="o">=</span><span class="s2">&quot;Black&quot;</span><span class="p">,</span>
-        <span class="n">render_points_as_spheres</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">point_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-        <span class="n">opacity</span><span class="o">=</span><span class="mf">0.66</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="c1"># pl.add_points(</span>
+    <span class="c1">#     point_cloud,</span>
+    <span class="c1">#     color=&quot;Black&quot;,</span>
+    <span class="c1">#     render_points_as_spheres=False,</span>
+    <span class="c1">#     point_size=5,</span>
+    <span class="c1">#     opacity=0.66,</span>
+    <span class="c1"># )</span>
 
     <span class="n">pl</span><span class="o">.</span><span class="n">add_mesh</span><span class="p">(</span>
         <span class="n">pvmesh</span><span class="p">,</span>
         <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span>
-        <span class="n">edge_color</span><span class="o">=</span><span class="s2">&quot;Black&quot;</span><span class="p">,</span>
+        <span class="n">edge_color</span><span class="o">=</span><span class="s2">&quot;Grey&quot;</span><span class="p">,</span>
         <span class="n">show_edges</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">scalars</span><span class="o">=</span><span class="s2">&quot;Omega&quot;</span><span class="p">,</span>
+        <span class="n">scalars</span><span class="o">=</span><span class="s2">&quot;P&quot;</span><span class="p">,</span>
         <span class="n">use_transparency</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">opacity</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
     <span class="p">)</span>
@@ -1061,8 +1082,8 @@ document.write(`
         <span class="n">passive_swarm_points</span><span class="p">,</span>
         <span class="n">color</span><span class="o">=</span><span class="s2">&quot;Black&quot;</span><span class="p">,</span>
         <span class="n">render_points_as_spheres</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">point_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-        <span class="n">opacity</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">point_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">opacity</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">pl</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -1072,15 +1093,33 @@ document.write(`
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># with pipemesh.access():</span>
-<span class="c1">#     print(navier_stokes.DFDt.psi_star[0].data.max())</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">pipemesh</span><span class="o">.</span><span class="n">access</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">navier_stokes</span><span class="o">.</span><span class="n">DFDt</span><span class="o">.</span><span class="n">psi_star</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># navier_stokes._u_f1</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">navier_stokes</span><span class="o">.</span><span class="n">_u_f1</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">navier_stokes</span><span class="o">.</span><span class="n">_u_f0</span>
+
+ <span class="n">pvmesh</span><span class="o">.</span><span class="n">point_data</span><span class="p">[</span><span class="s2">&quot;P&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+ <span class="n">pvmesh</span><span class="o">.</span><span class="n">point_data</span><span class="p">[</span><span class="s2">&quot;Pc&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">navier_stokes</span><span class="o">.</span><span class="n">penalty</span>
 </pre></div>
 </div>
 </div>
@@ -1114,7 +1153,7 @@ document.write(`
               
               
               
-                <footer class="prev-next-footer">
+                <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
 </div>
@@ -1123,8 +1162,6 @@ document.write(`
             </div>
             
             
-              
-                <div class="bd-sidebar-secondary bd-toc"></div>
               
             
           </div>
@@ -1162,8 +1199,8 @@ By Louis Moresi
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+  <script src="../../_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341"></script>
 
   <footer class="bd-footer">
   </footer>

@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.16.0
+#       jupytext_version: 1.16.1
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -32,7 +32,7 @@ minX, maxX = -1.0, 0.0
 minY, maxY = -1.0, 0.0
 
 mesh = uw.meshing.UnstructuredSimplexBox(
-    minCoords=(minX, minY), maxCoords=(maxX, maxY), cellSize=0.05, qdegree=3
+    minCoords=(minX, minY), maxCoords=(maxX, maxY), cellSize=1/25, qdegree=3
 )
 
 
@@ -52,12 +52,12 @@ darcy.petsc_options[
 ] = 1.0e-6  # Needs to be smaller than the contrast in properties
 
 darcy.constitutive_model = uw.constitutive_models.DarcyFlowModel
-darcy.constitutive_model.Parameters.permeability = 1
+
 # -
 
 
-p_soln_0 = p_soln.clone("P_no_g", r"{p_\textrm{no g}}")
-v_soln_0 = v_soln.clone("V_no_g", r"{v_\textrm{no g}}")
+p_soln_0 = p_soln.clone("P_no_g", r"{p_\textrm{(no g)}}")
+v_soln_0 = v_soln.clone("V_no_g", r"{v_\textrm{(no g)}}")
 
 # +
 # Groundwater pressure boundary condition on the bottom wall
@@ -102,9 +102,6 @@ darcy.constitutive_model.Parameters.s = sympy.Matrix([0, -1]).T
 darcy.solve()
 
 # -
-
-
-
 if uw.mpi.size == 1:
 
     import pyvista as pv
@@ -157,11 +154,11 @@ if uw.mpi.size == 1:
 # +
 # set up interpolation coordinates
 ycoords = np.linspace(minY + 0.001 * (maxY - minY), maxY - 0.001 * (maxY - minY), 100)
-xcoords = np.full_like(ycoords, -1)
+xcoords = np.full_like(ycoords, -0.5)
 xy_coords = np.column_stack([xcoords, ycoords])
 
-pressure_interp = uw.function.evalf(p_soln.sym[0], xy_coords)
-pressure_interp_0 = uw.function.evalf(p_soln_0.sym[0], xy_coords)
+pressure_interp = uw.function.evaluate(p_soln.sym[0], xy_coords)
+pressure_interp_0 = uw.function.evaluate(p_soln_0.sym[0], xy_coords)
 
 
 # +
@@ -218,6 +215,14 @@ darcy.view()
 
 darcy.darcy_flux
 
+darcy
 
+darcy.F0
+
+darcy.F1
+
+assert np.allclose(pressure_analytic, pressure_interp, atol=0.01)
+
+darcy.F1
 
 
