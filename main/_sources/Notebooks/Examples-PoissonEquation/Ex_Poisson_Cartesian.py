@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.15.2
+#       jupytext_version: 1.16.2
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -20,10 +20,6 @@
 # ## Generic scalar solver class
 
 
-# to fix trame issue
-import nest_asyncio
-nest_asyncio.apply()
-
 # +
 from petsc4py import PETSc
 
@@ -36,8 +32,6 @@ from underworld3 import timing
 
 import numpy as np
 import sympy
-
-from IPython.display import display
 
 
 # +
@@ -127,8 +121,10 @@ with mesh.access():
 
 # Validate
 
-if uw.mpi.size == 1:
-    
+if uw.is_interactive_vis:
+    # to fix trame issue
+    import nest_asyncio
+    nest_asyncio.apply()
     import pyvista as pv
     import underworld3.visualisation as vis
 
@@ -189,8 +185,11 @@ mesh._evaluation_hash = None
 
 # Visual validation
 
-if uw.mpi.size == 1:
-   
+if uw.is_interactive_vis:
+    # to fix trame issue
+    import nest_asyncio
+    nest_asyncio.apply()
+    
     import pyvista as pv
     import underworld3.visualisation as vis
    
@@ -227,12 +226,12 @@ if uw.mpi.size == 1:
 
 abs_r2 = x**2 + y**2
 poisson.f = -16 * abs_r2
-poisson.add_dirichlet_bc(abs_r2, "Bottom", components=0)
-poisson.add_dirichlet_bc(abs_r2, "Top", components=0)
-poisson.add_dirichlet_bc(abs_r2, "Right", components=0)
-poisson.add_dirichlet_bc(abs_r2, "Left", components=0)
+poisson.add_dirichlet_bc([abs_r2], "Bottom")
+poisson.add_dirichlet_bc([abs_r2], "Top")
+poisson.add_dirichlet_bc([abs_r2], "Right")
+poisson.add_dirichlet_bc([abs_r2], "Left")
 
-display(poisson.f)
+poisson.f
 
 # Constitutive law (diffusivity)
 # Linear solver first
@@ -262,7 +261,10 @@ poisson.solve(zero_init_guess=False)
 
 # Validate
 
-if uw.mpi.size == 1:
+if uw.is_interactive_vis:
+    # to fix trame issue
+    import nest_asyncio
+    nest_asyncio.apply()
     
     import pyvista as pv
     import underworld3.visualisation as vis
@@ -276,7 +278,7 @@ if uw.mpi.size == 1:
         pvmesh2,
         cmap="coolwarm",
         edge_color="Black",
-        show_edges=True,
+        show_edges=False,
         scalars="T",
         use_transparency=False,
         opacity=0.5,
@@ -314,7 +316,10 @@ sympy.diff(scalar.sym[0], mesh.X[1])
 
 # Validate
 
-if uw.mpi.size == 1:
+if uw.is_interactive_vis:
+    # to fix trame issue
+    import nest_asyncio
+    nest_asyncio.apply()
     
     import pyvista as pv
     import underworld3.visualisation as vis
