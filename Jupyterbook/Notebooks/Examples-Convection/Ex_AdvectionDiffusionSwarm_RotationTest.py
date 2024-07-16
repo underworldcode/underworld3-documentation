@@ -24,14 +24,11 @@ options = PETSc.Options()
 # os.environ["SYMPY_USE_CACHE"]="no"
 
 # options.getAll()
-# +
-import meshio
-
+# -
 meshball = uw.meshing.Annulus(
     radiusOuter=1.0, radiusInner=0.5, cellSize=0.2, refinement=1, qdegree=3
 )
 x, y = meshball.X
-# -
 
 
 v_soln = uw.discretisation.MeshVariable("U", meshball, meshball.dim, degree=2)
