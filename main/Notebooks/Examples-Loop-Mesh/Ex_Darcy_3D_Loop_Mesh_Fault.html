@@ -1,0 +1,1034 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Darcy flow in 3D with Loop mesh and fault &#8212; Underworld 3</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/customize.css?v=47e70012" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script async="async" kind="hypothesis" src="https://hypothes.is/embed.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Notebooks/Examples-Loop-Mesh/Ex_Darcy_3D_Loop_Mesh_Fault';</script>
+    <script src="../../_static/font_button.js?v=3ec2d3a6"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../FrontPage.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/AuWorldEQ.jpg" class="logo__image only-light" alt="Underworld 3 - Home"/>
+    <script>document.write(`<img src="../../_static/AuWorldEQ.jpg" class="logo__image only-dark" alt="Underworld 3 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../FrontPage.html">
+                    The Underworld Geodynamics Platform
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Instruction Manual</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../Manual/Index.html">Introduction to Underworld 3</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../Manual/Meshes.html">Meshes and model objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Manual/Swarms.html">Particle Swarms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Manual/VariablesAndFunctions.html">Underworld Variables</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Theory</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../Theory/Index.html">Underworld Theory Manual</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../Theory/MathematicalBackground.html">Mathematical Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Theory/FiniteElements.html">The Lagrangian-Particle FEM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Theory/PointwiseFunctions.html">PETSc pointwise functions and PDE solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Theory/LinearAlgebra.html">Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Theory/NonLinear.html">Non Linear Methods</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../Index.html">Index of Sample notebooks</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-PoissonEquation/Readme.html">Solving the Poisson Equation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_Poisson_Gradient_Recovery.html">Poisson Equation with flux recovery</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_Poisson_Cartesian_Generic.html">Poisson Equation (generic)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_Poisson_Spherical.html">Steady state diffusion in a hollow sphere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_DiffusionSLCN_Cartesian-NL.html">Nonlinear diffusion of a hot pipe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_DiffusionSLCN_Cartesian.html">Linear diffusion of a hot pipe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_Poisson_Cartesian.html">Poisson Equation (simple)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-PorousFlow/Readme.html">Porous flow examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PorousFlow/Ex_Darcy_1D_benchmark.html">Darcy flow (1d) using xy coordinates to define permeability distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PorousFlow/Ex_Darcy_1D_benchmark-Swarm.html">Darcy flow (1d) using swarm variable to define permeability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PorousFlow/Ex_Darcy_Cartesian.html">Underworld Groundwater Flow Benchmark 1</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-StokesFlow/Readme.html">Stokes Flow</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Swarm_Bubbles.html">Multiple materials - Drips and Blobs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Cartesian_SolNL.html">Non-linear Stokes benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Sinker.html">Multiple materials - Linear stokes sinker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Cartesian_SolC.html">Stokes Benchmark SolCx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Disk_CylCoords.html">Cylindrical Stokes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Spherical_FreeSlipBCs.html">Stokes flow in a Spherical Domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Swarm_RT_Cartesian.html">Rayleigh Taylor - swarm materials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Swarm_RT_Spherical.html">Rayleigh-Taylor (Level-set based) in the sphere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_WIP_Stokes_Periodic.html">Periodic Mesh Example (WIP)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-Convection/Readme.html">Convection modelling examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_AdvectionDiffusionSLCN_RotationTest.html">Field (SemiLagrange) Advection solver test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_AdvectionDiffusionSwarm_RotationTest.html">Swarm Advection solver test - shear flow driven by a pre-defined, rigid body rotation in a disc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_1_SLCN_Cartesian.html">Constant viscosity convection, Cartesian domain (benchmark)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_2_SLCN_Cartesian-TdepVisc.html">Temperature-dependent viscosity convection, Cartesian Domain(benchmark)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_3_SLCN_Cylindrical-TdepVisc.html">Temperature-dependent viscosity convection, Cylindrical domain (benchmark)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_4_SLCN_Cartesian-NL.html">Non-linear viscosity convection, Cartesian domain (benchmark)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_5_SLCN_Cartesian-Yield.html">Non-linear viscosity convection, Cartesian domain (benchmark)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_Cartesian-Swarm.html">Constant viscosity convection, Cartesian domain (benchmark)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_Cartesian_ThermoChem.html">Thermochemical convection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_Cylinder.html">Stokes in a disc with adv_diff to solve T and back-in-time sampling with particles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_Disc_InternalHeat.html">Convection in a disc with internal heating and rigid or free boundaries</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-Sandbox-VEP/Readme.html">Visco-elastic-plastic models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Sandbox-VEP/Ex_Shear_Band_Notch_Benchmark.html">Spiegelman et al, notch-deformation benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Sandbox-VEP/Ex_Shear_Band_Plasticity_PS.html">Flow and Shear banding around a circular inclusion in pure shear</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Sandbox-VEP/Ex_Shear_Band_Plasticity_SS.html">Shear bands around a circular inclusion in a simple shear flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Sandbox-VEP/Ex_Sheared_Layer_Test.html">Validate constitutive models</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-NavierStokes/Readme.html">Navier Stokes Equation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-NavierStokes/Ex_NavierStokesRotationTest.html">Navier Stokes test: boundary driven ring with step change in boundary conditions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-NavierStokes/Ex_Navier_Stokes_Disk_FreeSlipBCs-Coriolis.html">Cylindrical Stokes with Coriolis term (out of plane)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-NavierStokes/Ex_Navier_Stokes_Disk_NoSlipBCs-Coriolis_ss.html">Cylindrical Stokes with Coriolis term (out of plane)</a></li>
+
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-Utilities/Readme.html">Miscellaneous Tips and Tricks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Utilities/Ex_BCs_from_meshVariables.html">Cylindrical 2D Diffusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Utilities/Ex_Integrals_on_Meshes.html">Using the PETSc mesh integration routines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Utilities/Ex_Projection_Function_Eval.html">Projection-based function evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Utilities/Ex_Tensor_Variables_etc.html">Examples with General Mesh variable manipulation</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/underworldcode/underworld3" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/Notebooks/Examples-Loop-Mesh/Ex_Darcy_3D_Loop_Mesh_Fault.py" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.py</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Darcy flow in 3D with Loop mesh and fault</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Darcy flow in 3D with Loop mesh and fault</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#following-commented-code-is-related-to-visualization-in-pyvista">Following commented code is related to visualization in pyvista</a></li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="darcy-flow-in-3d-with-loop-mesh-and-fault">
+<h1>Darcy flow in 3D with Loop mesh and fault<a class="headerlink" href="#darcy-flow-in-3d-with-loop-mesh-and-fault" title="Link to this heading">#</a></h1>
+<p>To fully understand this example, it is recommended to run and study the following examples:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Ex_Darcy_1D_benchmark.py</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Ex_Darcy_3D_flow_z_axis.py</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Ex_Darcy_3D_flow_x_axis.py</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Ex_Darcy_3D_Loop_Mesh.py</span></code></p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># to fix trame issue
+import nest_asyncio
+nest_asyncio.apply()
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>import underworld3 as uw
+import numpy as np
+from enum import Enum
+from petsc4py import PETSc
+import sympy
+from sympy import Piecewise, ceiling, Abs
+import matplotlib.pyplot as plt
+
+options = PETSc.Options()
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># vis tools
+if uw.mpi.size == 1:
+    import pyvista as pv
+    import underworld3.visualisation as vis
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># importing loop meshing tools
+from underworld3.utilities import create_dmplex_from_medit
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># loading mesh data from dmplex
+medit_plex = create_dmplex_from_medit(&#39;./meshout.mesh&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>class boundaries_3D(Enum):
+    Bottom = 395
+    Top = 396
+    Right = 392
+    Left = 391
+    Front = 393
+    Back = 394
+    
+class boundary_normals_3D(Enum):
+    Bottom = sympy.Matrix([0, 0, 1])
+    Top = sympy.Matrix([0, 0, 1])
+    Right = sympy.Matrix([1, 0, 0])
+    Left = sympy.Matrix([1, 0, 0])
+    Front = sympy.Matrix([0, 1, 0])
+    Back = sympy.Matrix([0, 1, 0])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># mesh length
+minX, maxX = 0.0, 10.0
+minY, maxY = 0.0, 10.0
+minZ, maxZ = 0.0, 2.0
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># creating mesh from plex
+mesh = uw.meshing.Mesh(medit_plex, boundaries=boundaries_3D, boundary_normals=boundary_normals_3D)
+mesh.dm.view()
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># mesh.view()
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="following-commented-code-is-related-to-visualization-in-pyvista">
+<h1>Following commented code is related to visualization in pyvista<a class="headerlink" href="#following-commented-code-is-related-to-visualization-in-pyvista" title="Link to this heading">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># def get_labels(plex, depth, label_name):
+#     # Get all label values
+#     tet_pStart, tet_pEnd = plex.getDepthStratum(depth)
+#     label_values = []
+#     for point in range(tet_pStart, tet_pEnd):
+#         label_value = plex.getLabelValue(label_name, point)
+#         if label_value is not None:
+#             label_values.append(label_value)
+
+#     return np.array(label_values)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># pvmesh = vis.mesh_to_pv_mesh(mesh)
+# pvmesh.cell_data[&#39;tetra_data&#39;] = get_labels(mesh.dm, 3, &#39;TetraLabels&#39;) - 400
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># # print values in tetra data
+# print(np.unique(get_labels(mesh.dm, 3, &#39;TetraLabels&#39;)))
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># # plotting mesh and cell data 
+# pl = pv.Plotter() # pv.Plotter(window_size=(550, 550))
+# pl.add_mesh(pvmesh, edge_color=&quot;Grey&quot;, show_edges=True, use_transparency=False, opacity=1.0, 
+#             scalars=&#39;tetra_data&#39;, cmap=&#39;tab10&#39;, clim=(0, 7))
+# pl.show(cpos=&quot;xy&quot;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># # print values in line data
+# print(np.unique(np.unique(get_labels(mesh.dm, 1, &#39;LineLabels&#39;))))
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># # Create a PolyData object for the edges
+# points = pvmesh.points  # Get the vertices of the mesh
+# edge_polydata = pv.PolyData()
+# edge_polydata.points = points
+
+# # Create lines from the edge connections
+# edges = mesh_data.get(&#39;line&#39;)
+# lines = np.hstack([np.array([2, edge[0], edge[1]]) for edge in edges])
+# edge_polydata.lines = lines
+
+# # Assign the edge data to the PolyData object
+# edge_polydata[&quot;line_data&quot;] = mesh_data.get(&#39;line_data&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># # print values in triangle data
+# print(np.unique(mesh_data.get(&#39;triangle_data&#39;)))
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># # Create a PolyData object for the faces
+# cond = np.where(np.logical_or(mesh_data.get(&#39;triangle_data&#39;)==2, mesh_data.get(&#39;triangle_data&#39;)==4))
+# # cond = np.where(mesh_data.get(&#39;triangle_data&#39;)==10)
+# # cond = ...
+
+# faces = mesh_data[&#39;triangle&#39;][cond]
+# face_polydata = pv.PolyData()
+# face_polydata.points = points
+# face_conn = np.hstack([np.hstack(([len(face)], face)) for face in faces])
+
+# # Set the faces in the PolyData object
+# face_polydata.faces = face_conn
+
+# # Assign the face data to the PolyData object
+# face_polydata[&quot;triangle_data&quot;] = mesh_data.get(&#39;triangle_data&#39;)[cond]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># # Mask the mesh based on cell data
+# threshold_value = 6
+# masked_mesh = pvmesh.threshold(value=threshold_value, scalars=&#39;tetra_data&#39;, invert=True)
+
+# # Visualize the masked mesh
+# pl = pv.Plotter()
+# pl.add_mesh(masked_mesh, scalars=&#39;tetra_data&#39;, show_edges=True, cmap=&#39;tab10&#39;, clim=(0,7))
+# # pl.add_mesh(edge_polydata, scalars=&#39;line_data&#39;, line_width=5, cmap=&#39;viridis&#39;, show_scalar_bar=False)
+# pl.add_mesh(face_polydata, scalars=&#39;triangle_data&#39;, opacity=0.85, cmap=[&#39;darkblue&#39;, &#39;red&#39;], show_scalar_bar=False)
+# pl.show()
+
+# # # Create animation
+# # viewup = [-0.05, -0.25, 1]
+# # pl.show(auto_close=False)
+# # path = pl.generate_orbital_path(factor=2.0, n_points=36, viewup=viewup, shift=0.2)
+# # pl.open_gif(&quot;mesh.gif&quot;)
+# # pl.orbit_on_path(path, write_frames=True, viewup=viewup, step=0.1)
+# # pl.close()
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># # todo: write function to separate line data into single line
+
+# line_edge_list = []
+# for line_edge in mesh_data.get(&#39;line&#39;):
+#     pt1 = mesh_data.get(&#39;points&#39;)[line_edge[0]]
+#     pt2 = mesh_data.get(&#39;points&#39;)[line_edge[1]]
+#     if np.isclose(pt1[1], 0) and np.isclose(pt2[1], 0) and np.isclose(pt1[2], 2) and np.isclose(pt1[2], 2):
+#         # print(line_edge, pt1, pt2)
+#         line_edge_list.append(line_edge)
+
+# line_edge_arr = np.array(line_edge_list)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># x and y coordinates
+x, y, z = mesh.CoordinateSystem.N
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Create Darcy Solver
+darcy = uw.systems.SteadyStateDarcy(mesh)
+p_soln = darcy.Unknowns.u
+v_soln = darcy.v
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Needs to be smaller than the contrast in properties
+darcy.petsc_options[&quot;snes_rtol&quot;] = 1.0e-6  
+darcy.constitutive_model = uw.constitutive_models.DarcyFlowModel
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>p_soln_0 = p_soln.clone(&quot;P_no_g&quot;, r&quot;{p_\textrm{(no g)}}&quot;)
+v_soln_0 = v_soln.clone(&quot;V_no_g&quot;, r&quot;{v_\textrm{(no g)}}&quot;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>def plot_P_V(_mesh, _p_soln, _v_soln):
+    &#39;&#39;&#39;
+    Plot pressure and velcity streamlines
+    &#39;&#39;&#39;
+    pvmesh = vis.mesh_to_pv_mesh(_mesh)
+    pvmesh.point_data[&quot;P&quot;] = vis.scalar_fn_to_pv_points(pvmesh, _p_soln.sym)
+    pvmesh.point_data[&quot;V&quot;] = vis.vector_fn_to_pv_points(pvmesh, _v_soln.sym)
+
+    velocity_points = vis.meshVariable_to_pv_cloud(_v_soln)
+    velocity_points.point_data[&quot;V&quot;] = vis.vector_fn_to_pv_points(velocity_points, _v_soln.sym)
+
+    # point sources at cell centres
+    points = np.zeros((_mesh._centroids.shape[0], 3))
+    points[:, 0] = _mesh._centroids[:, 0]
+    points[:, 1] = _mesh._centroids[:, 1]
+    points[:, 2] = _mesh._centroids[:, 2]
+    point_cloud = pv.PolyData(points[::3])
+
+    pvstream = pvmesh.streamlines_from_source(point_cloud, vectors=&quot;V&quot;, integrator_type=45, 
+                                              integration_direction=&quot;both&quot;, max_steps=1000,
+                                              max_time=0.1, initial_step_length=0.001, 
+                                              max_step_length=0.01,)
+
+    pl = pv.Plotter(window_size=(750, 750))
+    pl.add_mesh(pvmesh, cmap=&quot;coolwarm&quot;, edge_color=&quot;Black&quot;, show_edges=True, scalars=&quot;P&quot;,
+                use_transparency=False, opacity=0.5,)
+    pl.add_mesh(pvstream, line_width=1.0)
+    # pl.add_arrows(velocity_points.points, velocity_points.point_data[&quot;V&quot;], mag=0.005, opacity=0.75)
+
+    pl.show(cpos=&quot;xy&quot;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># set up two materials
+interface = 2.5
+k1 = 1e-3
+k2 = 1e-5
+
+# Groundwater pressure boundary condition on the left wall
+max_pressure = 0.5
+
+# The piecewise version
+kFunc = Piecewise((k1, x &lt; interface), (k2, x &gt;= interface), (1.0, True))
+
+# A smooth version
+# darcy.constitutive_model.Parameters.permeability = kFunc
+darcy.constitutive_model.Parameters.s = sympy.Matrix([0, 0, 0]).T
+darcy.f = 0.0
+
+# set up boundary conditions
+darcy.add_dirichlet_bc(0.0, &quot;Left&quot;)
+darcy.add_dirichlet_bc(1.0 * maxX * max_pressure, &quot;Right&quot;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># create cell centred mesh variable (disc and 0th order)
+permeability = uw.discretisation.MeshVariable(&#39;K&#39;, mesh, 1, degree=0, continuous=False)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># setting a array to store k values
+with mesh.access(permeability):
+    perm_arr = np.zeros_like(permeability.data)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># labels start and end
+cStart, cEnd = mesh.dm.getHeightStratum(0)
+
+# fault tetra
+fault_tetra = mesh.dm.getStratumIS(&quot;TetraLabels&quot;, 404).array
+
+for c in range(cStart, cEnd):
+    if c in fault_tetra:
+        perm_arr[c] = k1
+        # with mesh.access(permeability):
+        #     permeability.data[c] = k1
+    else:
+        perm_arr[c] = k2
+        # with mesh.access(permeability):
+        #     permeability.data[c] = k2
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># assigning k values to mesh variable
+with mesh.access(permeability):
+    permeability.data[...] = perm_arr
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>darcy.constitutive_model.Parameters.permeability = permeability.sym[0]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># darcy solve without gravity
+darcy.solve()
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># saving output
+mesh.petsc_save_checkpoint(index=0, meshVars=[p_soln, v_soln], 
+                           outputPath=&#39;./output/darcy_3d_loop_mesh_fault_no_g&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># plotting soln without gravity
+plot_P_V(mesh, p_soln, v_soln)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># copy soln
+with mesh.access(p_soln_0, v_soln_0):
+    p_soln_0.data[...] = p_soln.data[...]
+    v_soln_0.data[...] = v_soln.data[...]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># now switch on gravity
+darcy.constitutive_model.Parameters.s = sympy.Matrix([0, 0, -1]).T
+darcy.solve()
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># saving output
+mesh.petsc_save_checkpoint(index=0, meshVars=[p_soln, v_soln, permeability], 
+                           outputPath=&#39;./output/darcy_3d_loop_mesh_fault_g&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># plotting soln without gravity
+plot_P_V(mesh, p_soln, v_soln)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># set up interpolation coordinates
+xcoords = np.linspace(minX + 0.001 * (maxX - minX), maxX - 0.001 * (maxX - minX), 100)
+ycoords = np.full_like(xcoords, 5)
+zcoords = np.full_like(xcoords, 2)
+xyz_coords = np.column_stack([xcoords, ycoords, zcoords])
+
+pressure_interp = uw.function.evaluate(p_soln.sym[0], xyz_coords)
+pressure_interp_0 = uw.function.evaluate(p_soln_0.sym[0], xyz_coords)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># plotting numerical and analytical solution
+fig = plt.figure(figsize=(15,7))
+ax1 = fig.add_subplot(111, xlabel=&quot;X-Distance&quot;, ylabel=&quot;Pressure&quot;)
+ax1.plot(xcoords, pressure_interp, linewidth=3, label=&quot;Numerical solution&quot;)
+ax1.plot(xcoords, pressure_interp_0, linewidth=3, label=&quot;Numerical solution (no G)&quot;)
+# ax1.plot(pressure_analytic, xcoords, linewidth=3, linestyle=&quot;--&quot;, label=&quot;Analytic solution&quot;)
+# ax1.plot(pressure_analytic_noG, xcoords, linewidth=3, linestyle=&quot;--&quot;, label=&quot;Analytic (no gravity)&quot;)
+ax1.grid(&quot;on&quot;)
+ax1.legend()
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./Notebooks/Examples-Loop-Mesh"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Darcy flow in 3D with Loop mesh and fault</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#following-commented-code-is-related-to-visualization-in-pyvista">Following commented code is related to visualization in pyvista</a></li>
+</ul>
+
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Louis Moresi
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

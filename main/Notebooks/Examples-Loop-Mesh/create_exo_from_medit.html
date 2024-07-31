@@ -1,0 +1,738 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Convert mesh to exo &#8212; Underworld 3</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/customize.css?v=47e70012" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script async="async" kind="hypothesis" src="https://hypothes.is/embed.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Notebooks/Examples-Loop-Mesh/create_exo_from_medit';</script>
+    <script src="../../_static/font_button.js?v=3ec2d3a6"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../FrontPage.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/AuWorldEQ.jpg" class="logo__image only-light" alt="Underworld 3 - Home"/>
+    <script>document.write(`<img src="../../_static/AuWorldEQ.jpg" class="logo__image only-dark" alt="Underworld 3 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../FrontPage.html">
+                    The Underworld Geodynamics Platform
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Instruction Manual</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../Manual/Index.html">Introduction to Underworld 3</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../Manual/Meshes.html">Meshes and model objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Manual/Swarms.html">Particle Swarms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Manual/VariablesAndFunctions.html">Underworld Variables</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Theory</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../Theory/Index.html">Underworld Theory Manual</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../Theory/MathematicalBackground.html">Mathematical Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Theory/FiniteElements.html">The Lagrangian-Particle FEM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Theory/PointwiseFunctions.html">PETSc pointwise functions and PDE solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Theory/LinearAlgebra.html">Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Theory/NonLinear.html">Non Linear Methods</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../Index.html">Index of Sample notebooks</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-PoissonEquation/Readme.html">Solving the Poisson Equation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_Poisson_Gradient_Recovery.html">Poisson Equation with flux recovery</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_Poisson_Cartesian_Generic.html">Poisson Equation (generic)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_Poisson_Spherical.html">Steady state diffusion in a hollow sphere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_DiffusionSLCN_Cartesian-NL.html">Nonlinear diffusion of a hot pipe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_DiffusionSLCN_Cartesian.html">Linear diffusion of a hot pipe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_Poisson_Cartesian.html">Poisson Equation (simple)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-PorousFlow/Readme.html">Porous flow examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PorousFlow/Ex_Darcy_1D_benchmark.html">Darcy flow (1d) using xy coordinates to define permeability distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PorousFlow/Ex_Darcy_1D_benchmark-Swarm.html">Darcy flow (1d) using swarm variable to define permeability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PorousFlow/Ex_Darcy_Cartesian.html">Underworld Groundwater Flow Benchmark 1</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-StokesFlow/Readme.html">Stokes Flow</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Swarm_Bubbles.html">Multiple materials - Drips and Blobs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Cartesian_SolNL.html">Non-linear Stokes benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Sinker.html">Multiple materials - Linear stokes sinker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Cartesian_SolC.html">Stokes Benchmark SolCx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Disk_CylCoords.html">Cylindrical Stokes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Spherical_FreeSlipBCs.html">Stokes flow in a Spherical Domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Swarm_RT_Cartesian.html">Rayleigh Taylor - swarm materials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Swarm_RT_Spherical.html">Rayleigh-Taylor (Level-set based) in the sphere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_WIP_Stokes_Periodic.html">Periodic Mesh Example (WIP)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-Convection/Readme.html">Convection modelling examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_AdvectionDiffusionSLCN_RotationTest.html">Field (SemiLagrange) Advection solver test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_AdvectionDiffusionSwarm_RotationTest.html">Swarm Advection solver test - shear flow driven by a pre-defined, rigid body rotation in a disc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_1_SLCN_Cartesian.html">Constant viscosity convection, Cartesian domain (benchmark)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_2_SLCN_Cartesian-TdepVisc.html">Temperature-dependent viscosity convection, Cartesian Domain(benchmark)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_3_SLCN_Cylindrical-TdepVisc.html">Temperature-dependent viscosity convection, Cylindrical domain (benchmark)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_4_SLCN_Cartesian-NL.html">Non-linear viscosity convection, Cartesian domain (benchmark)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_5_SLCN_Cartesian-Yield.html">Non-linear viscosity convection, Cartesian domain (benchmark)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_Cartesian-Swarm.html">Constant viscosity convection, Cartesian domain (benchmark)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_Cartesian_ThermoChem.html">Thermochemical convection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_Cylinder.html">Stokes in a disc with adv_diff to solve T and back-in-time sampling with particles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_Disc_InternalHeat.html">Convection in a disc with internal heating and rigid or free boundaries</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-Sandbox-VEP/Readme.html">Visco-elastic-plastic models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Sandbox-VEP/Ex_Shear_Band_Notch_Benchmark.html">Spiegelman et al, notch-deformation benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Sandbox-VEP/Ex_Shear_Band_Plasticity_PS.html">Flow and Shear banding around a circular inclusion in pure shear</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Sandbox-VEP/Ex_Shear_Band_Plasticity_SS.html">Shear bands around a circular inclusion in a simple shear flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Sandbox-VEP/Ex_Sheared_Layer_Test.html">Validate constitutive models</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-NavierStokes/Readme.html">Navier Stokes Equation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-NavierStokes/Ex_NavierStokesRotationTest.html">Navier Stokes test: boundary driven ring with step change in boundary conditions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-NavierStokes/Ex_Navier_Stokes_Disk_FreeSlipBCs-Coriolis.html">Cylindrical Stokes with Coriolis term (out of plane)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-NavierStokes/Ex_Navier_Stokes_Disk_NoSlipBCs-Coriolis_ss.html">Cylindrical Stokes with Coriolis term (out of plane)</a></li>
+
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-Utilities/Readme.html">Miscellaneous Tips and Tricks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Utilities/Ex_BCs_from_meshVariables.html">Cylindrical 2D Diffusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Utilities/Ex_Integrals_on_Meshes.html">Using the PETSc mesh integration routines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Utilities/Ex_Projection_Function_Eval.html">Projection-based function evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Utilities/Ex_Tensor_Variables_etc.html">Examples with General Mesh variable manipulation</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/underworldcode/underworld3" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/Notebooks/Examples-Loop-Mesh/create_exo_from_medit.py" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.py</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Convert mesh to exo</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#todo">Todo:</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="convert-mesh-to-exo">
+<h1>Convert mesh to exo<a class="headerlink" href="#convert-mesh-to-exo" title="Link to this heading">#</a></h1>
+<ol class="arabic simple">
+<li><p>I have managed to create tetra blocks from mesh data</p></li>
+</ol>
+<section id="todo">
+<h2>Todo:<a class="headerlink" href="#todo" title="Link to this heading">#</a></h2>
+<ol class="arabic simple" start="2">
+<li><p>Convert triangle data into surfaces in exo file</p></li>
+<li><p>Convert edge data into lines in exo file</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>import re
+import numpy as np
+import datetime
+from netCDF4 import Dataset
+import os
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># data types
+numpy_to_exodus_dtype = {
+                            &#39;float64&#39;: &#39;f8&#39;,
+                            &#39;float32&#39;: &#39;f4&#39;,
+                            &#39;int32&#39;: &#39;i4&#39;,
+                            &#39;int64&#39;: &#39;i8&#39;
+                        }
+
+meshio_to_exodus_type = {
+                            &#39;tetra&#39;: &#39;TETRA&#39;
+                        }
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>def read_medit_mesh(input_file):
+    &quot;&quot;&quot;
+    Read medit file
+    Return vertices, tetrahedra, cell_ids
+    &quot;&quot;&quot;
+    with open(input_file, &#39;r&#39;) as file:
+        data = file.read()
+
+    # Parse vertices
+    vertices = []
+    vertex_pattern = re.compile(r&#39;Vertices\n(\d+)\n((?:[0-9eE\+\-\.]+\s+[0-9eE\+\-\.]+\s+[0-9eE\+\-\.]+\s+\d+\s*\n)+)&#39;, re.MULTILINE)
+    vertex_match = vertex_pattern.search(data)
+    if vertex_match:
+        vertices = np.array([list(map(float, line.split()[:3])) for line in vertex_match.group(2).strip().split(&#39;\n&#39;)])
+
+    # Parse tetrahedra
+    tetrahedra = []
+    cell_ids = []
+    tetra_pattern = re.compile(r&#39;Tetrahedra\n(\d+)\n((?:\d+\s+\d+\s+\d+\s+\d+\s+\d+\s*\n)+)&#39;, re.MULTILINE)
+    tetra_match = tetra_pattern.search(data)
+    if tetra_match:
+        for line in tetra_match.group(2).strip().split(&#39;\n&#39;):
+            parts = list(map(int, line.split()))
+            tetrahedra.append(parts[:4])
+            cell_ids.append(parts[4])
+        tetrahedra = np.array(tetrahedra) - 1
+
+    return vertices, tetrahedra, cell_ids
+
+def write_exodus_file(filename, vertices, tetrahedra, cell_ids):
+    &quot;&quot;&quot;
+    Write to exo file
+    &quot;&quot;&quot;
+    with Dataset(filename, &quot;w&quot;) as rootgrp:
+        # Set global data
+        now = datetime.datetime.now().isoformat()
+        rootgrp.title = f&quot;Created by custom script, {now}&quot;
+        rootgrp.version = np.float32(5.1)
+        rootgrp.api_version = np.float32(5.1)
+        rootgrp.floating_point_word_size = 8
+
+        # Set dimensions
+        total_num_elems = tetrahedra.shape[0]
+        rootgrp.createDimension(&quot;num_nodes&quot;, len(vertices))
+        rootgrp.createDimension(&quot;num_dim&quot;, vertices.shape[1])
+        rootgrp.createDimension(&quot;num_elem&quot;, total_num_elems)
+        unique_cell_ids = np.unique(cell_ids)
+        rootgrp.createDimension(&quot;num_el_blk&quot;, len(unique_cell_ids))
+        rootgrp.createDimension(&quot;num_node_sets&quot;, 0)  # Adjust if you have node sets
+        rootgrp.createDimension(&quot;len_string&quot;, 33)
+        rootgrp.createDimension(&quot;len_line&quot;, 81)
+        rootgrp.createDimension(&quot;four&quot;, 4)
+        rootgrp.createDimension(&quot;time_step&quot;, None)
+
+        # Dummy time step
+        data = rootgrp.createVariable(&quot;time_whole&quot;, &quot;f4&quot;, (&quot;time_step&quot;,))
+        data[:] = 0.0
+
+        # Points
+        coor_names = rootgrp.createVariable(
+            &quot;coor_names&quot;, &quot;S1&quot;, (&quot;num_dim&quot;, &quot;len_string&quot;)
+        )
+        coor_names.set_auto_mask(False)
+        coor_names[0, 0] = b&quot;X&quot;
+        coor_names[1, 0] = b&quot;Y&quot;
+        if vertices.shape[1] == 3:
+            coor_names[2, 0] = b&quot;Z&quot;
+        data = rootgrp.createVariable(
+            &quot;coord&quot;,
+            numpy_to_exodus_dtype[vertices.dtype.name],
+            (&quot;num_dim&quot;, &quot;num_nodes&quot;),
+        )
+        data[:] = vertices.T
+
+        # Cells
+        eb_prop1 = rootgrp.createVariable(&quot;eb_prop1&quot;, &quot;i4&quot;, &quot;num_el_blk&quot;)
+        eb_names = rootgrp.createVariable(&quot;eb_names&quot;, &quot;S1&quot;, (&quot;num_el_blk&quot;, &quot;len_string&quot;))
+
+        for i, cell_id in enumerate(unique_cell_ids):
+            eb_prop1[i] = i + 1  # Unique ID for each block
+            block_name = f&quot;block_{cell_id}_{i + 1}_{now}&quot;.ljust(33)
+            eb_names[i, :] = np.array(list(block_name[:33]), dtype=&#39;S1&#39;)
+            block_tetrahedra = tetrahedra[np.array(cell_ids) == cell_id]
+            dim1 = f&quot;num_el_in_blk{i + 1}&quot;
+            dim2 = f&quot;num_nod_per_el{i + 1}&quot;
+            rootgrp.createDimension(dim1, block_tetrahedra.shape[0])
+            rootgrp.createDimension(dim2, block_tetrahedra.shape[1])
+            dtype = numpy_to_exodus_dtype[block_tetrahedra.dtype.name]
+            data = rootgrp.createVariable(f&quot;connect{i + 1}&quot;, dtype, (dim1, dim2))
+            data.elem_type = &quot;TETRA&quot;
+            # Exodus is 1-based
+            data[:] = block_tetrahedra + 1
+
+        # Add additional variables
+        ids = rootgrp.createVariable(&quot;ids&quot;, &quot;i4&quot;, (&quot;num_elem&quot;,))
+        object_id = rootgrp.createVariable(&quot;object_id&quot;, &quot;i4&quot;, (&quot;num_elem&quot;,))
+        vtkblockcolor = rootgrp.createVariable(&quot;vtkblockcolor&quot;, &quot;f4&quot;, (&quot;num_elem&quot;,))
+        vtkcompositeindex = rootgrp.createVariable(&quot;vtkcompositeindex&quot;, &quot;i4&quot;, (&quot;num_elem&quot;,))
+
+        ids[:] = np.arange(1, total_num_elems + 1)
+        object_id[:] = np.arange(1, total_num_elems + 1)
+        vtkblockcolor[:] = np.random.random(total_num_elems)
+        vtkcompositeindex[:] = np.ones(total_num_elems)
+
+def convert_mesh_to_exo(input_file, output_file):
+    &quot;&quot;&quot;
+    Function to convert mesh to exo file
+    &quot;&quot;&quot;
+    vertices, tetrahedra, cell_ids = read_medit_mesh(input_file)
+    write_exodus_file(output_file, vertices, tetrahedra, cell_ids)
+    print(f&quot;Converted {input_file} to {output_file}&quot;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># if os.path.isfile(&#39;./meshout.exo&#39;):
+#     os.remove(&#39;./meshout.exo&#39;)
+              
+# # Specify input and output file paths
+# input_file = &#39;../meshout.mesh&#39;
+# output_file = &#39;./meshout.exo&#39;
+
+# # Convert the .mesh file to .exo file
+# convert_mesh_to_exo(input_file, output_file)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># !{ncdump -h meshout.exo}
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># # Define the path to the ParaView executable
+# paraview_executable = &#39;/Applications/ParaView-5.11.2.app/Contents/MacOS/paraview&#39;  # Example path for macOS
+
+# # Define the path to the Exodus file
+# exo_file_path = &#39;./meshout.exo&#39;  # Example path
+
+# # Command to open ParaView with the Exodus file
+# command = f&#39;{paraview_executable} --data={exo_file_path}&#39;
+
+# # Run the command
+# !{command}
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./Notebooks/Examples-Loop-Mesh"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#todo">Todo:</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Louis Moresi
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
