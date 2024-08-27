@@ -1,0 +1,1519 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Annulus Benchmark: Isoviscous Incompressible Stokes &#8212; Underworld 3</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/customize.css?v=47e70012" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script async="async" kind="hypothesis" src="https://hypothes.is/embed.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Notebooks/Examples-Annulus-Stokes/Ex_Stokes_Annulus_Benchmark_Thieulot';</script>
+    <script src="../../_static/font_button.js?v=3ec2d3a6"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../FrontPage.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/AuWorldEQ.jpg" class="logo__image only-light" alt="Underworld 3 - Home"/>
+    <script>document.write(`<img src="../../_static/AuWorldEQ.jpg" class="logo__image only-dark" alt="Underworld 3 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../FrontPage.html">
+                    The Underworld Geodynamics Platform
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Instruction Manual</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../Manual/Index.html">Introduction to Underworld 3</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../Manual/Meshes.html">Meshes and model objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Manual/Swarms.html">Particle Swarms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Manual/VariablesAndFunctions.html">Underworld Variables</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Theory</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../Theory/Index.html">Underworld Theory Manual</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../Theory/MathematicalBackground.html">Mathematical Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Theory/FiniteElements.html">The Lagrangian-Particle FEM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Theory/PointwiseFunctions.html">PETSc pointwise functions and PDE solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Theory/LinearAlgebra.html">Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Theory/NonLinear.html">Non Linear Methods</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../Index.html">Index of Sample notebooks</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-PoissonEquation/Readme.html">Solving the Poisson Equation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_Poisson_Gradient_Recovery.html">Poisson Equation with flux recovery</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_Poisson_Cartesian_Generic.html">Poisson Equation (generic)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_Poisson_Spherical.html">Steady state diffusion in a hollow sphere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_DiffusionSLCN_Cartesian-NL.html">Nonlinear diffusion of a hot pipe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_DiffusionSLCN_Cartesian.html">Linear diffusion of a hot pipe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PoissonEquation/Ex_Poisson_Cartesian.html">Poisson Equation (simple)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-PorousFlow/Readme.html">Porous flow examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PorousFlow/Ex_Darcy_1D_benchmark.html">Darcy flow (1d) using xy coordinates to define permeability distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PorousFlow/Ex_Darcy_1D_benchmark-Swarm.html">Darcy flow (1d) using swarm variable to define permeability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-PorousFlow/Ex_Darcy_Cartesian.html">Underworld Groundwater Flow Benchmark 1</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-StokesFlow/Readme.html">Stokes Flow</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Swarm_Bubbles.html">Multiple materials - Drips and Blobs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Cartesian_SolNL.html">Non-linear Stokes benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Sinker.html">Multiple materials - Linear stokes sinker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Cartesian_SolC.html">Stokes Benchmark SolCx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Disk_CylCoords.html">Cylindrical Stokes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Spherical_FreeSlipBCs.html">Stokes flow in a Spherical Domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Swarm_RT_Cartesian.html">Rayleigh Taylor - swarm materials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_Stokes_Swarm_RT_Spherical.html">Rayleigh-Taylor (Level-set based) in the sphere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-StokesFlow/Ex_WIP_Stokes_Periodic.html">Periodic Mesh Example (WIP)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-Convection/Readme.html">Convection modelling examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_AdvectionDiffusionSLCN_RotationTest.html">Field (SemiLagrange) Advection solver test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_AdvectionDiffusionSwarm_RotationTest.html">Swarm Advection solver test - shear flow driven by a pre-defined, rigid body rotation in a disc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_1_SLCN_Cartesian.html">Constant viscosity convection, Cartesian domain (benchmark)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_2_SLCN_Cartesian-TdepVisc.html">Temperature-dependent viscosity convection, Cartesian Domain(benchmark)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_3_SLCN_Cylindrical-TdepVisc.html">Temperature-dependent viscosity convection, Cylindrical domain (benchmark)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_4_SLCN_Cartesian-NL.html">Non-linear viscosity convection, Cartesian domain (benchmark)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_5_SLCN_Cartesian-Yield.html">Non-linear viscosity convection, Cartesian domain (benchmark)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_Cartesian-Swarm.html">Constant viscosity convection, Cartesian domain (benchmark)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_Cartesian_ThermoChem.html">Thermochemical convection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_Cylinder.html">Stokes in a disc with adv_diff to solve T and back-in-time sampling with particles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Convection/Ex_Convection_Disc_InternalHeat.html">Convection in a disc with internal heating and rigid or free boundaries</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-Sandbox-VEP/Readme.html">Visco-elastic-plastic models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Sandbox-VEP/Ex_Shear_Band_Notch_Benchmark.html">Spiegelman et al, notch-deformation benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Sandbox-VEP/Ex_Shear_Band_Plasticity_PS.html">Flow and Shear banding around a circular inclusion in pure shear</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Sandbox-VEP/Ex_Shear_Band_Plasticity_SS.html">Shear bands around a circular inclusion in a simple shear flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Sandbox-VEP/Ex_Sheared_Layer_Test.html">Validate constitutive models</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-NavierStokes/Readme.html">Navier Stokes Equation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-NavierStokes/Ex_NavierStokesRotationTest.html">Navier Stokes test: boundary driven ring with step change in boundary conditions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-NavierStokes/Ex_Navier_Stokes_Disk_FreeSlipBCs-Coriolis.html">Cylindrical Stokes with Coriolis term (out of plane)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-NavierStokes/Ex_Navier_Stokes_Disk_NoSlipBCs-Coriolis_ss.html">Cylindrical Stokes with Coriolis term (out of plane)</a></li>
+
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../Examples-Utilities/Readme.html">Miscellaneous Tips and Tricks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Utilities/Ex_BCs_from_meshVariables.html">Cylindrical 2D Diffusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Utilities/Ex_Integrals_on_Meshes.html">Using the PETSc mesh integration routines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Utilities/Ex_Projection_Function_Eval.html">Projection-based function evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Examples-Utilities/Ex_Tensor_Variables_etc.html">Examples with General Mesh variable manipulation</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/underworldcode/underworld3" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/Notebooks/Examples-Annulus-Stokes/Ex_Stokes_Annulus_Benchmark_Thieulot.py" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.py</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Annulus Benchmark: Isoviscous Incompressible Stokes</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#benchmark-aspect-results">Benchmark ASPECT results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#benchmark-paper">Benchmark paper</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analytical-solution">Analytical solution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analytical-solution-in-sympy">Analytical solution in sympy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-mesh">Create Mesh</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#from-here-onwards-we-compute-quantities-to-compare-analytical-and-numerical-solution">From here onwards we compute quantities to compare analytical and numerical solution.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#feel-free-to-comment-out-this-section">Feel free to comment out this section</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#visualize-velocity-and-pressure-on-lower-and-outer-boundaries">visualize velocity and pressure on lower and outer boundaries</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="annulus-benchmark-isoviscous-incompressible-stokes">
+<h1>Annulus Benchmark: Isoviscous Incompressible Stokes<a class="headerlink" href="#annulus-benchmark-isoviscous-incompressible-stokes" title="Link to this heading">#</a></h1>
+<section id="benchmark-aspect-results">
+<h2><a class="reference external" href="https://aspect-documentation.readthedocs.io/en/latest/user/benchmarks/benchmarks/annulus/doc/annulus.html">Benchmark ASPECT results</a><a class="headerlink" href="#benchmark-aspect-results" title="Link to this heading">#</a></h2>
+</section>
+<section id="benchmark-paper">
+<h2><a class="reference external" href="https://egusphere.copernicus.org/preprints/2023/egusphere-2023-2765/">Benchmark paper</a><a class="headerlink" href="#benchmark-paper" title="Link to this heading">#</a></h2>
+<p><em>Author: <a class="reference external" href="https://github.com/gthyagi">Thyagarajulu Gollapalli</a></em></p>
+</section>
+<section id="analytical-solution">
+<h2>Analytical solution<a class="headerlink" href="#analytical-solution" title="Link to this heading">#</a></h2>
+<p>This benchmark is based on a manufactured solution in which an analytical solution to the isoviscous incompressible Stokes equations is derived in an annulus geometry. The velocity and pressure fields are as follows:</p>
+<div class="math notranslate nohighlight">
+\[ v_{\theta}(r, \theta) = f(r) \cos(k\theta) \]</div>
+<div class="math notranslate nohighlight">
+\[ v_r(r, \theta) = g(r)k \sin(k\theta) \]</div>
+<div class="math notranslate nohighlight">
+\[ p(r, \theta) = kh(r) \sin(k\theta) + \rho_0g_r(R_2 - r) \]</div>
+<div class="math notranslate nohighlight">
+\[ \rho(r, \theta) = m(r)k \sin(k\theta) + \rho_0 \]</div>
+<p>with</p>
+<div class="math notranslate nohighlight">
+\[ f(r) = Ar + \frac{B}{r} \]</div>
+<div class="math notranslate nohighlight">
+\[ g(r) = \frac{A}{2}r + \frac{B}{r}\ln r + \frac{C}{r} \]</div>
+<div class="math notranslate nohighlight">
+\[ h(r) = \frac{2g(r) - f(r)}{r} \]</div>
+<div class="math notranslate nohighlight">
+\[ m(r) = g''(r) - \frac{g'(r)}{r} - \frac{g(r)}{r^2}(k^2 - 1) + \frac{f(r)}{r^2} + \frac{f'(r)}{r} \]</div>
+<div class="math notranslate nohighlight">
+\[ A = -C\frac{2(\ln R_1 - \ln R_2)}{R_2^2 \ln R_1 - R_1^2 \ln R_2} \]</div>
+<div class="math notranslate nohighlight">
+\[ B = -C\frac{R_2^2 - R_1^2}{R_2^2 \ln R_1 - R_1^2 \ln R_2} \]</div>
+<p>The parameters <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> are chosen so that <span class="math notranslate nohighlight">\( v_r(R_1, \theta) = v_r(R_2, \theta) = 0 \)</span> for all <span class="math notranslate nohighlight">\(\theta \in [0, 2\pi]\)</span>, i.e. the velocity is tangential to both inner and outer surfaces. The gravity vector is radial inward and of unit length.</p>
+<p>The parameter <span class="math notranslate nohighlight">\(k\)</span> controls the number of convection cells present in the domain</p>
+<p>In the present case, we set <span class="math notranslate nohighlight">\( R_1 = 1, R_2 = 2\)</span> and <span class="math notranslate nohighlight">\(C = -1 \)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>from mpi4py import MPI
+import underworld3 as uw
+from underworld3.systems import Stokes
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>import numpy as np
+import sympy
+import os
+from enum import Enum
+import h5py
+import sys
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>if uw.mpi.size == 1:
+    # to fix trame issue
+    import nest_asyncio
+    nest_asyncio.apply()
+    
+    import matplotlib.pyplot as plt
+    import cmcrameri.cm as cmc
+    import pyvista as pv
+    import underworld3.visualisation as vis
+    from matplotlib.ticker import FuncFormatter, MultipleLocator
+    from scipy import integrate
+    from sympy import lambdify
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>os.environ[&quot;SYMPY_USE_CACHE&quot;] = &quot;no&quot;
+os.environ[&quot;UW_TIMING_ENABLE&quot;] = &quot;1&quot;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># radii
+r_i = 1.0
+r_o = 2.0
+
+k = uw.options.getInt(&quot;k&quot;, default=0) # controls the number of convection cells
+
+res = uw.options.getInt(&quot;res&quot;, default=16)
+cellsize = 1/res
+
+vdegree  = uw.options.getInt(&quot;vdegree&quot;, default=2)
+pdegree = uw.options.getInt(&quot;pdegree&quot;, default=1)
+pcont = uw.options.getBool(&quot;pcont&quot;, default=True)
+pcont_str = str(pcont).lower()
+
+vel_penalty = uw.options.getReal(&quot;vel_penalty&quot;, default=2.5e8)
+stokes_tol = uw.options.getReal(&quot;stokes_tol&quot;, default=1e-10)
+
+vel_penalty_str = str(&quot;{:.1e}&quot;.format(vel_penalty))
+stokes_tol_str = str(&quot;{:.1e}&quot;.format(stokes_tol))
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># compute analytical solutions
+analytical = True
+timing = True
+visualize= True
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>output_dir = os.path.join(os.path.join(&quot;./output/Annulus_Benchmark_Thieulot/&quot;), 
+                          f&#39;model_k_{k}_res_{res}_vdeg_{vdegree}_pdeg_{pdegree}&#39;
+                          f&#39;_pcont_{pcont_str}_vel_penalty_{vel_penalty_str}_stokes_tol_{stokes_tol_str}/&#39;)
+
+if uw.mpi.rank == 0:
+    os.makedirs(output_dir, exist_ok=True)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="analytical-solution-in-sympy">
+<h2>Analytical solution in sympy<a class="headerlink" href="#analytical-solution-in-sympy" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># analytical solution
+r = sympy.symbols(&#39;r&#39;)
+theta = sympy.Symbol(&#39;theta&#39;, real=True)
+
+C=-1
+A = -C*(2*(np.log(r_i) - np.log(r_o))/((r_o**2)*np.log(r_i) - (r_i**2)*np.log(r_o)))
+B = -C*((r_o**2 - r_i**2)/((r_o**2)*np.log(r_i) - (r_i**2)*np.log(r_o)))
+rho_0 = 0
+
+f = sympy.Function(&#39;f&#39;)(r)
+f = A*r + B/r
+
+g = sympy.Function(&#39;g&#39;)(r)
+g = ((A/2)*r) + ((B/r) * sympy.ln(r)) + (C/r)
+
+h = sympy.Function(&#39;h&#39;)(r)
+h = (2*g - f)/r
+
+m = sympy.Function(&#39;m&#39;)(r)
+m = g.diff(r, r) - (g.diff(r)/r) - (g/r**2)*(k**2 - 1) + (f/r**2) + (f.diff(r)/r)
+
+v_r = g*k*sympy.sin(k*theta)
+v_theta = f*sympy.cos(k*theta)
+p = k*h*sympy.sin(k*theta) + rho_0*(r_o-r)
+rho = m*k*sympy.sin(k*theta) + rho_0
+v_x = v_r * sympy.cos(theta) - v_theta * sympy.sin(theta) 
+v_y = v_r * sympy.sin(theta) + v_theta * sympy.cos(theta)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="create-mesh">
+<h2>Create Mesh<a class="headerlink" href="#create-mesh" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>if timing:
+    uw.timing.reset()
+    uw.timing.start()
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># mesh
+mesh = uw.meshing.Annulus(radiusOuter=r_o, radiusInner=r_i, cellSize=cellsize, qdegree=max(pdegree, vdegree), 
+                          degree=1, filename=f&#39;{output_dir}mesh.msh&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>if timing:
+    uw.timing.stop()
+    uw.timing.print_table(group_by=&#39;line_routine&#39;, output_file=f&quot;{output_dir}mesh_create_time.txt&quot;,  display_fraction=1.00)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>if uw.mpi.size == 1 and visualize:
+    vis.plot_mesh(mesh, save_png=True, dir_fname=output_dir+&#39;mesh.png&#39;, title=&#39;&#39;, clip_angle=0., cpos=&#39;xy&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># print mesh size in each cpu
+if uw.mpi.rank == 0:
+    print(&#39;-------------------------------------------------------------------------------&#39;)
+mesh.dm.view()
+if uw.mpi.rank == 0:
+    print(&#39;-------------------------------------------------------------------------------&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># mesh variables
+v_uw = uw.discretisation.MeshVariable(r&#39;{V_u}&#39;, mesh, mesh.data.shape[1], degree=vdegree)
+p_uw = uw.discretisation.MeshVariable(r&#39;{P_u}&#39;, mesh, 1, degree=pdegree, continuous=pcont)
+
+if analytical:
+    v_ana = uw.discretisation.MeshVariable(r&#39;{V_a}&#39;, mesh, mesh.data.shape[1], degree=vdegree)
+    p_ana = uw.discretisation.MeshVariable(r&#39;{P_a}&#39;, mesh, 1, degree=pdegree, continuous=pcont)
+    rho_ana = uw.discretisation.MeshVariable(r&#39;{RHO_a}&#39;, mesh, 1, degree=pdegree, continuous=True)
+    
+    v_err = uw.discretisation.MeshVariable(r&#39;{V_e}&#39;, mesh, mesh.data.shape[1], degree=vdegree)
+    p_err = uw.discretisation.MeshVariable(r&#39;{P_e}&#39;, mesh, 1, degree=pdegree, continuous=pcont)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># # Null space evaluation
+# norm_v = uw.discretisation.MeshVariable(&quot;N&quot;, mesh, 2, degree=1, varsymbol=r&quot;{\hat{n}}&quot;)
+# with mesh.access(norm_v):
+#     norm_v.data[:,0] = uw.function.evaluate(mesh.CoordinateSystem.unit_e_0[0], norm_v.coords)
+#     norm_v.data[:,1] = uw.function.evaluate(mesh.CoordinateSystem.unit_e_0[1], norm_v.coords)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Some useful coordinate stuff
+unit_rvec = mesh.CoordinateSystem.unit_e_0
+r_uw, th_uw = mesh.CoordinateSystem.xR
+
+# Null space in velocity (constant v_theta) expressed in x,y coordinates
+v_theta_fn_xy = r_uw * mesh.CoordinateSystem.rRotN.T * sympy.Matrix((0,1))
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Analytical velocities
+if analytical:
+    with mesh.access(v_ana, p_ana, rho_ana):
+        if k==0:
+            v_ana_expr = mesh.CoordinateSystem.rRotN.T * sympy.Matrix([0, v_theta.subs({r:r_uw, theta:th_uw})])
+            p_ana.data[:,0] = 0
+            rho_ana.data[:,0] = 0
+        else:
+            v_ana_expr = mesh.CoordinateSystem.rRotN.T * sympy.Matrix([v_r.subs({r:r_uw, theta:th_uw}), 
+                                                                       v_theta.subs({r:r_uw, theta:th_uw})])
+            p_ana.data[:,0] = uw.function.evalf(p.subs({r:r_uw, theta:th_uw}), p_ana.coords)
+            rho_ana.data[:,0] = uw.function.evalf(rho.subs({r:r_uw, theta:th_uw}), rho_ana.coords)
+            
+        v_ana.data[:,0] = uw.function.evalf(v_ana_expr[0], v_ana.coords)
+        v_ana.data[:,1] = uw.function.evalf(v_ana_expr[1], v_ana.coords)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># visualize analytical velocities
+clim=[0., 2.5]
+vmag=1e-1
+vfreq=40
+
+if uw.mpi.size == 1 and analytical and visualize:
+    vis.plot_vector(mesh, v_ana, vector_name=&#39;v_ana&#39;, cmap=cmc.lapaz.resampled(11), clim=clim, vmag=vmag, vfreq=vfreq,
+                    save_png=True, dir_fname=output_dir+&#39;vel_ana.png&#39;, clip_angle=0., show_arrows=False, cpos=&#39;xy&#39;)
+    
+    vis.save_colorbar(colormap=cmc.lapaz.resampled(11), cb_bounds=None, vmin=clim[0], vmax=clim[1], figsize_cb=(5, 5), primary_fs=18, 
+                      cb_orient=&#39;horizontal&#39;, cb_axis_label=&#39;Velocity&#39;, cb_label_xpos=0.5, cb_label_ypos=-2.05, fformat=&#39;pdf&#39;, 
+                      output_path=output_dir, fname=&#39;v_ana&#39;)
+    
+    # # saving vertical colobar 
+    # vis.save_colorbar(_colormap=cmc.lapaz.resampled(11), _cb_bounds=&#39;&#39;, _vmin=0., _vmax=2.3, _figsize_cb=(4, 2.5), _primary_fs=18, _cb_orient=&#39;vertical&#39;, 
+    #                   _cb_axis_label=&#39;Velocity&#39;, _cb_label_xpos=3.7, _cb_label_ypos=0.3, _fformat=&#39;pdf&#39;, _output_path=output_dir, _fname=&#39;vel_ana&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># visualize analytical pressure
+clim=[-8.5, 8.5]
+
+if uw.mpi.size == 1 and analytical and visualize:
+    vis.plot_scalar(mesh, p_ana.sym, &#39;p_ana&#39;, cmap=cmc.vik.resampled(41), clim=clim, save_png=True, clip_angle=0.,
+                    dir_fname=output_dir+&#39;p_ana.png&#39;, cpos=&#39;xy&#39;)
+    
+    vis.save_colorbar(colormap=cmc.vik.resampled(41), cb_bounds=None, vmin=clim[0], vmax=clim[1], figsize_cb=(5, 5), primary_fs=18, 
+                      cb_orient=&#39;horizontal&#39;, cb_axis_label=&#39;Pressure&#39;, cb_label_xpos=0.5, cb_label_ypos=-2.0, fformat=&#39;pdf&#39;, 
+                      output_path=output_dir, fname=&#39;p_ana&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># visualize analytical density
+clim=[-67.5, 67.5]
+
+if uw.mpi.size == 1 and analytical and visualize:
+    vis.plot_scalar(mesh, -rho_ana.sym, &#39;Rho&#39;, cmap=cmc.roma.resampled(31), clim=clim, save_png=True, 
+                    dir_fname=output_dir+&#39;rho_ana.png&#39;, clip_angle=0., cpos=&#39;xy&#39;)
+    
+    vis.save_colorbar(colormap=cmc.roma.resampled(31), cb_bounds=None, vmin=clim[0], vmax=clim[1], figsize_cb=(5, 5), primary_fs=18, 
+                      cb_orient=&#39;horizontal&#39;, cb_axis_label=&#39;Rho&#39;, cb_label_xpos=0.5, cb_label_ypos=-2.0, fformat=&#39;pdf&#39;, 
+                      output_path=output_dir, fname=&#39;rho_ana&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Create Stokes object
+stokes = Stokes(mesh, velocityField=v_uw, pressureField=p_uw, solver_name=&quot;stokes&quot;, degree=max(pdegree, vdegree))
+stokes.constitutive_model = uw.constitutive_models.ViscousFlowModel
+stokes.constitutive_model.Parameters.viscosity = 1.0
+stokes.saddle_preconditioner = 1.0
+
+# gravity
+gravity_fn = -1.0 * unit_rvec
+
+# density
+rho_uw = rho.subs({r:r_uw, theta:th_uw})
+
+# bodyforce term
+stokes.bodyforce = rho_uw*gravity_fn
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># boundary conditions
+v_diff =  v_uw.sym - v_ana.sym
+stokes.add_natural_bc(vel_penalty*v_diff, mesh.boundaries.Upper.name)
+stokes.add_natural_bc(vel_penalty*v_diff, mesh.boundaries.Lower.name)
+
+# stokes.add_essential_bc(v_ana_expr, mesh.boundaries.Upper.name)
+# stokes.add_essential_bc(v_ana_expr, mesh.boundaries.Lower.name)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># imposing pressure boundary condition which seems is required
+if k==0:
+    stokes.add_condition(p_uw.field_id, &quot;dirichlet&quot;, 
+                         sympy.Matrix([0]), mesh.boundaries.Lower.name, 
+                         components = (0))
+    
+    stokes.add_condition(p_uw.field_id, &quot;dirichlet&quot;, 
+                         sympy.Matrix([0]), mesh.boundaries.Upper.name, 
+                         components = (0))
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Stokes settings
+stokes.tolerance = stokes_tol
+stokes.petsc_options[&quot;ksp_monitor&quot;] = None
+
+# checking snes solve
+stokes.petsc_options[&quot;ksp_monitor_true_residual&quot;] = None
+stokes.petsc_options[&quot;snes_monitor&quot;] = None
+
+stokes.petsc_options[&quot;snes_type&quot;] = &quot;newtonls&quot;
+stokes.petsc_options[&quot;ksp_type&quot;] = &quot;fgmres&quot;
+
+# stokes.petsc_options.setValue(&quot;fieldsplit_velocity_pc_type&quot;, &quot;mg&quot;)
+stokes.petsc_options.setValue(&quot;fieldsplit_velocity_pc_mg_type&quot;, &quot;kaskade&quot;)
+stokes.petsc_options.setValue(&quot;fieldsplit_velocity_pc_mg_cycle_type&quot;, &quot;w&quot;)
+
+stokes.petsc_options[&quot;fieldsplit_velocity_mg_coarse_pc_type&quot;] = &quot;svd&quot;
+
+stokes.petsc_options[f&quot;fieldsplit_velocity_ksp_type&quot;] = &quot;fcg&quot;
+stokes.petsc_options[f&quot;fieldsplit_velocity_mg_levels_ksp_type&quot;] = &quot;chebyshev&quot;
+stokes.petsc_options[f&quot;fieldsplit_velocity_mg_levels_ksp_max_it&quot;] = 5
+stokes.petsc_options[f&quot;fieldsplit_velocity_mg_levels_ksp_converged_maxits&quot;] = None
+
+# # gasm is super-fast ... but mg seems to be bulletproof
+# # gamg is toughest wrt viscosity
+# stokes.petsc_options.setValue(&quot;fieldsplit_pressure_pc_type&quot;, &quot;gamg&quot;)
+# stokes.petsc_options.setValue(&quot;fieldsplit_pressure_pc_mg_type&quot;, &quot;additive&quot;)
+# stokes.petsc_options.setValue(&quot;fieldsplit_pressure_pc_mg_cycle_type&quot;, &quot;v&quot;)
+
+# mg, multiplicative - very robust ... similar to gamg, additive
+stokes.petsc_options.setValue(&quot;fieldsplit_pressure_pc_type&quot;, &quot;mg&quot;)
+stokes.petsc_options.setValue(&quot;fieldsplit_pressure_pc_mg_type&quot;, &quot;multiplicative&quot;)
+stokes.petsc_options.setValue(&quot;fieldsplit_pressure_pc_mg_cycle_type&quot;, &quot;v&quot;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>if timing:
+    uw.timing.reset()
+    uw.timing.start()
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>stokes.solve(verbose=True, debug=False)
+
+# check reason for convergence
+print(stokes.snes.getConvergedReason())
+print(stokes.snes.ksp.getConvergedReason())
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>if timing:
+    uw.timing.stop()
+    uw.timing.print_table(group_by=&#39;line_routine&#39;, output_file=f&quot;{output_dir}/stokes_solve_time.txt&quot;, display_fraction=1.00)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># # Null space evaluation
+# I0 = uw.maths.Integral(mesh, v_theta_fn_xy.dot(v_uw.sym))
+# norm = I0.evaluate()
+# I0.fn = v_theta_fn_xy.dot(v_theta_fn_xy)
+# vnorm = I0.evaluate()
+
+# print(norm/vnorm, vnorm)
+
+# with mesh.access(v_uw):
+#     dv = uw.function.evaluate(norm * v_theta_fn_xy, v_uw.coords) / vnorm
+#     v_uw.data[...] -= dv 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># compute error
+if analytical:
+    with mesh.access(v_uw, p_uw, v_err, p_err):
+        v_err.data[:,0] = v_uw.data[:,0] - v_ana.data[:,0]
+        v_err.data[:,1] = v_uw.data[:,1] - v_ana.data[:,1]
+        p_err.data[:,0] = p_uw.data[:,0] - p_ana.data[:,0]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># visualize velocities from uw
+clim=[0., 2.5]
+vfreq=40
+vmag=1e-1
+
+if uw.mpi.size == 1 and visualize:
+    vis.plot_vector(mesh, v_uw, vector_name=&#39;v_uw&#39;, cmap=cmc.lapaz.resampled(11), clim=clim, vmag=vmag, vfreq=vfreq,
+                    save_png=True, dir_fname=output_dir+&#39;vel_uw.png&#39;, clip_angle=0., cpos=&#39;xy&#39;, show_arrows=False)
+
+    vis.save_colorbar(colormap=cmc.lapaz.resampled(11), cb_bounds=None, vmin=clim[0], vmax=clim[1], figsize_cb=(5, 5), primary_fs=18, 
+                      cb_orient=&#39;horizontal&#39;, cb_axis_label=&#39;Velocity&#39;, cb_label_xpos=0.5, cb_label_ypos=-2.05, fformat=&#39;pdf&#39;, 
+                      output_path=output_dir, fname=&#39;v_uw&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># visualize errror in velocities
+clim=[0., 2.5e-4]
+vfreq=20
+vmag=10
+
+if uw.mpi.size == 1 and analytical and visualize:
+    # plot_vector(mesh, v_err, _vector_name=&#39;v_err&#39;, _cmap=cmc.lapaz.resampled(11), _clim=[0., 2.3e-4], _vfreq=20, _vmag=10, # 20e3
+    #             _save_png=True, _dir_fname=output_dir+&#39;vel_err.png&#39;)
+    vis.plot_vector(mesh, v_err, vector_name=&#39;v_err(relative)&#39;, cmap=cmc.lapaz.resampled(11), clim=clim, vmag=vmag, vfreq=vfreq,
+                    save_png=True, dir_fname=output_dir+&#39;vel_r_err.png&#39;, clip_angle=0., cpos=&#39;xy&#39;, show_arrows=False)
+
+    vis.save_colorbar(colormap=cmc.lapaz.resampled(11), cb_bounds=None, vmin=clim[0], vmax=clim[1], figsize_cb=(5, 5), primary_fs=18, 
+                      cb_orient=&#39;horizontal&#39;, cb_axis_label=&#39;Velocity Error (relative)&#39;, cb_label_xpos=0.5, cb_label_ypos=-2.05, fformat=&#39;pdf&#39;, 
+                      output_path=output_dir, fname=&#39;v_err_rel&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># plotting magnitude error in percentage
+clim=[0, 1]
+
+if uw.mpi.size == 1 and visualize and analytical:   
+    vmag_expr = (sympy.sqrt(v_err.sym.dot(v_err.sym))/sympy.sqrt(v_ana.sym.dot(v_ana.sym)))*100
+    vis.plot_scalar(mesh, vmag_expr, &#39;vmag_err(%)&#39;, cmap=cmc.oslo_r.resampled(21), clim=clim, save_png=True, 
+                    dir_fname=output_dir+&#39;vel_p_err.png&#39;, clip_angle=0., cpos=&#39;xy&#39;)
+    
+    vis.save_colorbar(colormap=cmc.oslo_r.resampled(21), cb_bounds=None, vmin=clim[0], vmax=clim[1], figsize_cb=(5, 5), primary_fs=18, 
+                      cb_orient=&#39;horizontal&#39;, cb_axis_label=&#39;Velocity Error (%)&#39;, cb_label_xpos=0.5, cb_label_ypos=-2.05, fformat=&#39;pdf&#39;, 
+                      output_path=output_dir, fname=&#39;v_err_perc&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># visualize pressure from uw
+clim=[-8.5, 8.5]
+
+if uw.mpi.size == 1 and visualize:
+    vis.plot_scalar(mesh, p_uw.sym, &#39;p_uw&#39;, cmap=cmc.vik.resampled(41), clim=clim, save_png=True, 
+                    dir_fname=output_dir+&#39;p_uw.png&#39;, clip_angle=0., cpos=&#39;xy&#39;)
+    
+    vis.save_colorbar(colormap=cmc.vik.resampled(41), cb_bounds=None, vmin=clim[0], vmax=clim[1], figsize_cb=(5, 5), primary_fs=18, 
+                      cb_orient=&#39;horizontal&#39;, cb_axis_label=&#39;Pressure&#39;, cb_label_xpos=0.5, cb_label_ypos=-2.0, fformat=&#39;pdf&#39;, 
+                      output_path=output_dir, fname=&#39;p_uw&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># visualize error in uw
+clim=[-0.006, 0.006]
+
+if uw.mpi.size == 1 and analytical and visualize:
+    vis.plot_scalar(mesh, p_err.sym, &#39;p_err(relative)&#39;, cmap=cmc.vik.resampled(41), clim=clim, save_png=True, 
+                    dir_fname=output_dir+&#39;p_r_err.png&#39;, clip_angle=0., cpos=&#39;xy&#39;)
+
+    vis.save_colorbar(colormap=cmc.vik.resampled(41), cb_bounds=None, vmin=clim[0], vmax=clim[1], figsize_cb=(5, 5), primary_fs=18, 
+                      cb_orient=&#39;horizontal&#39;, cb_axis_label=&#39;Pressure Error (relative)&#39;, cb_label_xpos=0.5, cb_label_ypos=-2.0, fformat=&#39;pdf&#39;, 
+                      output_path=output_dir, fname=&#39;p_err_rel&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># visualize percentage error in uw
+if k==0:
+    pass
+elif uw.mpi.size == 1 and analytical and visualize:
+    clim=[-100, 100]
+    vis.plot_scalar(mesh, (p_err.sym[0]/p_ana.sym[0])*100, &#39;p_err(%)&#39;, cmap=cmc.vik.resampled(41), clim=clim, save_png=True, 
+                    dir_fname=output_dir+&#39;p_p_err.png&#39;, clip_angle=0., cpos=&#39;xy&#39;)
+    
+    vis.save_colorbar(colormap=cmc.vik.resampled(41), cb_bounds=None, vmin=clim[0], vmax=clim[1], figsize_cb=(5, 5), primary_fs=18, 
+                      cb_orient=&#39;horizontal&#39;, cb_axis_label=&#39;Pressure Error (%)&#39;, cb_label_xpos=0.5, cb_label_ypos=-2.0, fformat=&#39;pdf&#39;, 
+                      output_path=output_dir, fname=&#39;p_err_perc&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># computing L2 norm
+if analytical:
+    with mesh.access(v_err, p_err, p_ana, v_ana):    
+        v_err_I = uw.maths.Integral(mesh, v_err.sym.dot(v_err.sym))
+        v_ana_I = uw.maths.Integral(mesh, v_ana.sym.dot(v_ana.sym))
+        v_err_l2 = np.sqrt(v_err_I.evaluate())/np.sqrt(v_ana_I.evaluate())
+        if uw.mpi.rank == 0:
+            print(&#39;Relative error in velocity in the L2 norm: &#39;, v_err_l2)
+        
+        if k==0:
+            if uw.mpi.rank == 0:
+                print(&#39;Integration of analytical solution over the domain is zero. For k=0, it is not possible to compute L2 norm for pressure.&#39;)
+        else:
+            p_err_I = uw.maths.Integral(mesh, p_err.sym.dot(p_err.sym))
+            p_ana_I = uw.maths.Integral(mesh, p_ana.sym.dot(p_ana.sym))
+            p_err_l2 = np.sqrt(p_err_I.evaluate())/np.sqrt(p_ana_I.evaluate())
+            if uw.mpi.rank == 0:
+                print(&#39;Relative error in pressure in the L2 norm: &#39;, p_err_l2)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># writing l2 norms to h5 file
+if uw.mpi.size == 1 and os.path.isfile(output_dir+&#39;error_norm.h5&#39;):
+    os.remove(output_dir+&#39;error_norm.h5&#39;)
+    print(&#39;Old file removed&#39;)
+
+if uw.mpi.rank == 0:
+    print(&#39;Creating new h5 file&#39;)
+    with h5py.File(output_dir+&#39;error_norm.h5&#39;, &#39;w&#39;) as f_h5:
+        f_h5.create_dataset(&quot;k&quot;, data=k)
+        f_h5.create_dataset(&quot;cellsize&quot;, data=cellsize)
+        f_h5.create_dataset(&quot;res&quot;, data=res)
+        f_h5.create_dataset(&quot;v_l2_norm&quot;, data=v_err_l2)
+        if k==0:
+            f_h5.create_dataset(&quot;p_l2_norm&quot;, data=np.inf)
+        else:
+            f_h5.create_dataset(&quot;p_l2_norm&quot;, data=p_err_l2)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># saving h5 and xdmf file
+mesh.petsc_save_checkpoint(index=0, meshVars=[v_uw, p_uw, v_ana, p_ana, rho_ana, v_err, p_err], outputPath=os.path.relpath(output_dir)+&#39;/output&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="from-here-onwards-we-compute-quantities-to-compare-analytical-and-numerical-solution">
+<h2>From here onwards we compute quantities to compare analytical and numerical solution.<a class="headerlink" href="#from-here-onwards-we-compute-quantities-to-compare-analytical-and-numerical-solution" title="Link to this heading">#</a></h2>
+</section>
+<section id="feel-free-to-comment-out-this-section">
+<h2>Feel free to comment out this section<a class="headerlink" href="#feel-free-to-comment-out-this-section" title="Link to this heading">#</a></h2>
+<section id="visualize-velocity-and-pressure-on-lower-and-outer-boundaries">
+<h3>visualize velocity and pressure on lower and outer boundaries<a class="headerlink" href="#visualize-velocity-and-pressure-on-lower-and-outer-boundaries" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># get indices
+lower_indx = uw.discretisation.petsc_discretisation.petsc_dm_find_labeled_points_local(mesh.dm, &#39;Lower&#39;)
+upper_indx = uw.discretisation.petsc_discretisation.petsc_dm_find_labeled_points_local(mesh.dm, &#39;Upper&#39;)
+
+# get theta from from x, y
+lower_theta = uw.function.evalf(th_uw, mesh.data[lower_indx])
+lower_theta[lower_theta&lt;0] += 2 * np.pi
+upper_theta = uw.function.evalf(th_uw, mesh.data[upper_indx])
+upper_theta[upper_theta&lt;0] += 2 * np.pi
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># lower and upper bd velocities
+if analytical:
+    with mesh.access(v_uw, p_uw):
+        # pressure
+        p_ana_lower = np.zeros((len(lower_indx), 1))
+        p_ana_upper = np.zeros((len(upper_indx), 1))
+        p_uw_lower = np.zeros((len(lower_indx), 1))
+        p_uw_upper = np.zeros((len(upper_indx), 1))
+        
+        if k==0:
+            p_ana_lower[:,0] = 0
+            p_ana_upper[:,0] = 0
+        else:
+            p_ana_lower[:,0] = uw.function.evalf(p.subs({r:r_uw, theta:th_uw}), mesh.data[lower_indx])
+            p_ana_upper[:,0] = uw.function.evalf(p.subs({r:r_uw, theta:th_uw}), mesh.data[upper_indx])
+        p_uw_lower[:,0] = uw.function.evalf(p_uw.sym, mesh.data[lower_indx])
+        p_uw_upper[:,0] = uw.function.evalf(p_uw.sym, mesh.data[upper_indx]) 
+
+        # velocity
+        v_ana_lower = np.zeros_like(mesh.data[lower_indx])
+        v_ana_upper = np.zeros_like(mesh.data[upper_indx])
+        v_uw_lower = np.zeros_like(mesh.data[lower_indx])
+        v_uw_upper = np.zeros_like(mesh.data[upper_indx])
+        
+        v_ana_lower[:,0] = uw.function.evalf(v_ana_expr[0], mesh.data[lower_indx])
+        v_ana_lower[:,1] = uw.function.evalf(v_ana_expr[1], mesh.data[lower_indx])
+        v_ana_upper[:,0] = uw.function.evalf(v_ana_expr[0], mesh.data[upper_indx])
+        v_ana_upper[:,1] = uw.function.evalf(v_ana_expr[1], mesh.data[upper_indx])
+        v_uw_lower = uw.function.evalf(v_uw.sym, mesh.data[lower_indx])
+        v_uw_upper = uw.function.evalf(v_uw.sym, mesh.data[upper_indx])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># sort array for visualize
+sort_lower = lower_theta.argsort()
+sort_upper = upper_theta.argsort()
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>def plot_stats(_data_list=&#39;&#39;, _label_list=&#39;&#39;, _line_style=&#39;&#39;, _xlabel=&#39;&#39;, _ylabel=&#39;&#39;, _xlim=&#39;&#39;, _ylim=&#39;&#39;, _mod_xticks=False, 
+               _save_pdf=&#39;&#39;, _output_path=&#39;&#39;, _fname=&#39;&#39;):
+    # plot some statiscs 
+    fig, ax = plt.subplots()
+    for i, data in enumerate(_data_list):
+        ax.plot(data[:,0], data[:,1], label=_label_list[i], linestyle=_line_style[i])
+    
+    ax.set_xlabel(_xlabel)
+    ax.set_ylabel(_ylabel)
+    ax.grid(linestyle=&#39;--&#39;)
+    ax.legend(loc=(1.01, 0.60), fontsize=14)
+
+    if len(_xlim)!=0:
+        ax.set_xlim(_xlim[0], _xlim[1])
+        if _mod_xticks:
+            ax.set_xticks(np.arange(_xlim[0], _xlim[1]+0.01, np.pi/2))
+            labels = [&#39;$0$&#39;, r&#39;$\pi/2$&#39;, r&#39;$\pi$&#39;, r&#39;$3\pi/2$&#39;, r&#39;$2\pi$&#39;]
+            ax.set_xticklabels(labels)
+
+    if len(_ylim)!=0:
+        ax.set_ylim(_ylim[0], _ylim[1])
+
+    if _save_pdf:
+        plt.savefig(_output_path+_fname+&#39;.pdf&#39;, format=&#39;pdf&#39;, bbox_inches=&#39;tight&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># visualizepressure on lower and upper boundaries
+data_list = [np.hstack((np.c_[lower_theta[sort_lower]], p_ana_lower[sort_lower])),
+             np.hstack((np.c_[upper_theta[sort_upper]], p_ana_upper[sort_upper])), 
+             np.hstack((np.c_[lower_theta[sort_lower]], p_uw_lower[sort_lower])), 
+             np.hstack((np.c_[upper_theta[sort_upper]], p_uw_upper[sort_upper]))]
+label_list = [&#39;k=&#39;+str(k)+&#39; (analy.), &#39;+r&#39;$r=R_{1}$&#39;,
+              &#39;k=&#39;+str(k)+&#39; (analy.), &#39;+r&#39;$r=R_{2}$&#39;,
+              &#39;k=&#39;+str(k)+&#39; (UW), &#39;+r&#39;$r=R_{1}$&#39;, 
+              &#39;k=&#39;+str(k)+&#39; (UW), &#39;+r&#39;$r=R_{2}$&#39;]
+linestyle_list = [&#39;-&#39;, &#39;-&#39;, &#39;--&#39;, &#39;--&#39;]
+
+plot_stats(_data_list=data_list, _label_list=label_list, _line_style=linestyle_list, _xlabel=r&#39;$\theta$&#39;, _ylabel=&#39;Pressure&#39;, 
+           _xlim=[0, 2*np.pi], _ylim=[-2.5, 2.5], _mod_xticks=True)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>def get_magnitude(_array):
+    # compute velocity magnitude
+    sqrd_sum = np.zeros((_array.shape[0], 1))
+    for i in range(_array.shape[1]):
+        sqrd_sum += _array[:, i:i+1]**2 
+    return np.sqrt(sqrd_sum)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># compute velocity magnitude
+v_ana_lower_mag = get_magnitude(v_ana_lower)
+v_ana_upper_mag = get_magnitude(v_ana_upper)
+v_uw_lower_mag = get_magnitude(v_uw_lower)
+v_uw_upper_mag = get_magnitude(v_uw_upper)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># visualizevel. mag on lower and upper boundaries
+data_list = [np.hstack((np.c_[lower_theta[sort_lower]], v_ana_lower_mag[sort_lower])),
+             np.hstack((np.c_[upper_theta[sort_upper]], v_ana_upper_mag[sort_upper])), 
+             np.hstack((np.c_[lower_theta[sort_lower]], v_uw_lower_mag[sort_lower])), 
+             np.hstack((np.c_[upper_theta[sort_upper]], v_uw_upper_mag[sort_upper]))]
+label_list = [&#39;k=&#39;+str(k)+&#39; (analy.), &#39;+r&#39;$r=R_{1}$&#39;,
+              &#39;k=&#39;+str(k)+&#39; (analy.), &#39;+r&#39;$r=R_{2}$&#39;,
+              &#39;k=&#39;+str(k)+&#39; (UW), &#39;+r&#39;$r=R_{1}$&#39;, 
+              &#39;k=&#39;+str(k)+&#39; (UW), &#39;+r&#39;$r=R_{2}$&#39;]
+linestyle_list = [&#39;-&#39;, &#39;-&#39;, &#39;--&#39;, &#39;--&#39;]
+
+plot_stats(_data_list=data_list, _label_list=label_list, _line_style=linestyle_list, _xlabel=r&#39;$\theta$&#39;, _ylabel=&#39;Velocity Magnitude&#39;, 
+           _xlim=[0, 2*np.pi], _ylim=[0, 2.5], _mod_xticks=True)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># uw velocity in (r, theta)
+v_uw_r_th = mesh.CoordinateSystem.rRotN*v_uw.sym.T
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># radial and theta components of velocity integrated over mesh. Theoretically output should be zero
+if analytical:   
+    v_r_rms_I = uw.maths.Integral(mesh, v_uw_r_th[0])
+    print((1/(2*np.pi))*v_r_rms_I.evaluate())
+
+    v_th_rms_I = uw.maths.Integral(mesh, v_uw_r_th[1])
+    print((1/(2*np.pi))*v_th_rms_I.evaluate())    
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># theta and r arrays
+theta_0_2pi = np.linspace(0, 2*np.pi, 1000, endpoint=True)
+r_i_o = np.hstack((np.linspace(r_i, np.pi/2, 7, endpoint=True), np.linspace(np.pi/1.92, r_o-1e-3, 4, endpoint=True)))
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>def get_vel_avg_r(_theta_arr, _r_arr, _vel_comp):
+    &#39;Return average velocity&#39;
+    vel_avg_arr = np.zeros_like(_r_arr)
+    for i, r_val in enumerate(_r_arr):
+        x_arr = r_val*np.cos(_theta_arr)
+        y_arr = r_val*np.sin(_theta_arr)
+        xy_arr = np.stack((x_arr, y_arr), axis=-1)
+        vel_xy = uw.function.evaluate(_vel_comp, xy_arr)
+        vel_avg_arr[i] = integrate.simpson(vel_xy, x=_theta_arr)/(2*np.pi)
+    return vel_avg_arr
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># velocity radial component average
+vr_avg = get_vel_avg_r(theta_0_2pi, r_i_o, v_uw_r_th[0])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># visualizevelocity radial component average
+data_list = [np.hstack((np.c_[r_i_o], np.c_[np.zeros_like(r_i_o)])),
+             np.hstack((np.c_[r_i_o], np.c_[vr_avg]))]
+label_list = [&#39;k=&#39;+str(k)+&#39; (analy.)&#39;,
+              &#39;k=&#39;+str(k)+&#39; (UW)&#39;,]
+linestyle_list = [&#39;-&#39;, &#39;--&#39;]
+
+plot_stats(_data_list=data_list, _label_list=label_list, _line_style=linestyle_list, _xlabel=&#39;r&#39;, _ylabel=r&#39;$&lt;v_{r}&gt;$&#39;, 
+           _xlim=[r_i, r_o], _ylim=[vr_avg.min(), vr_avg.max()])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># velocity theta component average
+vth_avg = get_vel_avg_r(theta_0_2pi, r_i_o, v_uw_r_th[1])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># visualizevelocity theta component average
+data_list = [np.hstack((np.c_[r_i_o], np.c_[np.zeros_like(r_i_o)])),
+             np.hstack((np.c_[r_i_o], np.c_[vth_avg]))]
+label_list = [&#39;k=&#39;+str(k)+&#39; (analy.)&#39;,
+              &#39;k=&#39;+str(k)+&#39; (UW)&#39;,]
+linestyle_list = [&#39;-&#39;, &#39;--&#39;]
+
+plot_stats(_data_list=data_list, _label_list=label_list, _line_style=linestyle_list, _xlabel=&#39;r&#39;, _ylabel=r&#39;$&lt;v_{\theta}&gt;$&#39;, 
+           _xlim=[r_i, r_o], _ylim=[vth_avg.min(), vth_avg.max()])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>def get_vel_rms_r(_theta_arr, _r_arr, _vel_comp):
+    &#39;Return rms velocity&#39;
+    vel_rms_arr = np.zeros_like(_r_arr)
+    for i, r_val in enumerate(_r_arr):
+        x_arr = r_val*np.cos(_theta_arr)
+        y_arr = r_val*np.sin(_theta_arr)
+        xy_arr = np.stack((x_arr, y_arr), axis=-1)
+        vel_xy = uw.function.evaluate(_vel_comp, xy_arr)
+        vel_rms_arr[i] = np.sqrt(integrate.simpson(vel_xy, x=_theta_arr)/(2*np.pi))
+    return vel_rms_arr
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># lambdified functions
+g_lbd = lambdify([r], g)
+f_lbd = lambdify([r], f)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># velocity radial component rms
+vr_rms = get_vel_rms_r(theta_0_2pi, r_i_o, v_uw_r_th[0]**2)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># visualize velocity radial component rms
+data_list = [np.hstack((np.c_[r_i_o], np.c_[k*np.abs(g_lbd(r_i_o))/np.sqrt(2)])),
+             np.hstack((np.c_[r_i_o], np.c_[vr_rms]))]
+label_list = [&#39;k=&#39;+str(k)+&#39; (analy.)&#39;,
+              &#39;k=&#39;+str(k)+&#39; (UW)&#39;,]
+linestyle_list = [&#39;-&#39;, &#39;--&#39;]
+
+plot_stats(_data_list=data_list, _label_list=label_list, _line_style=linestyle_list, _xlabel=&#39;r&#39;, _ylabel=r&#39;$&lt;v_{r}&gt;_{rms}$&#39;, 
+           _xlim=[r_i, r_o], _ylim=[0, 2.1])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># velocity theta component rms
+vth_rms = get_vel_rms_r(theta_0_2pi, r_i_o, v_uw_r_th[1]**2)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># visualize velocity theta component rms
+data_list = [np.hstack((np.c_[r_i_o], np.c_[np.abs(f_lbd(r_i_o))/np.sqrt(2)])),
+             np.hstack((np.c_[r_i_o], np.c_[vth_rms]))]
+label_list = [&#39;k=&#39;+str(k)+&#39; (analy.)&#39;,
+              &#39;k=&#39;+str(k)+&#39; (UW)&#39;,]
+linestyle_list = [&#39;-&#39;, &#39;--&#39;]
+
+plot_stats(_data_list=data_list, _label_list=label_list, _line_style=linestyle_list, _xlabel=&#39;r&#39;, _ylabel=r&#39;$&lt;v_{\theta}&gt;_{rms}$&#39;, 
+           _xlim=[r_i, r_o], _ylim=[0, 2])
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./Notebooks/Examples-Annulus-Stokes"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#benchmark-aspect-results">Benchmark ASPECT results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#benchmark-paper">Benchmark paper</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analytical-solution">Analytical solution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analytical-solution-in-sympy">Analytical solution in sympy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-mesh">Create Mesh</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#from-here-onwards-we-compute-quantities-to-compare-analytical-and-numerical-solution">From here onwards we compute quantities to compare analytical and numerical solution.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#feel-free-to-comment-out-this-section">Feel free to comment out this section</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#visualize-velocity-and-pressure-on-lower-and-outer-boundaries">visualize velocity and pressure on lower and outer boundaries</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Louis Moresi
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
