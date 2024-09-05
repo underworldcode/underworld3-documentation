@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.16.0
+#       jupytext_version: 1.16.4
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -44,8 +44,8 @@ import sympy
 
 res = 0.05
 r_o = 1.0
-r_int = 0.8
-r_i = 0.5
+r_int = 0.2
+r_i = 0.1
 
 free_slip_upper = True
 free_slip_lower = True
@@ -70,6 +70,8 @@ meshball = uw.meshing.AnnulusInternalBoundary(radiusOuter=r_o,
                                               cellSize_Outer=res,
                                               filename="tmp_fixedstarsMesh.msh")
 
+
+meshball.view()
 
 # +
 norm_v = uw.discretisation.MeshVariable("N", meshball, 2, degree=1, varsymbol=r"{\hat{n}}")
@@ -125,8 +127,9 @@ stokes = Stokes(
 
 stokes.constitutive_model = uw.constitutive_models.ViscousFlowModel
 stokes.constitutive_model.Parameters.viscosity = 1.0
-stokes.penalty = 0.0
-stokes.saddle_preconditioner = sympy.simplify(1 / (stokes.constitutive_model.viscosity + stokes.penalty))
+stokes.penalty = 1.0
+
+stokes.tolerance = 1.0e-6
 
 stokes.petsc_options.setValue("ksp_monitor", None)
 stokes.petsc_options.setValue("snes_monitor", None)
@@ -165,7 +168,7 @@ norm = I0.evaluate()
 I0.fn = v_theta_fn_xy.dot(v_theta_fn_xy)
 vnorm = I0.evaluate()
 
-print(norm/vnorm, vnorm)
+# print(norm/vnorm, vnorm)
 
 with meshball.access(v_soln):
     dv = uw.function.evaluate(norm * v_theta_fn_xy, v_soln.coords) / vnorm
@@ -178,7 +181,7 @@ with meshball.access(v_soln1):
 
 pressure_solver = uw.systems.Projection(meshball, p_cont)
 pressure_solver.uw_function = p_soln.sym[0]
-pressure_solver.smoothing = 1.0e-3
+pressure_solver.smoothing = 1.0e-6
 
 # +
 ## Now solve with normals from nodal projection
@@ -187,7 +190,7 @@ stokes._reset()
 
 stokes.bodyforce = sympy.Matrix([0,0])
 Gamma = meshball.Gamma / sympy.sqrt(meshball.Gamma.dot(meshball.Gamma))
-Gamma = norm_v.sym
+# Gamma = norm_v.sym
 
 stokes.add_natural_bc(-t_init * unit_rvec, "Internal")
 
@@ -201,7 +204,7 @@ if free_slip_lower:
 else:
     stokes.add_essential_bc((0.0,0.0), "Lower")
 
-stokes.solve(zero_init_guess=False)
+stokes.solve(zero_init_guess=True)
 
 # +
 # Null space evaluation
@@ -213,7 +216,7 @@ with meshball.access(v_soln):
     dv = uw.function.evaluate(norm * v_theta_fn_xy, v_soln.coords) / vnorm
     v_soln.data[...] -= dv 
 
-print(norm/vnorm, vnorm)
+# print(norm/vnorm, vnorm)
 # -9.662093930530614e-09 0.024291704747453444
 
 norm = I0.evaluate()
@@ -221,10 +224,18 @@ norm = I0.evaluate()
 
 I0 = uw.maths.Integral(meshball, v_theta_fn_xy.dot(v_soln.sym))
 norm = I0.evaluate()
-print(norm/vnorm)
 
+# +
 # Pressure at mesh nodes
 pressure_solver.solve()
+
+pstats1 = p_cont.stats()
+pstats0 = p_soln.stats()
+
+if uw.mpi.rank == 0:
+    print(f"Pressure (C1): {pstats1}")
+    print(f"Pressure (C0): {pstats0}")
+    print(f"Velocity: {vnorm}")
 
 # +
 # check the mesh if in a notebook / serial
@@ -270,21 +281,25 @@ if uw.mpi.size == 1:
         pvmesh,
         cmap="coolwarm",
         edge_color="Grey",
-        scalars="Vmag",
+        scalars="P",
         show_edges=True,
         use_transparency=False,
         opacity=1.0,
         show_scalar_bar=True
     )
 
-    pl.add_arrows(velocity_points.points, velocity_points.point_data["V"], mag=3)
-    pl.add_arrows(velocity_points.points, velocity_points.point_data["V0"], mag=3, color="Black")
+    pl.add_arrows(velocity_points.points, velocity_points.point_data["V"], mag=4)
+    pl.add_arrows(velocity_points.points, velocity_points.point_data["V0"], mag=4, color="Black")
     # pl.add_arrows(velocity_points.points, velocity_points.point_data["dV"], mag=100, color="Black")
     pl.add_mesh(pvstream, opacity=0.3, show_scalar_bar=False)
 
 
     pl.show(cpos="xy")
+
+    vsol_rms = np.sqrt(velocity_points.point_data["V"][:, 0] ** 2 + velocity_points.point_data["V"][:, 1] ** 2).mean()
+    print(vsol_rms)
 # -
 
-vsol_rms = np.sqrt(velocity_points.point_data["V"][:, 0] ** 2 + velocity_points.point_data["V"][:, 1] ** 2).mean()
-vsol_rms
+
+
+
