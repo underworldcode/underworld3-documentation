@@ -1,15 +1,17 @@
 # MacOS
 
 .DS_Store
-
+**/.DS_Store
 
 # UW3
 
 **/.meshes/*
 **/_build/*
 
-*.msh
-Jupyterbook/**/.png
+**/*.msh
+Jupyterbook/**/*.png
+Jupyterbook/**/*.vtk
+Jupyterbook/**/*.h5
 
 
 # Byte-compiled / optimized / DLL files
@@ -157,4 +159,3 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
-
