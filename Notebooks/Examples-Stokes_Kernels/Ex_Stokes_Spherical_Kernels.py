@@ -227,7 +227,7 @@ if not uw.is_notebook:
 # Optional - read in a different solution if you want to just use this for
 # visualisation - set the `expt_name` here
 
-expt_name="Spherical_Kernel_np_7"
+expt_name="Spherical_Kernel_np_96"
 
 import os
 
@@ -258,7 +258,8 @@ if uw.mpi.size == 1:
     pvmesh.point_data["V"] = vis.vector_fn_to_pv_points(pvmesh, v_soln_ckpt.sym)
     pvmesh.point_data["R"] = vis.scalar_fn_to_pv_points(pvmesh, radius_fn)
 
-    pvmesh_c = pvmesh.clip_scalar(scalars="R", value=0.95).clip()
+    # pvmesh_c = pvmesh.clip_scalar(scalars="R", value=0.95).clip()
+    pvmesh_c = pvmesh.clip(normal="z")
         
     skip = 10
     points = np.zeros((meshball._centroids[::skip].shape[0], 3))
@@ -279,14 +280,14 @@ if uw.mpi.size == 1:
     pl = pv.Plotter(window_size=(750, 750))
 
     pl.add_mesh(
-        pvmesh,
+        pvmesh_c,
         cmap="coolwarm",
-        edge_color="Grey",
-        edge_opacity=0.33,
+        edge_color="Black",
+        # edge_opacity=0.33,
         scalars="P",
         show_edges=True,
         use_transparency=False,
-        opacity=0.9,
+        opacity=1.0,
         show_scalar_bar=False
     )
 
@@ -296,16 +297,16 @@ if uw.mpi.size == 1:
     vsol_rms = np.sqrt(velocity_points.point_data["V"][:, 0] ** 2 + velocity_points.point_data["V"][:, 1] ** 2).mean()
     # print(vsol_rms)
 
-    pl.export_html("stokes_sphere_plot.html")
+    pl.export_html("stokes_sphere_plot_96.html")
     # pl.show(cpos="xy", jupyter_backend="trame")
 
 
 # +
 from IPython.display import IFrame
-IFrame(src="./stokes_sphere_plot.html", width=750, height=750)
+IFrame(src="./stokes_sphere_plot_96.html", width=750, height=750)
 
 
 # -
 
 
-
+p_soln.stats()
