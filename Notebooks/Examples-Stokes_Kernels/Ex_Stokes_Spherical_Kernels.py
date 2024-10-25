@@ -299,14 +299,11 @@ if uw.mpi.size == 1:
 
     pl.export_html("stokes_sphere_plot_96.html")
     # pl.show(cpos="xy", jupyter_backend="trame")
+# -
 
 
-# +
 from IPython.display import IFrame
 IFrame(src="./stokes_sphere_plot_96.html", width=750, height=750)
-
-
-# -
 
 
 p_soln.stats()
