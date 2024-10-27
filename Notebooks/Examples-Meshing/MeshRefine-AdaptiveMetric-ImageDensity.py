@@ -96,7 +96,7 @@ mvals = ndimage.map_coordinates(blurred_outline.T, image_coords.T , order=1, mod
 
 # %%
 with mesh0.access(H):
-    H.data[:,0] = 100.0 + 25000 * mvals
+    H.data[:,0] = 1000.0 + 50000 * mvals
 
 # +
 icoord, meshA = adaptivity.mesh_adapt_meshVar(mesh0, H, Metric, redistribute=True)
@@ -130,121 +130,20 @@ cell_label.write("Batmesh_cell_properties.h5")
 # ls -trl
 
 # %%
-
-# %%
-
-# %%
-
-# %%
-Rayleigh_number = uw.function.expression(r"\textrm{Ra}", sympy.sympify(10)**6, "Rayleigh number")
-
-# %%
-v_soln = uw.discretisation.MeshVariable("U", batmesh, meshA.dim, degree=2, continuous=True)
-p_soln = uw.discretisation.MeshVariable("P", batmesh, 1, degree=1, continuous=True)
-t_soln = uw.discretisation.MeshVariable("T", batmesh, 1, degree=2)
-
-
-# %%
-# Create Stokes object
-
-stokes = uw.systems.Stokes(
-    batmesh,
-    velocityField=v_soln,
-    pressureField=p_soln,
-)
-
-# Constant viscosity
-
-stokes.constitutive_model = uw.constitutive_models.ViscousFlowModel
-stokes.constitutive_model.Parameters.shear_viscosity_0 = 1
-stokes.tolerance = 1.0e-3
-
-unit_r_vec = batmesh.CoordinateSystem.unit_e_0
-
-# free slip.
-# note with petsc we always need to provide a vector of correct cardinality.
-
-stokes.add_natural_bc(10000 * unit_r_vec.dot(v_soln.sym) * unit_r_vec, "Upper")
-stokes.bodyforce = -Rayleigh_number * unit_r_vec * t_soln.sym[0]
-
-stokes.view()
-
-# %%
-
-adv_diff = uw.systems.AdvDiffusionSLCN(
-    batmesh,
-    u_Field=t_soln,
-    V_fn=v_soln,
-)
-
-adv_diff.constitutive_model = uw.constitutive_models.DiffusionModel
-adv_diff.constitutive_model.Parameters.diffusivity = 1
-adv_diff.f = cell_label.sym[0]
-
-adv_diff.add_dirichlet_bc(0.0, "Upper")
-
-with batmesh.access(t_soln):
-    t_soln.data[:,0] = uw.function.evalf(cell_label.sym[0], t_soln.coords)
-
-
-# %%
-stokes.solve(zero_init_guess=True)
-
-# %%
-t_step = 0
-
-# %%
-
-for step in range(0, 50):
-    stokes.solve(zero_init_guess=False)
-    delta_t = 5.0 * stokes.estimate_dt()
-    adv_diff.solve(timestep=delta_t, zero_init_guess=False)
-
-    # stats then loop
-    tstats = t_soln.stats()
-
-    if uw.mpi.rank == 0:
-        print("Timestep {}, dt {}".format(step, delta_t))
-
-    # if t_step % 5 == 0:
-    #     plot_T_mesh(filename="{}_step_{}".format(expt_name, t_step))
-
-    batmesh.write_timestep(
-        "Batmesh",
-        meshUpdates=True,
-        meshVars=[p_soln, v_soln, t_soln],
-        outputPath="output",
-        index=t_step,
-    )
-
-    t_step += 1
-
-
-# %%
 if uw.mpi.size == 1:
 
     import pyvista as pv
     import underworld3.visualisation as vis
 
     pvmesh = vis.mesh_to_pv_mesh(batmesh)
-    pvmesh.point_data["T"] = vis.scalar_fn_to_pv_points(pvmesh, t_soln.sym[0])
-    pvmesh.point_data["V"] = vis.vector_fn_to_pv_points(pvmesh, v_soln.sym)
+    pvmesh.point_data["L"] = vis.scalar_fn_to_pv_points(pvmesh, cell_label.sym[0])
 
     pl = pv.Plotter(window_size=(1500, 1500))
-
-    pvstream = pvmesh.streamlines_from_source(
-        pvmesh.cell_centers(), 
-        vectors="V", 
-        integrator_type=45,
-        surface_streamlines=True, 
-        max_steps=1000,
-        max_time=0.25,
-    )
 
     pl.add_mesh(
                 pvmesh,
                 cmap="Oranges_r",
-                scalars="T",
+                scalars="L",
                 edge_color="Black",
                 show_edges=True,
                 use_transparency=False,
@@ -264,9 +163,7 @@ if uw.mpi.size == 1:
                 
                )
 
-    pl.add_mesh(pvstream, cmap="Oranges")
 
-    pl.add_arrows(pvmesh.points, pvmesh.point_data["V"], mag=float(10.0/Rayleigh_number.sym))
 
 
     pl.show(jupyter_backend='html')
