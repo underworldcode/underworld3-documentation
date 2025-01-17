@@ -149,12 +149,12 @@ for solver in [stokes]:
     solver.add_natural_bc( sympy.Matrix([ pb, 0.0]) , 'Right')
     
     
-    solver.add_dirichlet_bc( [0., 0.], "Left",  [1] )  # no slip on the base
-    solver.add_dirichlet_bc( [0., 0.], "Right", [1] )  # no slip on the top
+    solver.add_dirichlet_bc( [None, 0.], "Left" )  # no slip on the base
+    solver.add_dirichlet_bc( [None, 0.], "Right" )  # no slip on the top
     
     
-    solver.add_dirichlet_bc( [0.,0.], "Bottom", [0, 1] )  # no slip on the base
-    solver.add_dirichlet_bc( [0.,0.], "Top",    [0, 1] )  # no slip on the top
+    solver.add_dirichlet_bc( [0.,0.], "Bottom")  # no slip on the base
+    solver.add_dirichlet_bc( [0.,0.], "Top" )  # no slip on the top
     
     
     if uw.mpi.size == 1:
