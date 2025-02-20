@@ -11,25 +11,34 @@
 import nest_asyncio
 nest_asyncio.apply()
 
-# +
 import underworld3 as uw
 import numpy as np
 from enum import Enum
 from petsc4py import PETSc
 import sympy
 from sympy import Piecewise, ceiling, Abs
-import matplotlib.pyplot as plt
-
+import os
 options = PETSc.Options()
-# -
 
 # vis tools
 if uw.mpi.size == 1:
     import pyvista as pv
     import underworld3.visualisation as vis
+    import matplotlib.pyplot as plt
 
 # importing loop meshing tools
 from underworld3.utilities import create_dmplex_from_medit
+
+# +
+# create output dir
+if uw.mpi.size==1:
+    output_dir = './output/darcy_loop_mesh/serial/'
+else:
+    output_dir = './output/darcy_loop_mesh/parallel/'
+
+if uw.mpi.rank == 0:
+    os.makedirs(output_dir, exist_ok=True)
+# -
 
 # loading mesh data from dmplex
 medit_plex = create_dmplex_from_medit('./meshout.mesh')
@@ -220,7 +229,7 @@ def plot_P_V(_mesh, _p_soln, _v_soln):
 # +
 # set up two materials
 interface = 2.5
-k1 = 1e-3
+k1 = 1e-1
 k2 = 1e-5
 
 # Groundwater pressure boundary condition on the left wall
@@ -247,21 +256,73 @@ with mesh.access(permeability):
     perm_arr = np.zeros_like(permeability.data)
 
 # +
-# labels start and end
-cStart, cEnd = mesh.dm.getHeightStratum(0)
+# # dealing with vertices
 
-# fault tetra
-fault_tetra = mesh.dm.getStratumIS("TetraLabels", 404).array
+# pStart, pEnd = mesh.dm.getDepthStratum(0)
+# pNum = pEnd-pStart
 
-for c in range(cStart, cEnd):
-    if c in fault_tetra:
-        perm_arr[c] = k1
-        # with mesh.access(permeability):
-        #     permeability.data[c] = k1
+# # Get coordinates array
+# coords = mesh.dm.getCoordinates().array.reshape(pNum, mesh.cdim)
+
+# # dealing with tets
+# tet_Start, tet_End = mesh.dm.getDepthStratum(3)
+
+# # fault tetra
+# fault_tetra = mesh.dm.getStratumIS("TetraLabels", 404).array
+
+# for t in range(tet_Start, tet_End):
+#     if t in fault_tetra:
+#         coneclose, orient = mesh.dm.getTransitiveClosure(t)
+#         if np.any(coords[coneclose[-4:]-tet_pEnd][:,1]>5):
+#             perm_arr[t] = k1
+#         else:
+#             perm_arr[t] = 0.0       
+#     else:
+#         perm_arr[t] = k2
+
+# +
+comm = mesh.dm.getComm()  # PETSc communicator
+
+# Get vertex depth range
+pStart, pEnd = mesh.dm.getDepthStratum(0)
+pNum = pEnd - pStart  # Number of local vertices
+
+# Get coordinates
+coord_sec = mesh.dm.getCoordinateSection()
+coord_vec = mesh.dm.getCoordinatesLocal().array
+
+# Ensure proper reshaping by getting the actual number of vertices
+actual_pNum = coord_vec.shape[0] // mesh.cdim
+coords = coord_vec.reshape(actual_pNum, mesh.cdim)  # Use computed pNum
+
+# Get tetrahedral depth range
+tet_Start, tet_End = mesh.dm.getDepthStratum(3)
+
+# Get fault tetra indices
+fault_tetra_set = set(mesh.dm.getStratumIS("TetraLabels", 404).array)
+
+# Parallel-safe permeability assignment
+for t in range(tet_Start, tet_End):
+    if t in fault_tetra_set:
+        coneclose, orient = mesh.dm.getTransitiveClosure(t, useCone=True)
+        
+        # Get the last 4 entries (vertices) and their y-coordinates
+        vertex_indices = [v for v in coneclose if pStart <= v < pEnd]
+        if len(vertex_indices) != 4:
+            continue  # Ensure we have exactly 4 vertices for the tetrahedron
+
+        y_coords = [coords[v - pStart][1] for v in vertex_indices]
+
+        # Assign permeability based on y-coordinate
+        if np.any(np.array(y_coords) > 5):
+            perm_arr[t] = k1
+        else:
+            perm_arr[t] = 0.0
     else:
-        perm_arr[c] = k2
-        # with mesh.access(permeability):
-        #     permeability.data[c] = k2
+        perm_arr[t] = k2
+
+# Ensure consistency across MPI ranks
+comm.Barrier()
 # -
 
 # assigning k values to mesh variable
@@ -271,14 +332,22 @@ with mesh.access(permeability):
 darcy.constitutive_model.Parameters.permeability = permeability.sym[0]
 
 # darcy solve without gravity
-darcy.solve()
+darcy.solve(verbose=True)
 
-# saving output
+# +
+# # saving output
+
 mesh.petsc_save_checkpoint(index=0, meshVars=[p_soln, v_soln], 
-                           outputPath='./output/darcy_3d_loop_mesh_fault_no_g')
+                           outputPath=f'{output_dir}darcy_3d_loop_mesh_fault_no_g')
+
+# mesh.write_timestep(f'darcy_3d_loop_mesh_fault_no_g', meshUpdates=True, 
+#                     meshVars=[v_soln, p_soln], 
+#                     outputPath='./output/', index=0,)
+# -
 
 # plotting soln without gravity
-plot_P_V(mesh, p_soln, v_soln)
+if uw.mpi.size==1:
+    plot_P_V(mesh, p_soln, v_soln)
 
 # # copy soln
 with mesh.access(p_soln_0, v_soln_0):
@@ -287,34 +356,38 @@ with mesh.access(p_soln_0, v_soln_0):
 
 # now switch on gravity
 darcy.constitutive_model.Parameters.s = sympy.Matrix([0, 0, -1]).T
-darcy.solve()
-
-# saving output
-mesh.petsc_save_checkpoint(index=0, meshVars=[p_soln, v_soln, permeability], 
-                           outputPath='./output/darcy_3d_loop_mesh_fault_g')
-
-# plotting soln without gravity
-plot_P_V(mesh, p_soln, v_soln)
+darcy.solve(verbose=True)
 
 # +
-# set up interpolation coordinates
-xcoords = np.linspace(minX + 0.001 * (maxX - minX), maxX - 0.001 * (maxX - minX), 100)
-ycoords = np.full_like(xcoords, 5)
-zcoords = np.full_like(xcoords, 2)
-xyz_coords = np.column_stack([xcoords, ycoords, zcoords])
+# saving output
 
-pressure_interp = uw.function.evaluate(p_soln.sym[0], xyz_coords)
-pressure_interp_0 = uw.function.evaluate(p_soln_0.sym[0], xyz_coords)
+mesh.petsc_save_checkpoint(index=0, meshVars=[p_soln, v_soln, permeability], 
+                           outputPath=f'{output_dir}darcy_3d_loop_mesh_fault_g')
 # -
 
+# plotting soln without gravity
+if uw.mpi.size==1:
+    plot_P_V(mesh, p_soln, v_soln)
+
+# set up interpolation coordinates
+if uw.mpi.size==1:
+    xcoords = np.linspace(minX + 0.001 * (maxX - minX), maxX - 0.001 * (maxX - minX), 100)
+    ycoords = np.full_like(xcoords, 5)
+    zcoords = np.full_like(xcoords, 2)
+    xyz_coords = np.column_stack([xcoords, ycoords, zcoords])
+    
+    pressure_interp = uw.function.evaluate(p_soln.sym[0], xyz_coords)
+    pressure_interp_0 = uw.function.evaluate(p_soln_0.sym[0], xyz_coords)
+
 # plotting numerical and analytical solution
-fig = plt.figure(figsize=(15,7))
-ax1 = fig.add_subplot(111, xlabel="X-Distance", ylabel="Pressure")
-ax1.plot(xcoords, pressure_interp, linewidth=3, label="Numerical solution")
-ax1.plot(xcoords, pressure_interp_0, linewidth=3, label="Numerical solution (no G)")
-# ax1.plot(pressure_analytic, xcoords, linewidth=3, linestyle="--", label="Analytic solution")
-# ax1.plot(pressure_analytic_noG, xcoords, linewidth=3, linestyle="--", label="Analytic (no gravity)")
-ax1.grid("on")
-ax1.legend()
+if uw.mpi.size==1:
+    fig = plt.figure(figsize=(15,7))
+    ax1 = fig.add_subplot(111, xlabel="X-Distance", ylabel="Pressure")
+    ax1.plot(xcoords, pressure_interp, linewidth=3, label="Numerical solution")
+    ax1.plot(xcoords, pressure_interp_0, linewidth=3, label="Numerical solution (no G)")
+    # ax1.plot(pressure_analytic, xcoords, linewidth=3, linestyle="--", label="Analytic solution")
+    # ax1.plot(pressure_analytic_noG, xcoords, linewidth=3, linestyle="--", label="Analytic (no gravity)")
+    ax1.grid("on")
+    ax1.legend()
 
 
