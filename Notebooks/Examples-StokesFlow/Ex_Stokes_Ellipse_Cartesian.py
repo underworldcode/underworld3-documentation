@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.16.1
+#       jupytext_version: 1.16.6
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -230,7 +230,7 @@ with elliptical_mesh.access(n_vect):
 # +
 # Create Stokes object
 
-stokes = Stokes(elliptical_mesh, velocityField=v_soln, pressureField=p_soln, solver_name="stokes")
+stokes = Stokes(elliptical_mesh, velocityField=v_soln, pressureField=p_soln )
 stokes.constitutive_model = uw.constitutive_models.ViscousFlowModel
 stokes.constitutive_model.Parameters.shear_viscosity_0 = 1
 stokes.penalty = 1.0

@@ -193,30 +193,24 @@ if uw.mpi.size == 1:
                                   invert=False)
     
     pvstream = pvmesh.streamlines_from_source(
-        pv.PointSet(doughnut.cell_centers().points[::5]), 
+        pv.PointSet(doughnut.cell_centers().points[::10]), 
         vectors="V", 
         integrator_type=45,
         surface_streamlines=True, 
         max_steps=1000,
-        max_time=0.25,
+        max_time=1.0,
     )
 
 
-    # pl.add_mesh(pvmesh, 
-    #             style="wireframe",
-    #             color="#FEFEF0",
-    #             opacity=0.1)
-
-    pl.add_mesh(pvstream, 
-                cmap=["orange", "white", "green"], 
-                show_scalar_bar=False,
-                opacity=0.1
-               )
+    pl.add_mesh(pvmesh, 
+                style="wireframe",
+                color="#FEFEF0",
+                opacity=0.2)
 
 
     pl.add_mesh(
                 pvmesh_t,
-                cmap="Oranges",
+                cmap="Blues",
                 scalars="T",
                 opacity="sigmoid",
                 edge_color="Grey",
@@ -228,7 +222,7 @@ if uw.mpi.size == 1:
     pl.add_mesh(
                 pvmesh_t,
                 copy_mesh=True,
-                cmap="Blues",
+                cmap="Grays",
                 scalars="T1",
                 opacity="sigmoid",
                 edge_color="Grey",
@@ -239,6 +233,11 @@ if uw.mpi.size == 1:
                )
   
 
+    pl.add_mesh(pvstream, 
+            cmap=["#ED6020", "#994305", "#665500"], 
+            show_scalar_bar=False,
+            opacity=0.5
+           )
     
     # pl.add_mesh(
     #             pvmesh,
@@ -256,27 +255,172 @@ if uw.mpi.size == 1:
     #               mag=float(0.2/Rayleigh_number.sym),
     #              show_scalar_bar=False)
 
+    pl.camera.roll = 180
+
 
     pl.show(jupyter_backend='html')
 
 # %%
 0/0
 
+
 # %%
+## Animation 
 
 # %%
 ## Check the results saved to file
 
-expt_name = "Batmesh"
-output_path="output"
-step = 50
+def read_bat_data(step):
 
-v_soln.read_timestep(expt_name, "U", step, outputPath=output_path)
-p_soln.read_timestep(expt_name, "P", step, outputPath=output_path)
-t_soln.read_timestep(expt_name, "T", step, outputPath=output_path)
-t_soln1.read_timestep(expt_name, "T1", step, outputPath=output_path)
+    expt_name = "Batmesh"
+    output_path="Hyp"
+    
+
+    v_soln.read_timestep(expt_name, "U", step, outputPath=output_path)
+    p_soln.read_timestep(expt_name, "P", step, outputPath=output_path)
+    t_soln.read_timestep(expt_name, "T", step, outputPath=output_path)
+    t_soln1.read_timestep(expt_name, "T1", step, outputPath=output_path)
+
+    return
 
 
+
+
+
+# %%
+frame = 0
+
+# %%
+import pyvista as pv
+import underworld3.visualisation as vis
+
+pl = pv.Plotter(window_size=(750, 750))
+
+for i in range(0,250, 1):
+    
+    read_bat_data(250-i-1)
+    
+    pvmesh = vis.mesh_to_pv_mesh(batmesh)
+    pvmesh.point_data["R"] = vis.scalar_fn_to_pv_points(pvmesh, batmesh.CoordinateSystem.R[0])
+    pvmesh.point_data["V"] = vis.vector_fn_to_pv_points(pvmesh, v_soln.sym)
+    pvmesh.point_data["L"] = vis.scalar_fn_to_pv_points(pvmesh, cell_properties.sym[0])
+
+    pvmesh_t = vis.meshVariable_to_pv_mesh_object(t_soln)
+    pvmesh_t.point_data["T"] = vis.scalar_fn_to_pv_points(pvmesh_t, t_soln.sym[0])
+    pvmesh_t.point_data["T1"] = vis.scalar_fn_to_pv_points(pvmesh_t, t_soln1.sym[0])
+
+
+    doughnut = pvmesh.clip_scalar(scalars="R", 
+                                  value=0.3, 
+                                  invert=False)
+    
+    pvstream = pvmesh.streamlines_from_source(
+        pv.PointSet(doughnut.cell_centers().points[::10]), 
+        vectors="V", 
+        integrator_type=45,
+        surface_streamlines=True, 
+        max_steps=1000,
+        max_time=1.0,
+    )
+
+
+    # pl.add_mesh(pvmesh, 
+    #             style="wireframe",
+    #             color="Black",
+    #             opacity=0.2)
+
+
+    pl.add_mesh(
+                pvmesh_t,
+                cmap="Grays",
+                scalars="T1",
+                opacity="sigmoid",
+                edge_color="Grey",
+                show_edges=False,
+                use_transparency=False,
+                show_scalar_bar=False,
+               )
+    
+  
+    pl.add_mesh(pvstream, 
+            cmap=["#ED6020", "#994305", "#665500"], 
+            show_scalar_bar=False,
+            opacity=0.5
+           )
+    
+
+    # pl.camera.roll = 180
+
+    pl.screenshot(filename=f"BatPumpkin_{frame}.png", window_size=(750,750), scale=4 )
+
+    frame += 1
+
+    pl.clear()
+    
+
+
+# %%
+for i in range(0,250, 1):
+    
+    read_bat_data(i)
+    
+    pvmesh = vis.mesh_to_pv_mesh(batmesh)
+    pvmesh.point_data["R"] = vis.scalar_fn_to_pv_points(pvmesh, batmesh.CoordinateSystem.R[0])
+    pvmesh.point_data["V"] = vis.vector_fn_to_pv_points(pvmesh, v_soln.sym)
+    pvmesh.point_data["L"] = vis.scalar_fn_to_pv_points(pvmesh, cell_properties.sym[0])
+
+    pvmesh_t = vis.meshVariable_to_pv_mesh_object(t_soln)
+    pvmesh_t.point_data["T"] = vis.scalar_fn_to_pv_points(pvmesh_t, t_soln.sym[0])
+    pvmesh_t.point_data["T1"] = vis.scalar_fn_to_pv_points(pvmesh_t, t_soln1.sym[0])
+
+
+    doughnut = pvmesh.clip_scalar(scalars="R", 
+                                  value=0.3, 
+                                  invert=False)
+    
+    pvstream = pvmesh.streamlines_from_source(
+        pv.PointSet(doughnut.cell_centers().points[::10]), 
+        vectors="V", 
+        integrator_type=45,
+        surface_streamlines=True, 
+        max_steps=1000,
+        max_time=1.0,
+    )
+
+
+    # pl.add_mesh(pvmesh, 
+    #             style="wireframe",
+    #             color="Black",
+    #             opacity=0.2)
+
+
+    pl.add_mesh(
+                pvmesh_t,
+                cmap="Grays",
+                scalars="T",
+                opacity="sigmoid",
+                edge_color="Grey",
+                show_edges=False,
+                use_transparency=False,
+                show_scalar_bar=False,
+               )
+    
+  
+    pl.add_mesh(pvstream, 
+            cmap=["#ED6020", "#994305", "#665500"], 
+            show_scalar_bar=False,
+            opacity=0.5
+           )
+    
+
+    # pl.camera.roll = 180
+
+    pl.screenshot(filename=f"BatPumpkin_{frame}.png", window_size=(750,750), scale=4 )
+
+    frame += 1
+
+    pl.clear()
+    
 
 # %%
 t_soln.stats()

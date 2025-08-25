@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.16.4
+#       jupytext_version: 1.16.6
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -97,7 +97,7 @@ class boundaries(Enum):
     inclusion = 5
     All_Boundaries = 1001 
 
-# Mesh a 2D pipe with a circular hole
+# Mesh a 2D pipe with circular holes
 
 ## Restore inflow samples to inflow points
 def pipemesh_return_coords_to_bounds(coords):

@@ -6,17 +6,12 @@ import os
 os.environ["UW_TIMING_ENABLE"] = "1"
 os.environ["SYMPY_USE_CACHE"] = "no"
 
-import petsc4py
-from petsc4py import PETSc
-
-from underworld3 import timing
-from underworld3 import adaptivity
-
-import underworld3 as uw
-from underworld3 import function
-
 import numpy as np
+import petsc4py
 import sympy
+import underworld3 as uw
+from petsc4py import PETSc
+from underworld3 import adaptivity, function, timing
 
 free_slip_upper = True
 
@@ -26,10 +21,12 @@ free_slip_upper = True
 r_o = 1.0
 r_i = 0.547
 res = 333 / 6730
-res=0.1
+res = 0.15
 
 mesh0 = uw.meshing.SphericalShell(
-    radiusOuter=r_o, radiusInner=r_i, cellSize=res,
+    radiusOuter=r_o,
+    radiusInner=r_i,
+    cellSize=res,
 )
 
 H = uw.discretisation.MeshVariable("H", mesh0, 1)
@@ -40,34 +37,11 @@ U = uw.discretisation.MeshVariable(r"U", mesh0, mesh0.dim, degree=2)
 # Add a swarm to this mesh
 
 swarm = uw.swarm.Swarm(mesh=mesh0)
-gradS = uw.swarm.SwarmVariable(r"\nabla~T_s", swarm, vtype=uw.VarType.SCALAR, proxy_degree=1)
+gradS = uw.swarm.SwarmVariable(
+    r"\nabla~T_s", swarm, vtype=uw.VarType.SCALAR, proxy_degree=1
+)
 swarm.populate(fill_param=1)
-# -
 
-
-if uw.mpi.size == 1:
-
-    import pyvista as pv
-    import underworld3.visualisation as vis
-
-    pvmesh0 = vis.mesh_to_pv_mesh(mesh0)
-    # pvmeshA = vis.mesh_to_pv_mesh(meshA)
-
-    pvmesh0.points
-
-    pl = pv.Plotter(window_size=(750, 750))
-
-    pl.add_mesh(
-                pvmesh0,
-                cmap="coolwarm",
-                edge_color="Black",
-                show_edges=True,
-                use_transparency=False,
-                opacity=1,
-                show_scalar_bar=False,
-               )
-
-    pl.show(jupyter_backend='html')
 
 # +
 # Mesh independent buoyancy force
@@ -75,18 +49,49 @@ if uw.mpi.size == 1:
 x, y, z = mesh0.CoordinateSystem.N
 
 t_forcing_fn = 1.0 * (
-    + sympy.exp(-3.0 * (x**2 + (y - 0.8) ** 2 + z**2))
-    + sympy.exp(-3.0 * ((x - 0.8) ** 2 + y**2 + z**2))
-    + sympy.exp(-3.0 * (x**2 + y**2 + (z - 0.8) ** 2))
+    +sympy.exp(-1.0 * (x**2 + (y - 1) ** 2 + z**2))
+    # + sympy.exp(-3.0 * ((x - 0.8) ** 2 + y**2 + z**2))
+    # + sympy.exp(-3.0 * (x**2 + y**2 + (z - 0.8) ** 2))
 )
 
-grad_fn = (0.1 + (
-    (t_forcing_fn.diff(x)) **2
+grad_fn = 0.01 + (
+    (t_forcing_fn.diff(x)) ** 2
     + (t_forcing_fn.diff(y)) ** 2
     + (t_forcing_fn.diff(z)) ** 2
-)) 
+)
 
 # grad_fn = 1.0 + mesh0.vector.gradient(t_forcing_fn**2).dot(mesh0.vector.gradient(t_forcing_fn**2))
+# -
+if uw.mpi.size == 1:
+
+    import pyvista as pv
+    import underworld3.visualisation as vis
+
+    pvmesh0 = vis.mesh_to_pv_mesh(mesh0)
+    pvmesh0.point_data["T"] = uw.function.evaluate(
+        t_forcing_fn, pvmesh0.points, rbf=True
+    )
+    pvmesh0.point_data["gradT"] = uw.function.evaluate(
+        grad_fn, pvmesh0.points, rbf=True
+    )
+
+    pvmesh0.points
+
+    pl = pv.Plotter(window_size=(750, 750))
+
+    pl.add_mesh(
+        pvmesh0,
+        cmap="coolwarm",
+        edge_color="Black",
+        scalars="gradT",
+        show_edges=True,
+        use_transparency=False,
+        opacity=1,
+        show_scalar_bar=False,
+    )
+
+    pl.show(jupyter_backend="html")
+
 # +
 # gradient = uw.systems.Projection(mesh0, grad, solver_name="gradient")
 # gradient.uw_function = grad_fn
@@ -96,14 +101,14 @@ grad_fn = (0.1 + (
 # -
 
 with mesh0.access(grad):
-    grad.data[:, 0] = uw.function.evalf(grad_fn, mesh0.data, mesh0.N)
+    grad.data[:, 0] = uw.function.evaluate(grad_fn, mesh0.data, mesh0.N)
 
 
 with mesh0.access(H):
-    H.data[:, 0] = 5 + grad.data[:, 0] * 1000
+    H.data[:, 0] = 0 + grad.data[:, 0] * 2000
     # print(H.data.min())
 
-grad.stats()
+H.stats()
 
 # +
 # with swarm.access(gradS):
@@ -140,21 +145,26 @@ if uw.mpi.size == 1:
     import underworld3.visualisation as vis
 
     pvmesh0 = vis.mesh_to_pv_mesh(mesh0)
-    pvmesh0.point_data["Grd"] = vis.scalar_fn_to_pv_points(pvmesh0, grad.sym)
+    pvmesh0.point_data["gradT"] = vis.scalar_fn_to_pv_points(pvmesh0, grad.sym)
 
     pvmeshA = vis.mesh_to_pv_mesh(meshA)
-    pvmesh0.points = pvmesh0.points * 0.99
+    pvmeshA.point_data["gradT"] = vis.scalar_fn_to_pv_points(pvmeshA, grad.sym)
+
 
     pl = pv.Plotter(window_size=(750, 750))
 
     pl.add_mesh(
-                pvmeshA.clip(crinkle=True),
-                style="wireframe",
-                color="Green",
-                use_transparency=False,
-                opacity=1,
-                show_scalar_bar=False,
-               )
+        pvmeshA,  # .clip(crinkle=True),
+        style="surface",
+        colormap="coolwarm",
+        scalars="gradT",
+        show_edges=True,
+        line_width=2,
+        use_transparency=False,
+        opacity=1,
+        clim=[-0.1, 0.9],
+        show_scalar_bar=True,
+    )
 
     # pl.add_mesh(
     #             pvmesh0,
@@ -165,26 +175,26 @@ if uw.mpi.size == 1:
     #             show_scalar_bar=False,
     #            )
 
-    pvmesh0.points = pvmesh0.points * 0.99
+    # pvmesh0.points = pvmesh0.points * 0.99
 
-    
-    pl.add_mesh(
-                pvmesh0.clip(origin=(-0.02,0.0,0.0)),
-                cmap="Greys",
-                scalars="Grd",
-                edge_color="Black",
-                show_edges=False,
-                use_transparency=False,
-                opacity=1,
-                show_scalar_bar=False,
-               )
+    # pl.add_mesh(
+    #     pvmesh0,  # .clip(origin=(-0.02, 0.0, 0.0)),
+    #     colormap="coolwarm",
+    #     scalars="gradT",
+    #     edge_color="Grey",
+    #     show_edges=True,
+    #     line_width=0.5,
+    #     use_transparency=False,
+    #     opacity=1,
+    #     clim=[-0.5, 1.5],
+    #     show_scalar_bar=True,
+    # )
 
-    
-    pl.camera.position=(0.0,0.0,4)
+    pl.camera.position = (0.0, 0.0, 4)
 
     pl.export_html("AdaptedSphere.html")
 
-    pl.show(jupyter_backend='html')
+    pl.show(jupyter_backend="html")
 
 # So now we have two meshes that probably have a different decompostions across the available processes.
 # We pass swarms back and forth to carry the information between decompositions.
@@ -194,7 +204,7 @@ if uw.mpi.size == 1:
 # A global accumulation of mesh points is not too bad though, because this is quite light compared to other information in the mesh. It may be more problematic for dense swarms.
 #
 
-0/0
+0 / 0
 
 # +
 with swarmA.access():
@@ -259,7 +269,6 @@ stokes.add_dirichlet_bc((0.0, 0.0, 0.0), "Lower", (0, 1, 2))
 #     meshVars=[gradA, v_soln, p_soln],
 #     swarmVars=[gradSA],
 # )
-
 # -
 
 
@@ -281,8 +290,6 @@ if mpi4py.MPI.COMM_WORLD.size == 1:
 
     clipped = pvmeshA.clip(origin=(0.0, 0.0, 0.0), normal=(0.1, 0, 1), invert=False)
 
-
-# +
 
 if mpi4py.MPI.COMM_WORLD.size == 1:
     pl = pv.Plotter(window_size=[1000, 1000])

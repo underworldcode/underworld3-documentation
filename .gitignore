@@ -13,6 +13,12 @@ Jupyterbook/**/*.png
 Jupyterbook/**/*.vtk
 Jupyterbook/**/*.h5
 
+**/WIP/**/*.png
+**/BatPumpkin/**/*.png
+
+**/?????_debug.txt
+**/Untitled*.ipynb
+
 **/.jupyter/**
 
 # Byte-compiled / optimized / DLL files

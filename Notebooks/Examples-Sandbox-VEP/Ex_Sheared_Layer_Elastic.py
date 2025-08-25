@@ -5,11 +5,11 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.16.4
+#       jupytext_version: 1.16.6
 #   kernelspec:
-#     display_name: Python 3 (ipykernel)
+#     display_name: Python (Pixi)
 #     language: python
-#     name: python3
+#     name: pixi-kernel-python3
 # ---
 
 # # Validate constitutive models
@@ -111,7 +111,6 @@ def mesh_return_coords_to_bounds(coords):
 
 mesh1 = uw.discretisation.Mesh("tmp_shear_inclusion.msh",
     markVertices=True,
-    useMultipleTags=True,
     useRegions=True,
     refinement=0,
     # refinement_callback=_mesh_refinement_callback,

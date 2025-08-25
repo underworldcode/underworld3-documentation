@@ -5,14 +5,14 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.16.0
+#       jupytext_version: 1.16.6
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
 #     name: python3
 # ---
 
-# # Compression / Extension with no mesh deformation
+# # Compression / Extension without mesh deformation
 #
 # This is a rigid inclusion model so it looks a lot like Ex_Shear_Band_Plasticity_PS.py but the geometry is closer to
 # what we have seen before in various papers.
@@ -26,21 +26,26 @@
 # Try $C = 0.05$ and $\mu = 0.5$ which does not localise as strongly but is highly non-linear nonetheless.
 #
 
+# + editable=true slideshow={"slide_type": ""}
+
+
+
+# +
 # to fix trame issue
 import nest_asyncio
+
 nest_asyncio.apply()
 
 # +
-
-C0 = 0.0001
-mu0 = 0.3
+C0 = 0.1
+mu0 = 0.1
 
 expt_name = f"Compression_C{C0}_mu{mu0}"
 # -
 
+import numpy as np
 import petsc4py
 import underworld3 as uw
-import numpy as np
 
 
 options = petsc4py.PETSc.Options()
@@ -48,17 +53,30 @@ options["dm_adaptor"] = "pragmatic"
 
 
 # +
+from enum import Enum
+
 import gmsh
 
 # Mesh a 2D pipe with a circular hole
 
-csize = 0.33 # 0.033
+csize = 0.33  # 0.033
 csize_inclusion = 0.02
 res = csize_inclusion
 
 width = 2.0
 height = 1.0
 radius = 0.25
+
+
+class boundaries(Enum):
+    Left = 1
+    Right = 2
+    Top = 3
+    FlatBottom = 4
+    Hump = 5
+    Elements = 6
+    All_Boundaries = 1001
+
 
 if uw.mpi.rank == 0:
     # Generate local mesh on boss process
@@ -109,17 +127,23 @@ if uw.mpi.rank == 0:
 
     gmsh.write(f"tmp_hump.msh")
     gmsh.finalize()
-# -
 
 
-mesh1 = uw.discretisation.Mesh("tmp_hump.msh", useRegions=True, simplex=True)
+# +
+mesh1 = uw.discretisation.Mesh(
+    "tmp_hump.msh",
+    boundaries=boundaries,
+    useRegions=True,
+    simplex=True,
+)
+
 mesh1.dm.view()
 
 # +
 # check the mesh if in a notebook / serial
 
 if uw.mpi.size == 1:
-    
+
     import pyvista as pv
     import underworld3.visualisation as vis
 
@@ -136,11 +160,9 @@ if uw.mpi.size == 1:
     # pl.add_mesh(pvmesh,'Black', 'wireframe', opacity=0.5)
     pl.add_mesh(
         pvmesh,
-        cmap="coolwarm",
-        edge_color="Black",
+        color="Blue",
+        style="wireframe",
         show_edges=True,
-        use_transparency=False,
-        opacity=0.5,
     )
 
     #
@@ -193,17 +215,14 @@ stokes = uw.systems.Stokes(
     velocityField=v_soln,
     pressureField=p_soln,
     verbose=False,
-    solver_name="stokes",
 )
 
 stokes.constitutive_model = uw.constitutive_models.ViscousFlowModel
-stokes.constitutive_model.Parameters.viscosity = 1
-stokes.saddle_preconditioner = 1 / stokes.constitutive_model.Parameters.viscosity
+stokes.constitutive_model.Parameters.shear_viscosity_0 = 1
 stokes.penalty = 0.1
 
 stokes.petsc_options["ksp_monitor"] = None
 stokes.petsc_options["snes_atol"] = 1.0e-4
-
 
 stokes.petsc_options["fieldsplit_velocity_ksp_type"] = "cg"
 stokes.petsc_options["fieldsplit_velocity_pc_type"] = "mg"
@@ -213,16 +232,12 @@ stokes.petsc_options["fieldsplit_pressure_pc_type"] = "mg"
 
 
 # +
-nodal_strain_rate_inv2 = uw.systems.Projection(
-    mesh1, strain_rate_inv2, solver_name="edot_II"
-)
-nodal_strain_rate_inv2.add_dirichlet_bc(1.0, "Left", 0)
-nodal_strain_rate_inv2.add_dirichlet_bc(1.0, "Right", 0)
+nodal_strain_rate_inv2 = uw.systems.Projection(mesh1, strain_rate_inv2)
 nodal_strain_rate_inv2.uw_function = stokes.Unknowns.Einv2
 nodal_strain_rate_inv2.smoothing = 0.0e-3
 nodal_strain_rate_inv2.petsc_options.delValue("ksp_monitor")
 
-nodal_tau_inv2 = uw.systems.Projection(mesh1, dev_stress_inv2, solver_name="stress_II")
+nodal_tau_inv2 = uw.systems.Projection(mesh1, dev_stress_inv2)
 
 S = stokes.stress_deviator
 nodal_tau_inv2.uw_function = (
@@ -231,8 +246,8 @@ nodal_tau_inv2.uw_function = (
 nodal_tau_inv2.smoothing = 0.0e-3
 nodal_tau_inv2.petsc_options.delValue("ksp_monitor")
 
-nodal_visc_calc = uw.systems.Projection(mesh1, node_viscosity, solver_name="visc")
-nodal_visc_calc.uw_function = stokes.constitutive_model.Parameters.viscosity
+nodal_visc_calc = uw.systems.Projection(mesh1, node_viscosity)
+nodal_visc_calc.uw_function = stokes.constitutive_model.viscosity
 nodal_visc_calc.smoothing = 1.0e-3
 nodal_visc_calc.petsc_options.delValue("ksp_monitor")
 
@@ -243,46 +258,57 @@ nodal_visc_calc.petsc_options.delValue("ksp_monitor")
 
 # Constant visc
 
-stokes.bodyforce = -1 * mesh1.CoordinateSystem.unit_j
+stokes.bodyforce = -10 * mesh1.CoordinateSystem.unit_j
 
-hw = 1000.0 / res
+hw = 100.0 / res
 hump_surface_fn = sympy.exp(-(((r - radius) / radius) ** 2) * hw)
 upper_surface_fn = sympy.exp(-(((y - height)) ** 2) * hw)
 
-stokes.bodyforce -= (
-    1.0e6 * hump_surface_fn * v_soln.sym.dot(inclusion_unit_rvec) * inclusion_unit_rvec
-)
+# stokes.bodyforce.sym -= (
+#     1.0e6 * hump_surface_fn * v_soln.sym.dot(inclusion_unit_rvec) * inclusion_unit_rvec
+# )
+
 
 # stokes.bodyforce
-p_penalty = 0.0
-stokes.PF0 = p_penalty * upper_surface_fn * p_soln.sym
-stokes.saddle_preconditioner = (
-    1 / stokes.constitutive_model.Parameters.viscosity + p_penalty * upper_surface_fn
-)
+p_penalty = 1000000
+# stokes.constraints = stokes.constraints - p_penalty * upper_surface_fn * p_soln.sym
+
+# stokes.add_natural_bc([p_penalty*p_soln.sym[0], p_penalty*p_soln.sym[0]], "Top" )
+
 
 # Velocity boundary conditions
 
 # stokes.add_dirichlet_bc((0.0, 0.0), "Hump", (0, 1))
 # stokes.add_dirichlet_bc((vx_ps, vy_ps), ["top", "bottom", "left", "right"], (0, 1))
-stokes.add_dirichlet_bc((1.0, 0.0), "Left", (0, 1))
-stokes.add_dirichlet_bc((-1.0, 0.0), "Right", (0, 1))
-stokes.add_dirichlet_bc((0.0,), "FlatBottom", (1,))
 
+stokes.add_dirichlet_bc((+1.0, 0.0), "Left")
+stokes.add_dirichlet_bc((-1.0, 0.0), "Right")
+stokes.add_dirichlet_bc((None, 0.0), "FlatBottom")
+stokes.add_dirichlet_bc((0.0, 0.0), "Hump")
+# -
+
+
+stokes.constraints
+
+stokes.view()
 
 # +
 # linear solve first
 
 stokes.solve(zero_init_guess=False)
 # +
+# p_soln.view()
+
+# +
 # Calculate surface pressure
 
-_, _, _, _, ps_sum, _, _ = mesh1.stats(p_soln.sym[0] * upper_surface_fn, p_soln)
-_, _, _, _, p_sum, _, _ = mesh1.stats(p_soln.sym[0], p_soln)
-_, _, _, _, ps_norm, _, _ = mesh1.stats(upper_surface_fn, p_soln)
-_, _, _, _, p_norm, _, _ = mesh1.stats(1 + 0.00001 * p_soln.sym[0], p_soln)
+# _, _, _, _, ps_sum, _, _ = mesh1.stats(p_soln.sym[0] * upper_surface_fn, p_soln)
+# _, _, _, _, p_sum, _, _ = mesh1.stats(p_soln.sym[0], p_soln)
+# _, _, _, _, ps_norm, _, _ = mesh1.stats(upper_surface_fn, p_soln)
+# _, _, _, _, p_norm, _, _ = mesh1.stats(1 + 0.00001 * p_soln.sym[0], p_soln)
 
-print(f"Mean Surface P - {ps_sum/p_sum}")
-print(f"Mean P - {p_sum/p_norm}")
+# print(f"Mean Surface P - {ps_sum/p_sum}")
+# print(f"Mean P - {p_sum/p_norm}")
 
 
 # p_calculator = uw.maths.Integral(mesh1, p_soln.sym[0] * upper_surface_fn)
@@ -294,11 +320,20 @@ print(f"Mean P - {p_sum/p_norm}")
 # integral = value # / norm
 
 # print(f"Average surface pressure: {integral}")
+# -
 
-# + p_penalty * upper_surface_fn)
+integral = uw.maths.Integral(mesh1, p_soln.sym[0])
+p_integral = integral.evaluate()
+integral.fn = sympy.sympify(1)
+p_norm = integral.evaluate()
+integral.fn = p_soln.sym[0] * upper_surface_fn
+ps_integral = integral.evaluate()
+integral.fn = upper_surface_fn
+ps_norm = integral.evaluate()
 
-# stokes.solve(zero_init_guess=False)
+p_integral/p_norm
 
+ps_integral / ps_norm
 
 # +
 # Approach the required value by shifting the parameters
@@ -308,21 +343,25 @@ for i in range(1):
     C = C0  # + (1 - i / 4) * 0.1
     print(f"Mu - {mu}, C = {C}")
     tau_y = sympy.Max(
-        C + mu * stokes.p.sym[0] + 1 * sympy.sin(x * sympy.pi / (2 * width)) ** 2,
+        C + mu * stokes.p.sym[0] // + 1 * sympy.sin(x * sympy.pi / (2 * width)) ** 2,
         0.0001,
     )
-    viscosity = 1.0 / (2 * stokes.Unknowns.Einv2 / tau_y + 1.0)
+    viscosity = 1.0 / (2 * stokes.Unknowns.Einv2 / tau_y)
 
     stokes.constitutive_model.Parameters.viscosity = viscosity
-    stokes.saddle_preconditioner = (
-        1 / stokes.constitutive_model.Parameters.viscosity
-        + p_penalty * upper_surface_fn
-    )
+    # stokes.saddle_preconditioner = (
+    #     1 / stokes.constitutive_model.Parameters.viscosity
+    #     + p_penalty * upper_surface_fn
+    # )
     stokes.solve(zero_init_guess=False)
 # -
 
+
+
+
+
 nodal_tau_inv2.uw_function = (
-    stokes.constitutive_model.Parameters.viscosity * stokes.Unknowns.Einv2
+    2 * stokes.constitutive_model.Parameters.viscosity * stokes.Unknowns.Einv2
 )
 nodal_tau_inv2.solve()
 nodal_visc_calc.uw_function = stokes.constitutive_model.Parameters.viscosity
@@ -330,29 +369,35 @@ nodal_visc_calc.solve()
 nodal_strain_rate_inv2.solve()
 
 
-mesh1.petsc_save_checkpoint(index=0, meshVars=[v_soln, p_soln, dev_stress_inv2, strain_rate_inv2, node_viscosity], 
-                            outputPath="./output/")
+mesh1.petsc_save_checkpoint(
+    index=0,
+    meshVars=[v_soln, p_soln, dev_stress_inv2, strain_rate_inv2, node_viscosity],
+    outputPath="./output/",
+)
 
 
 # +
 # check the mesh if in a notebook / serial
 
 if uw.mpi.size == 1:
-    
+
     import pyvista as pv
     import underworld3.visualisation as vis
-    
+
     pvmesh = vis.mesh_to_pv_mesh(mesh1)
     pvmesh.point_data["P"] = vis.scalar_fn_to_pv_points(pvmesh, p_soln.sym)
     pvmesh.point_data["Edot"] = vis.scalar_fn_to_pv_points(pvmesh, strain_rate_inv2.sym)
     pvmesh.point_data["Visc"] = vis.scalar_fn_to_pv_points(pvmesh, node_viscosity.sym)
     pvmesh.point_data["Str"] = vis.scalar_fn_to_pv_points(pvmesh, dev_stress_inv2.sym)
     pvmesh.point_data["V"] = vis.vector_fn_to_pv_points(pvmesh, v_soln.sym)
-    pvmesh.point_data["Vmag"] = vis.scalar_fn_to_pv_points(pvmesh, v_soln.sym.dot(v_soln.sym))
+    pvmesh.point_data["Vmag"] = vis.scalar_fn_to_pv_points(
+        pvmesh, v_soln.sym.dot(v_soln.sym)
+    )
 
     velocity_points = vis.meshVariable_to_pv_cloud(v_soln)
-    velocity_points.point_data["V"] = vis.vector_fn_to_pv_points(velocity_points, v_soln.sym)
-
+    velocity_points.point_data["V"] = vis.vector_fn_to_pv_points(
+        velocity_points, v_soln.sym
+    )
 
     # point sources at cell centres
     points = np.zeros((mesh1._centroids.shape[0], 3))
@@ -366,17 +411,19 @@ if uw.mpi.size == 1:
 
     pl = pv.Plotter(window_size=(1000, 750))
 
-    pl.add_arrows(velocity_points.points, velocity_points.point_data["V"], mag=0.05, opacity=0.75)
+    pl.add_arrows(
+        velocity_points.points, velocity_points.point_data["V"], mag=0.1, opacity=0.75
+    )
 
     pl.add_mesh(
         pvmesh,
         cmap="coolwarm",
         edge_color="Black",
         show_edges=True,
-        scalars="Edot",
+        scalars="Str",
         use_transparency=False,
         opacity=1.0,
-        clim=[0.0, 4.0],
+        # clim=[0.0, 4.0],
     )
 
     # pl.remove_scalar_bar("mag")
@@ -388,5 +435,11 @@ if uw.mpi.size == 1:
 
 if uw.mpi.size == 1:
     print(pvmesh.point_data["Visc"].min(), pvmesh.point_data["Visc"].max())
+
+stokes.constitutive_model._c
+
+stokes.constitutive_model.C
+
+stokes.constitutive_model.Unknowns.E
 
 

@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.16.0
+#       jupytext_version: 1.16.6
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -72,7 +72,7 @@ projection.add_natural_bc(meshball.Gamma * GammaNorm, "Upper")
 projection.add_natural_bc(meshball.Gamma * GammaNorm, "Lower")
 projection.add_natural_bc(meshball.Gamma * GammaNorm, "Internal")
 
-projection.solve(verbose=True, debug=True)
+projection.solve(verbose=True)
 
 with meshball.access(normal_vector):
     normal_vector.data[:,:] /= np.sqrt(normal_vector.data[:,0]**2 + normal_vector.data[:,1]**2).reshape(-1,1)
@@ -109,9 +109,9 @@ if uw.mpi.size == 1:
         show_scalar_bar=False
     )
 
-    # pl.add_arrows(evaluation_points.points, evaluation_points.point_data["N"], mag=0.1)
+    pl.add_arrows(evaluation_points.points, evaluation_points.point_data["N"], mag=0.1)
     # pl.add_arrows(evaluation_points.points, evaluation_points.point_data["R"], mag=0.1)
-    pl.add_arrows(evaluation_points.points, evaluation_points.point_data["dR"], mag=10)
+    # pl.add_arrows(evaluation_points.points, evaluation_points.point_data["dR"], mag=1.0)
     # pl.add_mesh(pvstream, opacity=0.3, show_scalar_bar=False)
 
 
