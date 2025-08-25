@@ -92,7 +92,7 @@ if mpi4py.MPI.COMM_WORLD.size == 1:
     
     # clipped = pvmesh.clip(origin=(0.0, 0.0, 0.0), normal=(0.1, 0, 1), invert=True)
 
-        pl = pv.Plotter(window_size=[1000, 1000])
+    pl = pv.Plotter(window_size=[1000, 1000])
     # pl.add_axes()
     
     pl.camera_position = [(2.1,-4.0,0.0), (0.0,0.0,0.0), (0.0,0.0,1.0)]

@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.16.4
+#       jupytext_version: 1.16.6
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -124,7 +124,12 @@ stokes.petsc_options["fieldsplit_velocity_mg_coarse_pc_type"] = "svd"
 
 t_init = sympy.sin(5*th) * sympy.exp(-1000.0 * ((r - r_int) ** 2)) 
 
+# -
 
+
+t_init
+
+uw.function.expressions.unwrap(t_init)
 
 # +
 ## First solve with known normals
@@ -166,11 +171,19 @@ with meshball.access(v_soln):
 with meshball.access(v_soln1):
     v_soln1.data[...] = v_soln.data[...]
 
-# -
 
+# +
 pressure_solver = uw.systems.Projection(meshball, p_cont)
 pressure_solver.uw_function = p_soln.sym[0]
 pressure_solver.smoothing = 1.0e-6
+
+
+pstats0 = p_soln.stats()
+
+
+if uw.mpi.rank == 0:
+    print(f"AN: Pressure (C0): {pstats0}")
+    # print(f"Velocity: {vnorm}")
 
 # +
 ## Now solve with normals from nodal projection
@@ -219,13 +232,13 @@ norm = I0.evaluate()
 # Pressure at mesh nodes
 pressure_solver.solve()
 
-pstats1 = p_cont.stats()
+# pstats1 = p_cont.stats()
 pstats0 = p_soln.stats()
 
 if uw.mpi.rank == 0:
-    print(f"Pressure (C1): {pstats1}")
-    print(f"Pressure (C0): {pstats0}")
-    print(f"Velocity: {vnorm}")
+    # print(f"Pressure (C1): {pstats1}")
+    print(f"PN: Pressure (C0): {pstats0}")
+
 # -
 
 meshball.write_timestep(
@@ -283,7 +296,7 @@ if uw.mpi.size == 1:
         cmap="coolwarm",
         edge_color="Grey",
         edge_opacity=0.33,
-        scalars="P",
+        scalars="T",
         show_edges=True,
         use_transparency=False,
         opacity=1.0,
@@ -299,14 +312,15 @@ if uw.mpi.size == 1:
     vsol_rms = np.sqrt(velocity_points.point_data["V"][:, 0] ** 2 + velocity_points.point_data["V"][:, 1] ** 2).mean()
     # print(vsol_rms)
 
-    pl.export_html("stokes_annulus_plot.html")
-    # pl.show(cpos="xy", jupyter_backend="trame")
+    # pl.export_html("stokes_annulus_plot.html")
+    pl.show(cpos="xy", jupyter_backend="trame")
 
 
+# +
+# if uw.mpi.size == 1:
+#     from IPython.display import IFrame
+#     IFrame(src="./stokes_annulus_plot.html", width=750, height=750)
 # -
-if uw.mpi.size == 1:
-    from IPython.display import IFrame
-    IFrame(src="./stokes_annulus_plot.html", width=750, height=750)
 
 
 stokes.view()

@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.14.1
+#       jupytext_version: 1.16.6
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -200,7 +200,5 @@ while step < nsteps:
     time += dt
 
 
-# + tags=[]
 timing.print_table(display_fraction=0.999)
-# -
 mesh.write_checkpoint("stokesSinkerTiming", meshUpdates=False, meshVars=[p, v])

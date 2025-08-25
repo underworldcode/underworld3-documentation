@@ -235,12 +235,6 @@ projection.solve(verbose=False)
 with terrain_mesh.access(n_vect):
     n_vect.data[:,:] /= np.sqrt(n_vect.data[:,0]**2 + n_vect.data[:,1]**2 + n_vect.data[:,2]**2).reshape(-1,1)
 
-# -
-
-
-
-
-
 # +
 v = uw.discretisation.MeshVariable("V",terrain_mesh, vtype=uw.VarType.VECTOR, degree=2)
 p = uw.discretisation.MeshVariable("P",terrain_mesh, vtype=uw.VarType.SCALAR, degree=1)
@@ -281,6 +275,8 @@ stokes.petsc_options.setValue("snes_monitor", None)
 stokes.solve()
 # -
 
+
+stokes.view()
 
 terrain_mesh.write_timestep(
     expt_name,

@@ -56,7 +56,7 @@ new_coords[:, 1] = uw.function.evaluate(h_fn * y, mesh.data, mesh.N)
 
 mesh.deform_mesh(new_coords=new_coords)
 
-
+uw.function.evalf(1+100*(1.25-y), mesh.data).max()
 
 # %%
 if uw.mpi.size == 1 and uw.is_notebook:
@@ -87,15 +87,19 @@ darcy.petsc_options.delValue("ksp_monitor")
 
 # Set some things
 
-k = sympy.exp(-2.0 * 2.302585 * (h_fn - y))  # powers of 10
-darcy.constitutive_model.Parameters.permeability = k
+# +
+# k = sympy.exp(-2.0 * 2.302585 * (h_fn - y))  # powers of 10
 
-k
+k = (y+0.01)
+pw = 2
+darcy.constitutive_model.Parameters.permeability = k**pw
+
+# -
 
 darcy.f = 0.0
 darcy.constitutive_model.Parameters.s = sympy.Matrix([0, -1]).T
 
-
+uw.function.evalf(k**pw, mesh.data).max()
 
 darcy.add_dirichlet_bc(0.0, "Top")
 
@@ -103,12 +107,14 @@ darcy.add_dirichlet_bc(0.0, "Top")
 
 darcy._v_projector.smoothing = 0.0
 
-
-
 # %%
 # Solve time
 darcy.petsc_options.setValue("snes_monitor", None)
 darcy.solve(verbose=False)
+
+p_soln.stats()
+
+v_soln.view()
 
 # %%
 if uw.mpi.size == 1 and uw.is_notebook:
@@ -121,7 +127,7 @@ if uw.mpi.size == 1 and uw.is_notebook:
 
     pvmesh.point_data["P"] = vis.scalar_fn_to_pv_points(pvmesh, p_soln.sym)
     pvmesh.point_data["dP"] = vis.scalar_fn_to_pv_points(pvmesh, p_soln.sym[0] - (h_fn - y))
-    pvmesh.point_data["K"] = vis.scalar_fn_to_pv_points(pvmesh, k)
+    # pvmesh.point_data["K"] = vis.scalar_fn_to_pv_points(pvmesh, k)
     pvmesh.point_data["S"] = vis.scalar_fn_to_pv_points(pvmesh, sympy.log(v_soln.sym.dot(v_soln.sym)))
 
     velocity_points = vis.meshVariable_to_pv_cloud(v_soln)

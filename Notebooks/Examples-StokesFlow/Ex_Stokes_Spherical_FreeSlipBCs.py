@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.16.4
+#       jupytext_version: 1.16.6
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -99,7 +99,7 @@ grid_type = uw.options.getString("grid_type", default="simplex")
 # +
 visuals = 1
 output_dir = "output"
-grid_type = "simplex_sphere"
+grid_type = "cubed_sphere"
 
 # Some gmsh issues, so we'll use a pre-built one
 r_o = 1.0
@@ -116,12 +116,11 @@ elif problem_size == 2:
 elif problem_size == 3:
     els = 12
 elif problem_size == 4:
-    els = 50
-    cell_size = 0.02
+    els = 24
 elif problem_size == 5:  # Pretty extreme to mesh this on proc0
-    els = 66
+    els = 48
 elif problem_size >= 6:  # should consider refinement (or prebuild)
-    els = 100
+    els = 96
 
 cell_size = 1/els
 res = cell_size
@@ -147,6 +146,15 @@ elif "cubed" in grid_type:
         radiusInner=r_i,
         radiusOuter=r_o,
         numElements=els,
+        simplex=True,
+        refinement=grid_refinement,
+        qdegree=2,
+    )
+elif "simplex" in grid_type:
+    meshball = uw.meshing.SphericalShell(
+        radiusInner=r_i,
+        radiusOuter=r_o,
+        cellSize=cell_size,
         refinement=grid_refinement,
         qdegree=2,
     )
@@ -184,22 +192,16 @@ if uw.mpi.size == 1:
         opacity=1.0,
     )
 
-    pl.show()
-    # pl.export_html("html5/stokes_sphere_plot.html")
+    # pl.show()
+    pl.export_html("html5/stokes_sphere_plot.html")
 
 from IPython.display import IFrame
 IFrame(src="html5/stokes_sphere_plot.html", width=750, height=750)
 
-
-0/0
-
-
 stokes = uw.systems.Stokes(
     meshball,
     verbose=False,
-    solver_name="stokes",
 )
-
 
 v_soln = stokes.Unknowns.u
 p_soln = stokes.Unknowns.p
@@ -207,6 +209,8 @@ p_soln = stokes.Unknowns.p
 stokes.constitutive_model = uw.constitutive_models.ViscousFlowModel
 stokes.constitutive_model.Parameters.viscosity = 1
 stokes.penalty = 0
+
+stokes.view()
 
 # +
 # Create a density structure / buoyancy force
@@ -217,6 +221,8 @@ stokes.penalty = 0
 
 x, y, z = meshball.CoordinateSystem.N
 ra, l1, l2 = meshball.CoordinateSystem.R
+
+bc_penalty = uw.function.expression(r'\Pi', sympy.sympify(100000), "BC enforcement penalty factor")
 
 ## Mesh Variables for T ## 
 
@@ -241,7 +247,10 @@ with meshball.access(t_soln):
     t_soln.data[...] = uw.function.evaluate(
         t_forcing_fn, t_soln.coords, meshball.N
     ).reshape(-1, 1)
+# -
 
+
+t_soln.view()
 
 # +
 # Rigid body rotations that are null-spaces for this set of bc's
@@ -300,12 +309,17 @@ stokes.petsc_options.setValue("fieldsplit_pressure_pc_mg_cycle_type", "v")
 # thermal buoyancy force
 
 Gamma = meshball.CoordinateSystem.unit_e_0
-stokes.add_natural_bc(10000 * Gamma.dot(v_soln.sym) *  Gamma, "UpperPlus")
+stokes.add_natural_bc(bc_penalty * Gamma.dot(v_soln.sym) *  Gamma, "Upper")
 
 if not "ball" in grid_type:
-    stokes.add_natural_bc(10000 * Gamma.dot(v_soln.sym) *  Gamma, "LowerPlus")
+    stokes.add_natural_bc(bc_penalty * Gamma.dot(v_soln.sym) *  Gamma, "Lower")
 
 stokes.bodyforce = unit_rvec * Rayleigh * gravity_fn * t_forcing_fn 
+# -
+
+stokes.view()
+
+#
 
 # +
 timing.reset()
@@ -406,7 +420,7 @@ if uw.mpi.size == 1:
         cmap="Reds",
         # cmap="coolwarm",
         edge_color="Black",
-        show_edges=False,
+        show_edges=True,
         scalars="T",
         use_transparency=False,
         show_scalar_bar = False,
@@ -437,9 +451,14 @@ if uw.mpi.size == 1:
 # -
 
 
-from IPython.display import IFrame
-IFrame(src="html5/stokes_sphere_plot.html", width=750, height=750)
+if uw.mpi.size == 1:
+    from IPython.display import IFrame
+    IFrame(src="html5/stokes_sphere_plot.html", width=750, height=750)
 
-pl.show(jupyter_backend="trame")
+    pl.show(jupyter_backend="trame")
+
+
+
+
 
 

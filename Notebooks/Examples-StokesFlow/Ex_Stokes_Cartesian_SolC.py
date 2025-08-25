@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.16.4
+#       jupytext_version: 1.16.7
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -48,7 +48,7 @@ refinement = 2
 
 mesh1 = uw.meshing.UnstructuredSimplexBox(regular=True,
     minCoords=(0.0, 0.0), maxCoords=(1.0, 1.0), cellSize=1 / n_els, 
-    qdegree=3, refinement=refinement
+    qdegree=3, refinement=refinement, 
 )
 
 mesh2 = uw.meshing.StructuredQuadBox(
@@ -61,13 +61,18 @@ mesh2 = uw.meshing.StructuredQuadBox(
 
 mesh = mesh1
 x,y = mesh.X
-# -
-stokes = uw.systems.Stokes(mesh, verbose=False)
+# +
+v = uw.discretisation.MeshVariable("V", mesh, vtype=uw.VarType.VECTOR, degree=3, varsymbol=r"{v}")
+p = uw.discretisation.MeshVariable("P", mesh, vtype=uw.VarType.SCALAR, degree=2, continuous=False,
+                                   varsymbol=r"{p}")
+
+
+stokes = uw.systems.Stokes(mesh, 
+                           velocityField=v,
+                           pressureField=p,
+                           verbose=False)
 
 # +
-v = stokes.Unknowns.u
-p = stokes.Unknowns.p
-
 stokes.constitutive_model=uw.constitutive_models.ViscousFlowModel  # (stokes.Unknowns)
 stokes.constitutive_model.Parameters.shear_viscosity_0 = 1
 # %%
@@ -84,6 +89,7 @@ x_c = sympy.sympify(1)/2
 f_0 = 1
 
 
+# +
 stokes.penalty = 100
 stokes.bodyforce = sympy.Matrix(
     [
@@ -94,6 +100,8 @@ stokes.bodyforce = sympy.Matrix(
         ),
     ]
 )
+
+stokes.view()
 
 # +
 # This is the other way to impose no vertical flow
@@ -151,10 +159,14 @@ stokes.petsc_options.setValue("fieldsplit_pressure_pc_mg_cycle_type", "v")
 stokes.view()
 stokes.constitutive_model.viscosity.view()
 
+# +
+## Jacobians (try these by hand to validate automatic Jacobians)
+
 uw.function.derivative(stokes.F0.sym, stokes.Unknowns.u.sym)
 uw.function.derivative(stokes.F0.sym, stokes.Unknowns.L)
 uw.function.derivative(stokes.F1.sym, stokes.Unknowns.u.sym)
 uw.function.derivative(stokes.F1.sym, stokes.Unknowns.L)
+# -
 
 # %%
 # Solve time
@@ -172,7 +184,7 @@ if uw.mpi.size == 1:
 
     pvmesh = vis.mesh_to_pv_mesh(mesh)
     pvmesh.point_data["V"] = vis.vector_fn_to_pv_points(pvmesh, v.sym)
-    pvmesh.point_data["T"] = vis.scalar_fn_to_pv_points(pvmesh, stokes.bodyforce[1])
+    pvmesh.point_data["T"] = vis.scalar_fn_to_pv_points(pvmesh, stokes.bodyforce.sym[1])
     pvmesh.point_data["Vmag"] = vis.scalar_fn_to_pv_points(pvmesh, v.sym.dot(v.sym))
 
     velocity_points = vis.meshVariable_to_pv_cloud(v)
@@ -196,7 +208,10 @@ if uw.mpi.size == 1:
 
 
 # -
-# ## SolCx from the same setup
+# ## SolCx (Benchmark example)
+#
+# Adjust the standard (isoviscous) Stokes solver to match the viscosity (vertical step)
+# function for the `SolCx` benchmark case. The required buoyancy is harmonic in $x$ and $y$
 
 # +
 stokes.bodyforce = sympy.Matrix(
@@ -212,11 +227,10 @@ stokes.constitutive_model.Parameters.shear_viscosity_0 = viscosity_fn
 # -
 
 
-stokes.constitutive_model.Parameters.shear_viscosity_0
+uw.systems.solvers.SNES_Stokes.view()
 
-
-
-stokes.saddle_preconditioner = sympy.simplify(1 / (stokes.constitutive_model.viscosity + stokes.penalty))
+# +
+# stokes.saddle_preconditioner = sympy.simplify(1 / (stokes.constitutive_model.viscosity + stokes.penalty))
 
 # +
 timing.reset()
@@ -232,16 +246,25 @@ with mesh.access(v0):
 # +
 # reset and re-do with natural bcs
 
+
 stokes._reset()
 stokes.tolerance = 1.0e-6
 stokes.add_natural_bc([0.0,1e6*v.sym[1]], "Top") 
 stokes.add_dirichlet_bc((sympy.oo,0.0), "Bottom")
 stokes.add_dirichlet_bc((0.0,sympy.oo), "Left")
 stokes.add_dirichlet_bc((0.0,sympy.oo), "Right")
+
+
+timing.reset()
+timing.start()
 stokes.solve()
+timing.print_table(display_fraction=0.999)
 
 with mesh.access(v1):
     v1.data[...] = v.data[...]
+# -
+
+
 
 # +
 # reset and re-do with natural bcs & petsc normals
@@ -254,7 +277,13 @@ stokes.add_natural_bc(1e6 * Gamma.dot(v.sym) * Gamma, "Top")
 stokes.add_dirichlet_bc((sympy.oo,0.0), "Bottom")
 stokes.add_dirichlet_bc((0.0,sympy.oo), "Left")
 stokes.add_dirichlet_bc((0.0,sympy.oo), "Right")
+
+timing.reset()
+timing.start()
 stokes.solve()
+timing.print_table(display_fraction=0.999)
+
+
 # -
 
 
@@ -333,6 +362,8 @@ except ImportError:
 
 uw.systems.Stokes.view()
 
-stokes.view(class_documentation=False)
+stokes.view(class_documentation=True)
+
+
 
 
